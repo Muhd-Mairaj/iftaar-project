@@ -12,7 +12,7 @@ export async function inviteUser(data: InviteUserInput) {
     // 1. Invite the user via Auth API
     const { data: inviteData, error: inviteError } =
       await supabase.auth.admin.inviteUserByEmail(validated.email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/ar/auth/update-password`,
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/ar/update-password`,
       });
 
     if (inviteError) {
