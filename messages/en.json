@@ -1,0 +1,21 @@
+{
+    "app_title": "Iftar Food Coordination",
+    "donate_now": "Donate Food Packets",
+    "quantity": "Quantity",
+    "proof_of_payment": "Proof of Payment",
+    "submit_donation": "Submit Donation",
+    "muazzin_dashboard": "Muazzin Dashboard",
+    "restaurant_dashboard": "Restaurant Dashboard",
+    "pending_donations": "Pending Donations",
+    "approved_donations": "Approved Donations",
+    "collection_requests": "Collection Requests",
+    "create_request": "Create Collection Request",
+    "target_date": "Target Date",
+    "status": "Status",
+    "actions": "Actions",
+    "approve": "Approve",
+    "reject": "Reject",
+    "collected": "Collected",
+    "uncollected": "Uncollected",
+    "available_packets": "Available Packets"
+}

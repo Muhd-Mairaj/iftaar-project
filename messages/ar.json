@@ -1,0 +1,21 @@
+{
+    "app_title": "تنسيق وجبات الإفطار",
+    "donate_now": "تبرع بوجبات الإفطار",
+    "quantity": "الكمية",
+    "proof_of_payment": "إثبات الدفع",
+    "submit_donation": "إرسال التبرع",
+    "muazzin_dashboard": "لوحة تحكم المؤذن",
+    "restaurant_dashboard": "لوحة تحكم المطعم",
+    "pending_donations": "التبرعات المعلقة",
+    "approved_donations": "التبرعات المعتمدة",
+    "collection_requests": "طلبات الاستلام",
+    "create_request": "إنشاء طلب استلام",
+    "target_date": "التاريخ المستهدف",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "approve": "اعتماد",
+    "reject": "رفض",
+    "collected": "تم الاستلام",
+    "uncollected": "لم يتم الاستلام",
+    "available_packets": "الوجبات المتاحة"
+}
