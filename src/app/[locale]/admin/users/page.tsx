@@ -92,7 +92,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 pb-24 space-y-8 relative overflow-hidden">
+    <div className="min-h-full bg-background p-6 space-y-8 relative overflow-hidden">
       {/* Admin Background Elements */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-full" />

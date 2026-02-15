@@ -81,7 +81,7 @@ export default function UpdatePasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6 relative overflow-hidden">
+    <div className="flex h-full items-center justify-center p-6 relative overflow-hidden">
       {/* Background Ambient Glow */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full" />

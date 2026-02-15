@@ -8,7 +8,7 @@ export default function PublicDonationPage() {
   const { t } = useTranslate();
 
   return (
-    <div className="flex-grow flex flex-col items-center justify-center p-6 pt-16 pb-24 h-full relative z-10 overflow-hidden">
+    <div className="flex-grow flex flex-col items-center justify-center p-6 h-full relative z-10 overflow-hidden">
       <div className="w-full max-w-sm mx-auto space-y-6">
         <header className="text-center space-y-3 animate-in fade-in slide-in-from-top-4 duration-1000">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 text-primary text-[10px] font-bold uppercase tracking-[0.2em] border border-primary/10 mx-auto">

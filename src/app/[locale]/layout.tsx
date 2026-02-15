@@ -67,7 +67,9 @@ export default async function RootLayout({
 
             <AppHeader locale={locale} />
 
-            <main className="relative z-10 h-full w-full">{children}</main>
+            <main className="relative z-10 h-full w-full overflow-y-auto pt-[4.5rem] pb-24">
+              {children}
+            </main>
 
             <BottomNav locale={locale} />
           </QueryProvider>

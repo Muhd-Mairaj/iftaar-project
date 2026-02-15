@@ -29,7 +29,7 @@ export default function PartnersPage() {
   };
 
   return (
-    <div className="flex-grow flex flex-col items-center p-6 transition-all duration-700 h-full absolute inset-0 pt-24 pb-28">
+    <div className="flex-grow flex flex-col items-center p-6 transition-all duration-700 h-full">
       <div className="w-full max-w-sm mx-auto flex flex-col h-full overflow-hidden">
         <header className="mb-6 px-2 text-center animate-in fade-in slide-in-from-top-4 duration-1000">
           <h1 className="text-2xl font-black text-foreground tracking-tight">
