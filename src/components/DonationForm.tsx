@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { submitDonation } from '@/lib/actions';
 import { useState } from 'react';
 import { useTranslate } from '@tolgee/react';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2, Upload } from 'lucide-react';
 
 export function DonationForm() {
   const { t } = useTranslate();
@@ -46,16 +46,18 @@ export function DonationForm() {
 
   if (isSuccess) {
     return (
-      <div className="text-center py-10">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
-          <CheckCircle2 className="w-6 h-6" />
+      <div className="text-center py-12 animate-in fade-in zoom-in duration-500">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-6 shadow-sm">
+          <CheckCircle2 className="w-8 h-8" />
         </div>
-        <h2 className="text-xl font-semibold mb-2">Submission Received</h2>
-        <p className="text-sm text-muted-foreground mb-6">
-          Thank you for your donation. We will verify it shortly.
+        <h2 className="text-2xl font-black mb-3 text-foreground tracking-tight">
+          {t('success_title')}
+        </h2>
+        <p className="text-sm text-muted-foreground mb-8 max-w-[280px] mx-auto leading-relaxed">
+          {t('success_desc')}
         </p>
-        <Button onClick={() => setIsSuccess(false)} variant="outline" size="sm">
-          Submit Another
+        <Button onClick={() => setIsSuccess(false)} variant="outline" className="rounded-xl px-8 border-primary/20 text-primary hover:bg-primary/5">
+          {t('submit_another')}
         </Button>
       </div>
     );
@@ -63,13 +65,13 @@ export function DonationForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="quantity"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <FormLabel className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1">
                 {t('quantity')}
               </FormLabel>
               <FormControl>
@@ -77,10 +79,10 @@ export function DonationForm() {
                   type="number"
                   {...field}
                   onChange={e => field.onChange(parseInt(e.target.value))}
-                  className="rounded-md border-slate-200"
+                  className="h-12 rounded-xl border-border bg-background focus:ring-primary shadow-sm transition-all focus:border-primary/50"
                 />
               </FormControl>
-              <FormMessage className="text-[11px]" />
+              <FormMessage className="text-[11px] font-medium" />
             </FormItem>
           )}
         />
@@ -90,17 +92,20 @@ export function DonationForm() {
           name="proof_url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <FormLabel className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1">
                 {t('proof_of_payment')}
               </FormLabel>
               <FormControl>
-                <Input
-                  placeholder="https://..."
-                  {...field}
-                  className="rounded-md border-slate-200"
-                />
+                <div className="relative">
+                  <Input
+                    placeholder="https://upload-your-receipt-here.com"
+                    {...field}
+                    className="h-12 rounded-xl border-border bg-background ps-11 focus:ring-primary shadow-sm transition-all focus:border-primary/50"
+                  />
+                  <Upload className="absolute start-4 top-3.5 w-5 h-5 text-muted-foreground/50" />
+                </div>
               </FormControl>
-              <FormMessage className="text-[11px]" />
+              <FormMessage className="text-[11px] font-medium" />
             </FormItem>
           )}
         />
@@ -108,10 +113,16 @@ export function DonationForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full font-semibold rounded-md transition-all active:scale-[0.98]"
+          className="w-full h-14 text-lg font-black rounded-xl shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all bg-primary hover:bg-primary/90"
         >
-          {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : t('submit_donation')}
+          {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : t('submit_donation')}
         </Button>
+
+        <div className="text-center">
+          <p className="text-[10px] text-muted-foreground/60 italic font-medium px-4">
+            {t('verification_notice')}
+          </p>
+        </div>
       </form>
     </Form>
   );

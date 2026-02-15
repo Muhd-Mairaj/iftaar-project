@@ -18,5 +18,22 @@
     "collected": "Collected",
     "uncollected": "Uncollected",
     "available_packets": "Available Packets",
-    "login": "Login"
+    "login": "Login",
+    "hero_badge": "Ramadan 2026",
+    "hero_title_prefix": "Coordinate Your",
+    "hero_title_accent": "Iftar",
+    "hero_title_suffix": "Donation",
+    "hero_subtitle": "Join the community in providing meals. Upload your receipt below to reserve food packets for our local mosque neighbors.",
+    "info_secure_title": "Secure Verification",
+    "info_secure_desc": "Every donation is manually reviewed by the Muazzin for transparency.",
+    "info_community_title": "Community Coordination",
+    "info_community_desc": "Balanced distribution ensures every neighbor receives a meal.",
+    "stats_title": "Meals Delivered This Month",
+    "form_title": "Donation Details",
+    "form_desc": "Please enter the quantity of packets and your proof.",
+    "trust_footer": "Trust • Community • Transparency",
+    "success_title": "JazakAllah Khair!",
+    "success_desc": "Your donation has been received and is currently under review by our team.",
+    "submit_another": "Submit Another",
+    "verification_notice": "* Verification may take up to 24 hours during peak Ramadan times."
 }
