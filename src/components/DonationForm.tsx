@@ -14,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { submitDonation } from '@/lib/actions';
 import { DonationInput, DonationSchema } from '@/lib/validations';
 
@@ -119,7 +118,7 @@ export function DonationForm() {
                       type="number"
                       value={field.value}
                       onChange={e =>
-                        field.onChange(Number.parseInt(e.target.value) || 0)
+                        field.onChange(Number.parseInt(e.target.value, 10) || 0)
                       }
                       className="w-24 text-center text-4xl font-black text-foreground bg-transparent border-none focus:ring-0 p-0 tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none relative z-10"
                     />

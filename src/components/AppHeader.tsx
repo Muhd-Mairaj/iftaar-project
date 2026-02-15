@@ -21,6 +21,7 @@ export function AppHeader({ locale }: { locale: string }) {
 
   const toggleLanguage = (newLocale: string) => {
     if (newLocale === locale) return;
+    // biome-ignore lint/suspicious/noDocumentCookie: most compatible way to set NEXT_LOCALE for middleware
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
     const newPathname = pathname.replace(`/${locale}`, `/${newLocale}`);
     router.push(newPathname, { scroll: false });

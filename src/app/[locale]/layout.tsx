@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Cairo, Inter } from 'next/font/google';
 import '../globals.css';
 import { notFound } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import { TolgeeNextProvider } from '@/components/TolgeeNextProvider';
 import { ALL_LOCALES } from '@/i18n';
 import { cn } from '@/lib/utils';
