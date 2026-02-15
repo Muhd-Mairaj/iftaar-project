@@ -32,6 +32,25 @@ export type UpdateCollectionStatusInput = z.infer<
   typeof UpdateCollectionStatusSchema
 >;
 
+export const InviteUserSchema = z.object({
+  email: z.email('Invalid email address'),
+  role: z.enum(['muazzin', 'restaurant_admin']),
+});
+
+export type InviteUserInput = z.infer<typeof InviteUserSchema>;
+
+export const UpdatePasswordSchema = z
+  .object({
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+export type UpdatePasswordInput = z.infer<typeof UpdatePasswordSchema>;
+
 export const LoginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),

@@ -59,5 +59,15 @@
   "login_desc": "سجل الدخول إلى حسابك",
   "email_label": "البريد الإلكتروني",
   "password_label": "كلمة المرور",
-  "login_button": "تسجيل الدخول"
+  "login_button": "تسجيل الدخول",
+  "admin_dashboard_title": "لوحة إدارة النظام",
+  "invite_user_title": "دعوة مستخدم جديد",
+  "user_role_label": "الصلاحية",
+  "invite_button": "إرسال الدعوة",
+  "users_list_title": "مستخدمو النظام",
+  "no_users_found": "لا يوجد مستخدمين.",
+  "role_muazzin": "مؤذن",
+  "role_restaurant_admin": "مدير مطعم",
+  "invited_success": "تم إرسال الدعوة بنجاح",
+  "email_placeholder": "user@example.com"
 }

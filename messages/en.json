@@ -59,5 +59,15 @@
   "login_desc": "Sign in to your account",
   "email_label": "Email",
   "password_label": "Password",
-  "login_button": "Sign In"
+  "login_button": "Sign In",
+  "admin_dashboard_title": "Admin Dashboard",
+  "invite_user_title": "Invite New User",
+  "user_role_label": "Role",
+  "invite_button": "Send Invitation",
+  "users_list_title": "System Users",
+  "no_users_found": "No users found.",
+  "role_muazzin": "Muazzin",
+  "role_restaurant_admin": "Restaurant Admin",
+  "invited_success": "Invitation sent successfully",
+  "email_placeholder": "user@example.com"
 }
