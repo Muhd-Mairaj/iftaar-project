@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/client';
 import { Database } from '@/types/database.types';
 import { User } from '@supabase/supabase-js';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   PropsWithChildren,
@@ -38,7 +38,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     let mounted = true;
@@ -106,7 +105,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       mounted = false;
       authListener.subscription.unsubscribe();
     };
-  }, [supabase, pathname]);
+  }, [supabase]);
 
   const logout = async () => {
     setLoading(true);

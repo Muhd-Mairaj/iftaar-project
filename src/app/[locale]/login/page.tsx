@@ -37,7 +37,7 @@ export default function LoginPage() {
   async function onSubmit(data: LoginInput) {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
@@ -47,13 +47,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.refresh();
-
       // Check role and redirect
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
       if (user) {
         const { data: profile } = await supabase
           .from('profiles')
@@ -66,11 +60,13 @@ export default function LoginPage() {
         } else if (profile?.role === 'restaurant_admin') {
           router.push('/restaurant/dashboard');
         } else if (profile?.role === 'super_admin') {
-          router.push('/admin/users'); // Redirect to future admin dashboard
+          router.push('/admin/users');
         } else {
           router.push('/');
         }
+        router.refresh();
       }
+
     } catch (error) {
       console.error(error);
       alert(t('error_unexpected'));

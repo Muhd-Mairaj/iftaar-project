@@ -116,7 +116,21 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      get_user_profile: {
+        Args: { p_user_id: string };
+        Returns: {
+          created_at: string | null;
+          email: string;
+          id: string;
+          role: Database['public']['Enums']['user_role'];
+        }[];
+        SetofOptions: {
+          from: '*';
+          to: 'profiles';
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
     };
     Enums: {
       collection_status: 'pending' | 'approved' | 'collected' | 'uncollected';
