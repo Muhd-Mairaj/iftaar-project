@@ -41,7 +41,7 @@ export function DonationForm() {
       if (fileInput?.files?.[0]) {
         formData.append('receipt', fileInput.files[0]);
       } else {
-        alert('Please select a receipt image');
+        alert(t('error_select_receipt'));
         setIsSubmitting(false);
         return;
       }
@@ -55,7 +55,7 @@ export function DonationForm() {
       }
     } catch (error) {
       console.error(error);
-      alert('An unexpected error occurred. Please try again.');
+      alert(t('error_unexpected'));
     } finally {
       setIsSubmitting(false);
     }
@@ -94,7 +94,7 @@ export function DonationForm() {
                   {t('quantity')}
                 </FormLabel>
                 <span className="text-xs font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
-                  {field.value} Packets
+                  {field.value} {t('packets_label')}
                 </span>
               </div>
               <FormControl>
@@ -155,10 +155,10 @@ export function DonationForm() {
                         <Receipt className="w-6 h-6" />
                       </div>
                       <span className="text-xs font-bold text-foreground/70">
-                        {form.watch('proof_url') ? 'Receipt Selected' : 'Tap to upload receipt'}
+                        {form.watch('proof_url') ? t('receipt_selected') : t('receipt_placeholder')}
                       </span>
                       <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
-                        PNG, JPG or PDF up to 5MB
+                        {t('receipt_hint')}
                       </span>
                     </div>
 

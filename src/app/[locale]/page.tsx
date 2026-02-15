@@ -16,7 +16,7 @@ export default function PublicDonationPage() {
             {t('hero_badge')}
           </div>
           <h1 className="text-3xl font-black text-foreground tracking-tight leading-none text-balance">
-            {t('hero_title_accent')} <span className="text-primary italic">Donation</span>
+            {t('hero_title_accent')} <span className="text-primary italic">{t('hero_title_suffix')}</span>
           </h1>
           <p className="text-[11px] text-muted-foreground max-w-[220px] mx-auto font-medium leading-relaxed opacity-60 italic text-balance">
             {t('hero_subtitle')}

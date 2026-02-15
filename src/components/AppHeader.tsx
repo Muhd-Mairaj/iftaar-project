@@ -32,7 +32,7 @@ export function AppHeader({ locale }: { locale: string }) {
         <Link href={`/${locale}`} className="group flex items-center gap-2">
           <Logo className="w-9 h-9" />
           <span className="text-xs font-black uppercase tracking-[0.2em] text-foreground/80 group-hover:text-primary transition-colors">
-            Iftaar<span className="text-primary tracking-normal font-medium opacity-50 lowercase">coord</span>
+            {t('app_name_main')}<span className="text-primary tracking-normal font-medium opacity-50 lowercase">{t('app_name_sub')}</span>
           </span>
         </Link>
       </div>

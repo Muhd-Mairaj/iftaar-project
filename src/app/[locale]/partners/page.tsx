@@ -1,27 +1,29 @@
 'use client';
 
 import { Receipt, Copy, Smartphone } from 'lucide-react';
+import { useTranslate } from '@tolgee/react';
 
 const RESTAURANTS = [
   {
     id: 1,
-    name: "Al-Baraka Grill",
+    nameKey: "res_1_name",
     price: 15,
     payment_info: "STC Pay: 050 123 4567",
     account_num: "0501234567",
-    description: "Authentic Kabsa & Mandi"
+    descKey: "res_1_desc"
   },
   {
     id: 2,
-    name: "Noor Kitchen",
+    nameKey: "res_2_name",
     price: 12,
     payment_info: "Bank AlRajhi: SA12 3456 7890",
     account_num: "SA1234567890",
-    description: "Traditional Home-style Iftar"
+    descKey: "res_2_desc"
   }
 ];
 
 export default function PartnersPage() {
+  const { t } = useTranslate();
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
@@ -30,8 +32,8 @@ export default function PartnersPage() {
     <div className="flex-grow flex flex-col items-center p-6 transition-all duration-700 h-full absolute inset-0 pt-24 pb-28">
       <div className="w-full max-w-sm mx-auto flex flex-col h-full overflow-hidden">
         <header className="mb-6 px-2 text-center animate-in fade-in slide-in-from-top-4 duration-1000">
-          <h1 className="text-2xl font-black text-foreground tracking-tight">Our Partners</h1>
-          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1 opacity-50">Verified Pricing & Details</p>
+          <h1 className="text-2xl font-black text-foreground tracking-tight">{t('partners_title')}</h1>
+          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1 opacity-50">{t('partners_subtitle')}</p>
         </header>
 
         <div className="space-y-4 overflow-y-auto no-scrollbar pr-1 flex-grow pb-12">
@@ -39,12 +41,12 @@ export default function PartnersPage() {
             <div key={res.id} className="bg-card/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2.5rem] p-5 flex flex-col gap-4 group transition-all hover:bg-card/60 shadow-xl shadow-black/5 animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-black text-foreground group-hover:text-primary transition-colors leading-none">{res.name}</h3>
-                  <p className="text-[10px] text-muted-foreground font-medium leading-none mt-2 opacity-60">{res.description}</p>
+                  <h3 className="text-lg font-black text-foreground group-hover:text-primary transition-colors leading-none">{t(res.nameKey)}</h3>
+                  <p className="text-[10px] text-muted-foreground font-medium leading-none mt-2 opacity-60">{t(res.descKey)}</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-lg font-black text-primary tracking-tight">{res.price} <span className="text-[10px] font-medium opacity-60">SAR</span></div>
-                  <div className="text-[8px] font-bold uppercase tracking-tighter opacity-40">Per Packet</div>
+                  <div className="text-lg font-black text-primary tracking-tight">{res.price} <span className="text-[10px] font-medium opacity-60">{t('currency_sar')}</span></div>
+                  <div className="text-[8px] font-bold uppercase tracking-tighter opacity-40">{t('per_packet')}</div>
                 </div>
               </div>
 
@@ -52,7 +54,7 @@ export default function PartnersPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-primary/60">
                     <Smartphone className="w-3 h-3 text-lantern" />
-                    Account Details
+                    {t('account_details')}
                   </div>
                   <div className="font-mono text-[11px] font-bold text-foreground/80 tracking-tight">
                     {res.payment_info}
@@ -71,7 +73,7 @@ export default function PartnersPage() {
           <div className="p-6 rounded-[2.5rem] bg-lantern/5 border border-lantern/10 text-center space-y-3 mt-4 mb-20">
             <Receipt className="w-6 h-6 text-lantern mx-auto opacity-40" />
             <p className="text-[9px] font-bold text-lantern/80 uppercase tracking-widest leading-relaxed px-4">
-              Kindly upload your receipt <br /> in the home tab after transfer
+              {t('receipt_instruction')}
             </p>
           </div>
         </div>
