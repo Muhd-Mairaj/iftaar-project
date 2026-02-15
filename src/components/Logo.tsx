@@ -4,7 +4,12 @@ import { cn } from '@/lib/utils';
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <div className={cn("relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95", className)}>
+    <div
+      className={cn(
+        'relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95',
+        className
+      )}
+    >
       <svg
         viewBox="0 0 100 100"
         fill="none"
@@ -18,12 +23,24 @@ export function Logo({ className }: { className?: string }) {
         />
 
         {/* Minimalist Lantern */}
-        <rect x="48" y="35" width="4" height="10" rx="2" className="fill-lantern" />
+        <rect
+          x="48"
+          y="35"
+          width="4"
+          height="10"
+          rx="2"
+          className="fill-lantern"
+        />
         <path d="M42 45H58L55 55H45L42 45Z" className="fill-lantern" />
         <path d="M45 35H55L50 28L45 35Z" className="fill-lantern" />
 
         {/* Glow */}
-        <circle cx="50" cy="48" r="12" className="fill-lantern/20 blur-[6px] animate-pulse" />
+        <circle
+          cx="50"
+          cy="48"
+          r="12"
+          className="fill-lantern/20 blur-[6px] animate-pulse"
+        />
       </svg>
 
       {/* Decorative Outer Ring (Optional, very faint) */}

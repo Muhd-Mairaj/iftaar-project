@@ -1,8 +1,11 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
-import { CollectionRequestSchema, CollectionRequestInput } from '@/lib/validations';
 import { revalidatePath } from 'next/cache';
+import { createClient } from '@/lib/supabase/server';
+import {
+  CollectionRequestInput,
+  CollectionRequestSchema,
+} from '@/lib/validations';
 
 export async function submitDonation(formData: FormData) {
   try {
@@ -16,7 +19,7 @@ export async function submitDonation(formData: FormData) {
       return { error: 'Missing required fields' };
     }
 
-    const quantity = parseInt(quantityStr as string, 10);
+    const quantity = Number.parseInt(quantityStr as string, 10);
 
     // Basic file validation
     if (receiptFile.size === 0) {
@@ -36,7 +39,7 @@ export async function submitDonation(formData: FormData) {
       .upload(fileName, fileBuffer, {
         contentType: receiptFile.type,
         cacheControl: '3600',
-        upsert: false
+        upsert: false,
       });
 
     if (uploadError) {
@@ -45,13 +48,11 @@ export async function submitDonation(formData: FormData) {
     }
 
     // 3. Database Insertion
-    const { error: dbError } = await supabase
-      .from('donations')
-      .insert({
-        quantity,
-        proof_url: fileName,
-        status: 'pending'
-      });
+    const { error: dbError } = await supabase.from('donations').insert({
+      quantity,
+      proof_url: fileName,
+      status: 'pending',
+    });
 
     if (dbError) {
       console.error('Database error:', dbError);
@@ -63,7 +64,6 @@ export async function submitDonation(formData: FormData) {
     // 4. Success & Revalidation
     revalidatePath('/', 'layout');
     return { success: true };
-
   } catch (error) {
     console.error('Submit donation error:', error);
     return { error: 'An unexpected error occurred. Please try again.' };
@@ -75,16 +75,16 @@ export async function createCollectionRequest(data: CollectionRequestInput) {
   const supabase = await createClient();
 
   // Get current user for created_by
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const { error } = await supabase
-    .from('collection_requests')
-    .insert({
-      quantity: validated.quantity,
-      target_date: validated.target_date,
-      status: 'pending',
-      created_by: user?.id,
-    });
+  const { error } = await supabase.from('collection_requests').insert({
+    quantity: validated.quantity,
+    target_date: validated.target_date,
+    status: 'pending',
+    created_by: user?.id,
+  });
 
   if (error) throw new Error(error.message);
 

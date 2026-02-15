@@ -1,10 +1,10 @@
 'use client';
 
-import { Globe, LogIn } from 'lucide-react';
 import { useTranslate } from '@tolgee/react';
+import { Globe, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Logo } from '@/components/Logo';
+import { cn } from '@/lib/utils';
 
 export function AppHeader({ locale }: { locale: string }) {
   const { t } = useTranslate();
@@ -32,7 +32,10 @@ export function AppHeader({ locale }: { locale: string }) {
         <Link href={`/${locale}`} className="group flex items-center gap-2">
           <Logo className="w-9 h-9" />
           <span className="text-xs font-black uppercase tracking-[0.2em] text-foreground/80 group-hover:text-primary transition-colors">
-            {t('app_name_main')}<span className="text-primary tracking-normal font-medium opacity-50 lowercase">{t('app_name_sub')}</span>
+            {t('app_name_main')}
+            <span className="text-primary tracking-normal font-medium opacity-50 lowercase">
+              {t('app_name_sub')}
+            </span>
           </span>
         </Link>
       </div>
@@ -40,7 +43,11 @@ export function AppHeader({ locale }: { locale: string }) {
       <div className="flex items-center gap-2 pointer-events-auto">
         <DropdownMenu dir={locale === 'ar' ? 'rtl' : 'ltr'}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="rounded-full gap-2 h-10 px-4 hover:bg-primary/5 text-muted-foreground transition-all font-bold text-[11px] uppercase tracking-widest border border-transparent hover:border-primary/10">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="rounded-full gap-2 h-10 px-4 hover:bg-primary/5 text-muted-foreground transition-all font-bold text-[11px] uppercase tracking-widest border border-transparent hover:border-primary/10"
+            >
               <Globe className="w-4 h-4 text-primary" />
               {locale === 'en' ? 'English' : 'العربية'}
             </Button>
@@ -52,8 +59,10 @@ export function AppHeader({ locale }: { locale: string }) {
             <DropdownMenuItem
               onClick={() => toggleLanguage('en')}
               className={cn(
-                "rounded-xl h-12 px-4 text-[11px] font-black uppercase tracking-widest cursor-pointer transition-all mb-1 last:mb-0",
-                locale === 'en' ? "bg-primary text-primary-foreground focus:bg-primary/90 focus:text-primary-foreground" : "hover:bg-primary/10 focus:bg-primary/10 focus:text-primary"
+                'rounded-xl h-12 px-4 text-[11px] font-black uppercase tracking-widest cursor-pointer transition-all mb-1 last:mb-0',
+                locale === 'en'
+                  ? 'bg-primary text-primary-foreground focus:bg-primary/90 focus:text-primary-foreground'
+                  : 'hover:bg-primary/10 focus:bg-primary/10 focus:text-primary'
               )}
             >
               English
@@ -61,8 +70,10 @@ export function AppHeader({ locale }: { locale: string }) {
             <DropdownMenuItem
               onClick={() => toggleLanguage('ar')}
               className={cn(
-                "rounded-xl h-12 px-4 text-sm font-bold cursor-pointer transition-all",
-                locale === 'ar' ? "bg-primary text-primary-foreground focus:bg-primary/90 focus:text-primary-foreground" : "hover:bg-primary/10 focus:bg-primary/10 focus:text-primary"
+                'rounded-xl h-12 px-4 text-sm font-bold cursor-pointer transition-all',
+                locale === 'ar'
+                  ? 'bg-primary text-primary-foreground focus:bg-primary/90 focus:text-primary-foreground'
+                  : 'hover:bg-primary/10 focus:bg-primary/10 focus:text-primary'
               )}
             >
               العربية
@@ -71,9 +82,14 @@ export function AppHeader({ locale }: { locale: string }) {
         </DropdownMenu>
 
         <Link href={`/${locale}/login`}>
-          <Button size="sm" className="rounded-full h-9 px-4 bg-card/50 backdrop-blur-md border border-border/40 hover:bg-card/80 text-foreground shadow-sm group">
+          <Button
+            size="sm"
+            className="rounded-full h-9 px-4 bg-card/50 backdrop-blur-md border border-border/40 hover:bg-card/80 text-foreground shadow-sm group"
+          >
             <LogIn className="w-3 h-3 group-hover:text-primary transition-colors" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">{t('login')}</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest">
+              {t('login')}
+            </span>
           </Button>
         </Link>
       </div>

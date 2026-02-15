@@ -1,4 +1,4 @@
-import { Tolgee, DevTools, FormatSimple } from '@tolgee/react';
+import { DevTools, FormatSimple, Tolgee } from '@tolgee/react';
 
 export const ALL_LOCALES = ['en', 'ar'];
 export const DEFAULT_LOCALE = 'en';

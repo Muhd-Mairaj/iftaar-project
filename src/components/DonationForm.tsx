@@ -1,8 +1,10 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DonationSchema, DonationInput } from '@/lib/validations';
+import { useTranslate } from '@tolgee/react';
+import { CheckCircle2, Loader2, Minus, Plus, Receipt } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -14,9 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { submitDonation } from '@/lib/actions';
-import { useState } from 'react';
-import { useTranslate } from '@tolgee/react';
-import { CheckCircle2, Loader2, Minus, Plus, Receipt } from 'lucide-react';
+import { DonationInput, DonationSchema } from '@/lib/validations';
 
 export function DonationForm() {
   const { t } = useTranslate();
@@ -37,7 +37,9 @@ export function DonationForm() {
       const formData = new FormData();
       formData.append('quantity', data.quantity.toString());
 
-      const fileInput = document.getElementById('receipt-upload') as HTMLInputElement;
+      const fileInput = document.getElementById(
+        'receipt-upload'
+      ) as HTMLInputElement;
       if (fileInput?.files?.[0]) {
         formData.append('receipt', fileInput.files[0]);
       } else {
@@ -73,7 +75,11 @@ export function DonationForm() {
         <p className="text-sm text-muted-foreground mb-8 max-w-[280px] mx-auto leading-relaxed font-medium">
           {t('success_desc')}
         </p>
-        <Button onClick={() => setIsSuccess(false)} variant="outline" className="rounded-2xl px-8 h-12 border-primary/20 text-primary hover:bg-primary/5 font-bold transition-all">
+        <Button
+          onClick={() => setIsSuccess(false)}
+          variant="outline"
+          className="rounded-2xl px-8 h-12 border-primary/20 text-primary hover:bg-primary/5 font-bold transition-all"
+        >
           {t('submit_another')}
         </Button>
       </div>
@@ -112,7 +118,9 @@ export function DonationForm() {
                     <input
                       type="number"
                       value={field.value}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      onChange={e =>
+                        field.onChange(Number.parseInt(e.target.value) || 0)
+                      }
                       className="w-24 text-center text-4xl font-black text-foreground bg-transparent border-none focus:ring-0 p-0 tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none relative z-10"
                     />
                     {/* Interaction Affordance: Subtle 'Shelf' */}
@@ -155,7 +163,9 @@ export function DonationForm() {
                         <Receipt className="w-6 h-6" />
                       </div>
                       <span className="text-xs font-bold text-foreground/70">
-                        {form.watch('proof_url') ? t('receipt_selected') : t('receipt_placeholder')}
+                        {form.watch('proof_url')
+                          ? t('receipt_selected')
+                          : t('receipt_placeholder')}
                       </span>
                       <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
                         {t('receipt_hint')}
@@ -167,7 +177,7 @@ export function DonationForm() {
                       type="file"
                       accept="image/*,.pdf"
                       className="hidden"
-                      onChange={(e) => {
+                      onChange={e => {
                         const file = e.target.files?.[0];
                         if (file) {
                           field.onChange(file.name);

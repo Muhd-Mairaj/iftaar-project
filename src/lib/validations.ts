@@ -9,7 +9,9 @@ export type DonationInput = z.infer<typeof DonationSchema>;
 
 export const CollectionRequestSchema = z.object({
   quantity: z.number().int().positive('Quantity must be at least 1'),
-  target_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
+  target_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
 });
 
 export type CollectionRequestInput = z.infer<typeof CollectionRequestSchema>;
@@ -26,4 +28,6 @@ export const UpdateCollectionStatusSchema = z.object({
   status: z.enum(['approved', 'collected', 'uncollected']),
 });
 
-export type UpdateCollectionStatusInput = z.infer<typeof UpdateCollectionStatusSchema>;
+export type UpdateCollectionStatusInput = z.infer<
+  typeof UpdateCollectionStatusSchema
+>;

@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter, Cairo } from 'next/font/google';
+import { Cairo, Inter } from 'next/font/google';
 import '../globals.css';
-import { TolgeeNextProvider } from '@/components/TolgeeNextProvider';
-import QueryProvider from '@/providers/QueryProvider';
-import { ALL_LOCALES } from '@/i18n';
 import { notFound } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
+import { TolgeeNextProvider } from '@/components/TolgeeNextProvider';
+import { ALL_LOCALES } from '@/i18n';
+import { cn } from '@/lib/utils';
+import QueryProvider from '@/providers/QueryProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export function generateStaticParams() {
-  return ALL_LOCALES.map((locale) => ({ locale }));
+  return ALL_LOCALES.map(locale => ({ locale }));
 }
 
 import { AppHeader } from '@/components/AppHeader';
@@ -47,8 +47,17 @@ export default async function RootLayout({
   const fontClass = locale === 'ar' ? cairo.variable : inter.variable;
 
   return (
-    <html lang={locale} dir={dir} className={`${inter.variable} ${cairo.variable}`}>
-      <body className={cn(fontClass, "font-sans antialiased text-foreground bg-background h-[100dvh] w-full overflow-hidden select-none")}>
+    <html
+      lang={locale}
+      dir={dir}
+      className={`${inter.variable} ${cairo.variable}`}
+    >
+      <body
+        className={cn(
+          fontClass,
+          'font-sans antialiased text-foreground bg-background h-[100dvh] w-full overflow-hidden select-none'
+        )}
+      >
         <TolgeeNextProvider locale={locale}>
           <QueryProvider>
             {/* Background Ambience Shared across pages */}
@@ -59,9 +68,7 @@ export default async function RootLayout({
 
             <AppHeader locale={locale} />
 
-            <main className="relative z-10 h-full w-full">
-              {children}
-            </main>
+            <main className="relative z-10 h-full w-full">{children}</main>
 
             <BottomNav locale={locale} />
           </QueryProvider>

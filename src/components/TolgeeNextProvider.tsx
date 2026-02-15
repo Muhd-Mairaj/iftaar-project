@@ -1,6 +1,6 @@
 'use client';
 
-import { TolgeeProvider, Tolgee, FormatSimple, DevTools } from '@tolgee/react';
+import { DevTools, FormatSimple, Tolgee, TolgeeProvider } from '@tolgee/react';
 import { ReactNode, useMemo } from 'react';
 
 type Props = {
@@ -9,7 +9,6 @@ type Props = {
 };
 
 export const TolgeeNextProvider = ({ children, locale }: Props) => {
-
   const tolgee = useMemo(() => {
     return Tolgee()
       .use(FormatSimple())
@@ -24,10 +23,7 @@ export const TolgeeNextProvider = ({ children, locale }: Props) => {
   }, [locale]);
 
   return (
-    <TolgeeProvider
-      tolgee={tolgee}
-      fallback="Loading..."
-    >
+    <TolgeeProvider tolgee={tolgee} fallback="Loading...">
       {children}
     </TolgeeProvider>
   );
