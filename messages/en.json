@@ -17,5 +17,6 @@
     "reject": "Reject",
     "collected": "Collected",
     "uncollected": "Uncollected",
-    "available_packets": "Available Packets"
+    "available_packets": "Available Packets",
+    "login": "Login"
 }

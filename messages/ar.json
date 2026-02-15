@@ -17,5 +17,6 @@
     "reject": "رفض",
     "collected": "تم الاستلام",
     "uncollected": "لم يتم الاستلام",
-    "available_packets": "الوجبات المتاحة"
+    "available_packets": "الوجبات المتاحة",
+    "login": "تسجيل الدخول"
 }

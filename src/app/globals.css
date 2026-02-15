@@ -1,26 +1,72 @@
 @import "tailwindcss";
 
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@config "../../tailwind.config.ts";
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Minimalist Pure Theme */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0.021 255.226);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0.021 255.226);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0.021 255.226);
+
+  /* Crisp Mint Green */
+  --primary: oklch(0.627 0.194 149.214);
+  --primary-foreground: oklch(1 0 0);
+
+  --secondary: oklch(0.967 0.007 247.896);
+  --secondary-foreground: oklch(0.205 0.041 265.755);
+
+  --muted: oklch(0.967 0.007 247.896);
+  --muted-foreground: oklch(0.556 0.03 256.439);
+
+  --accent: oklch(0.967 0.007 247.896);
+  --accent-foreground: oklch(0.205 0.041 265.755);
+
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+
+  --border: oklch(0.922 0.011 255.337);
+  --input: oklch(0.922 0.011 255.337);
+  --ring: oklch(0.627 0.194 149.214);
+
+  --radius: 0.5rem;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-inter: var(--font-inter);
+  --font-cairo: var(--font-cairo);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+[lang="ar"] {
+  --font-inter: var(--font-cairo);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .glass {
+    @apply bg-white/80 backdrop-blur-sm border-b border-slate-100;
+  }
 }
