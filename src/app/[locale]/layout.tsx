@@ -1,12 +1,21 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Cairo } from 'next/font/google';
 import '../globals.css';
 import { TolgeeNextProvider } from '@/components/TolgeeNextProvider';
 import QueryProvider from '@/providers/QueryProvider';
-import { ALL_LOCALES, DEFAULT_LOCALE } from '@/i18n';
+import { ALL_LOCALES } from '@/i18n';
 import { notFound } from 'next/navigation';
+import Navbar from '@/components/Navbar';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const cairo = Cairo({
+  subsets: ['arabic'],
+  variable: '--font-cairo',
+});
 
 export const metadata: Metadata = {
   title: 'Iftar Food Coordination',
@@ -31,13 +40,15 @@ export default async function RootLayout({
   }
 
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
+  const fontClass = locale === 'ar' ? cairo.variable : inter.variable;
 
   return (
-    <html lang={locale} dir={dir}>
-      <body className={inter.className}>
+    <html lang={locale} dir={dir} className={`${inter.variable} ${cairo.variable}`}>
+      <body className={`${fontClass} font-sans antialiased`}>
         <TolgeeNextProvider locale={locale}>
           <QueryProvider>
-            <main className="min-h-screen bg-slate-50 dark:bg-slate-900">
+            <Navbar locale={locale} />
+            <main className="min-h-screen">
               {children}
             </main>
           </QueryProvider>
