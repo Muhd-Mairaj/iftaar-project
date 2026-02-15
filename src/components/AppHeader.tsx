@@ -4,6 +4,7 @@ import { Globe, LogIn } from 'lucide-react';
 import { useTranslate } from '@tolgee/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -39,14 +40,33 @@ export function AppHeader({ locale }: { locale: string }) {
       <div className="flex items-center gap-2 pointer-events-auto">
         <DropdownMenu dir={locale === 'ar' ? 'rtl' : 'ltr'}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="rounded-full gap-1 h-9 px-3 hover:bg-primary/5 text-muted-foreground transition-colors font-bold text-[10px] uppercase tracking-widest">
-              <Globe className="w-3 h-3 text-primary" />
-              {locale === 'en' ? 'EN' : 'AR'}
+            <Button variant="ghost" size="sm" className="rounded-full gap-2 h-10 px-4 hover:bg-primary/5 text-muted-foreground transition-all font-bold text-[11px] uppercase tracking-widest border border-transparent hover:border-primary/10">
+              <Globe className="w-4 h-4 text-primary" />
+              {locale === 'en' ? 'English' : 'العربية'}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32 rounded-2xl p-1 shadow-2xl border-border/40 bg-card/80 backdrop-blur-xl">
-            <DropdownMenuItem onClick={() => toggleLanguage('en')} className="rounded-xl text-[10px] font-bold uppercase tracking-widest">English</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toggleLanguage('ar')} className="rounded-xl text-[10px] font-bold uppercase tracking-widest leading-none">العربية</DropdownMenuItem>
+          <DropdownMenuContent
+            align="end"
+            className="w-48 rounded-2xl p-1.5 shadow-2xl border-border/80 bg-card/95 backdrop-blur-xl animate-in zoom-in-95 duration-200"
+          >
+            <DropdownMenuItem
+              onClick={() => toggleLanguage('en')}
+              className={cn(
+                "rounded-xl h-12 px-4 text-[11px] font-black uppercase tracking-widest cursor-pointer transition-all mb-1 last:mb-0",
+                locale === 'en' ? "bg-primary text-primary-foreground focus:bg-primary/90 focus:text-primary-foreground" : "hover:bg-primary/10 focus:bg-primary/10 focus:text-primary"
+              )}
+            >
+              English
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => toggleLanguage('ar')}
+              className={cn(
+                "rounded-xl h-12 px-4 text-sm font-bold cursor-pointer transition-all",
+                locale === 'ar' ? "bg-primary text-primary-foreground focus:bg-primary/90 focus:text-primary-foreground" : "hover:bg-primary/10 focus:bg-primary/10 focus:text-primary"
+              )}
+            >
+              العربية
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
