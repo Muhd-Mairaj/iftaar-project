@@ -56,7 +56,9 @@ export async function proxy(request: NextRequest) {
   }
 
   // Auth Check
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!pathname.startsWith('/api')) {
     const isProtected =
@@ -64,12 +66,14 @@ export async function proxy(request: NextRequest) {
       pathname.includes('/muazzin') ||
       pathname.includes('/restaurant');
 
-    const isAuthPage = pathname.includes('/login') || pathname.includes('/update-password');
+    const isAuthPage =
+      pathname.includes('/login') || pathname.includes('/update-password');
 
     if (isProtected && !user) {
       const url = request.nextUrl.clone();
       const segments = pathname.split('/').filter(Boolean);
-      const locale = segments[0] === 'en' || segments[0] === 'ar' ? segments[0] : 'en';
+      const locale =
+        segments[0] === 'en' || segments[0] === 'ar' ? segments[0] : 'en';
       url.pathname = `/${locale}/login`;
       return NextResponse.redirect(url);
     }
