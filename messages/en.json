@@ -55,5 +55,9 @@
   "res_1_name": "Al-Baraka Grill",
   "res_1_desc": "Authentic Kabsa & Mandi",
   "res_2_name": "Noor Kitchen",
-  "res_2_desc": "Traditional Home-style Iftar"
+  "res_2_desc": "Traditional Home-style Iftar",
+  "login_desc": "Sign in to your account",
+  "email_label": "Email",
+  "password_label": "Password",
+  "login_button": "Sign In"
 }
