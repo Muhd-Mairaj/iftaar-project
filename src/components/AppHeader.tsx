@@ -17,8 +17,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useUser } from '@/hooks/useUser';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/providers/AuthProvider';
 import { useTranslate } from '@tolgee/react';
 import { Globe, LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
@@ -29,7 +29,7 @@ export function AppHeader({ locale }: { locale: string }) {
   const { t } = useTranslate();
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useUser();
+  const { user, logout } = useAuth();
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
   const toggleLanguage = (newLocale: string) => {
@@ -41,9 +41,8 @@ export function AppHeader({ locale }: { locale: string }) {
   };
 
   const handleLogout = async () => {
-    await logout();
     setIsLogoutDialogOpen(false);
-    router.push('/');
+    await logout();
   };
 
   return (

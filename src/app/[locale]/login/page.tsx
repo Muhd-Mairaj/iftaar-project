@@ -1,12 +1,5 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslate } from '@tolgee/react';
-import { Eye, EyeOff, Loader2, LogIn } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -17,9 +10,14 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { loginUser } from '@/lib/actions';
 import { createClient } from '@/lib/supabase/client';
 import { LoginInput, LoginSchema } from '@/lib/validations';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslate } from '@tolgee/react';
+import { Eye, EyeOff, Loader2, LogIn } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 export default function LoginPage() {
   const { t } = useTranslate();
@@ -39,12 +37,17 @@ export default function LoginPage() {
   async function onSubmit(data: LoginInput) {
     setIsSubmitting(true);
     try {
-      const result = await loginUser(data);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
-      if (result?.error) {
-        alert(result.error);
+      if (error) {
+        alert(error.message);
         return;
       }
+
+      router.refresh();
 
       // Check role and redirect
       const {

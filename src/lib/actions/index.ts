@@ -5,43 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import {
   CollectionRequestInput,
   CollectionRequestSchema,
-  LoginInput,
-  LoginSchema,
 } from '@/lib/validations';
-
-export async function loginUser(data: LoginInput) {
-  try {
-    const validated = LoginSchema.parse(data);
-    const supabase = await createClient();
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email: validated.email,
-      password: validated.password,
-    });
-
-    if (error) {
-      console.error('Login error:', error);
-      return { error: 'Invalid email or password' };
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error('Unexpected login error:', error);
-    return { error: 'An unexpected error occurred' };
-  }
-}
-
-export async function logoutUser() {
-  try {
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-    revalidatePath('/', 'layout');
-    return { success: true };
-  } catch (error) {
-    console.error('Logout error:', error);
-    return { error: 'Failed to logout' };
-  }
-}
 
 export async function submitDonation(formData: FormData) {
   try {

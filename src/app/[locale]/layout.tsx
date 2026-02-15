@@ -1,11 +1,14 @@
-import type { Metadata } from 'next';
-import { Cairo, Inter } from 'next/font/google';
-import '../globals.css';
-import { notFound } from 'next/navigation';
+import { AppHeader } from '@/components/AppHeader';
+import { BottomNav } from '@/components/BottomNav';
 import { TolgeeNextProvider } from '@/components/TolgeeNextProvider';
 import { ALL_LOCALES } from '@/i18n';
 import { cn } from '@/lib/utils';
+import { AuthProvider } from '@/providers/AuthProvider';
 import QueryProvider from '@/providers/QueryProvider';
+import type { Metadata } from 'next';
+import { Cairo, Inter } from 'next/font/google';
+import { notFound } from 'next/navigation';
+import '../globals.css';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,9 +28,6 @@ export const metadata: Metadata = {
 export function generateStaticParams() {
   return ALL_LOCALES.map(locale => ({ locale }));
 }
-
-import { AppHeader } from '@/components/AppHeader';
-import { BottomNav } from '@/components/BottomNav';
 
 export default async function RootLayout({
   children,
@@ -65,13 +65,15 @@ export default async function RootLayout({
               <div className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[30%] bg-lantern/5 blur-[100px] rounded-full pointer-events-none" />
             </div>
 
-            <AppHeader locale={locale} />
+            <AuthProvider>
+              <AppHeader locale={locale} />
 
-            <main className="relative z-10 h-full w-full overflow-y-auto pt-[4.5rem] pb-24">
-              {children}
-            </main>
+              <main className="relative z-10 h-full w-full overflow-y-auto pt-[4.5rem] pb-24">
+                {children}
+              </main>
 
-            <BottomNav locale={locale} />
+              <BottomNav locale={locale} />
+            </AuthProvider>
           </QueryProvider>
         </TolgeeNextProvider>
       </body>
