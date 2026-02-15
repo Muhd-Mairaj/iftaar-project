@@ -34,11 +34,28 @@ export function DonationForm() {
   async function onSubmit(data: DonationInput) {
     setIsSubmitting(true);
     try {
-      await submitDonation(data);
-      setIsSuccess(true);
-      form.reset();
+      const formData = new FormData();
+      formData.append('quantity', data.quantity.toString());
+
+      const fileInput = document.getElementById('receipt-upload') as HTMLInputElement;
+      if (fileInput?.files?.[0]) {
+        formData.append('receipt', fileInput.files[0]);
+      } else {
+        alert('Please select a receipt image');
+        setIsSubmitting(false);
+        return;
+      }
+
+      const result = await submitDonation(formData);
+      if (result?.error) {
+        alert(result.error);
+      } else {
+        setIsSuccess(true);
+        form.reset();
+      }
     } catch (error) {
       console.error(error);
+      alert('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -117,7 +134,7 @@ export function DonationForm() {
           )}
         />
 
-        {/* Improved Receipt Link Input */}
+        {/* Premium Receipt Upload */}
         <FormField
           control={form.control}
           name="proof_url"
@@ -128,13 +145,36 @@ export function DonationForm() {
               </FormLabel>
               <FormControl>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-primary/5 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity" />
-                  <Input
-                    placeholder="https://upload.example/receipt.pdf"
-                    {...field}
-                    className="h-14 rounded-2xl border-border bg-background ps-12 focus:ring-primary/20 shadow-sm transition-all focus:border-primary/50 relative z-10"
-                  />
-                  <Receipt className="absolute start-4 top-4.5 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors z-20" />
+                  <div className="absolute inset-0 bg-primary/5 rounded-3xl blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <label
+                    htmlFor="receipt-upload"
+                    className="flex flex-col items-center justify-center h-32 w-full rounded-3xl border-2 border-dashed border-border group-hover:border-primary/50 bg-background/50 backdrop-blur-sm shadow-sm transition-all cursor-pointer relative z-10 overflow-hidden"
+                  >
+                    <div className="flex flex-col items-center gap-2 text-center p-4">
+                      <div className="p-3 rounded-full bg-primary/10 text-primary group-hover:scale-110 transition-transform">
+                        <Receipt className="w-6 h-6" />
+                      </div>
+                      <span className="text-xs font-bold text-foreground/70">
+                        {form.watch('proof_url') ? 'Receipt Selected' : 'Tap to upload receipt'}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
+                        PNG, JPG or PDF up to 5MB
+                      </span>
+                    </div>
+
+                    <input
+                      id="receipt-upload"
+                      type="file"
+                      accept="image/*,.pdf"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          field.onChange(file.name);
+                        }
+                      }}
+                    />
+                  </label>
                 </div>
               </FormControl>
               <FormMessage className="text-[11px] font-medium text-destructive/80" />

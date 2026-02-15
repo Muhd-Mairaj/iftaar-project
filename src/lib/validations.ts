@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const DonationSchema = z.object({
   quantity: z.number().int().positive('Quantity must be at least 1'),
-  proof_url: z.string().url('Invalid proof URL'),
+  proof_url: z.string().min(1, 'Proof of payment is required'),
 });
 
 export type DonationInput = z.infer<typeof DonationSchema>;
