@@ -33,7 +33,7 @@ export function useUserRole() {
         } else {
           setRole(profile.role);
         }
-      } catch (err) {
+      } catch {
         setRole('public');
       } finally {
         setLoading(false);

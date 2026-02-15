@@ -1,7 +1,6 @@
 'use client';
 
 import { TolgeeProvider, Tolgee, FormatSimple, DevTools } from '@tolgee/react';
-import { useRouter } from 'next/navigation';
 import { ReactNode, useMemo } from 'react';
 
 type Props = {
@@ -10,7 +9,6 @@ type Props = {
 };
 
 export const TolgeeNextProvider = ({ children, locale }: Props) => {
-  const router = useRouter();
 
   const tolgee = useMemo(() => {
     return Tolgee()
