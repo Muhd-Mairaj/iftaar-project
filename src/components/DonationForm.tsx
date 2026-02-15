@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { submitDonation } from '@/lib/actions';
 import { useState } from 'react';
 import { useTranslate } from '@tolgee/react';
-import { CheckCircle2, Loader2, Upload } from 'lucide-react';
+import { CheckCircle2, Loader2, Minus, Plus, Receipt } from 'lucide-react';
 
 export function DonationForm() {
   const { t } = useTranslate();
@@ -47,16 +47,16 @@ export function DonationForm() {
   if (isSuccess) {
     return (
       <div className="text-center py-12 animate-in fade-in zoom-in duration-500">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-6 shadow-sm">
-          <CheckCircle2 className="w-8 h-8" />
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 text-primary mb-6 shadow-xl shadow-primary/5 border border-primary/20">
+          <CheckCircle2 className="w-10 h-10" />
         </div>
-        <h2 className="text-2xl font-black mb-3 text-foreground tracking-tight">
+        <h2 className="text-3xl font-black mb-3 text-foreground tracking-tight">
           {t('success_title')}
         </h2>
-        <p className="text-sm text-muted-foreground mb-8 max-w-[280px] mx-auto leading-relaxed">
+        <p className="text-sm text-muted-foreground mb-8 max-w-[280px] mx-auto leading-relaxed font-medium">
           {t('success_desc')}
         </p>
-        <Button onClick={() => setIsSuccess(false)} variant="outline" className="rounded-xl px-8 border-primary/20 text-primary hover:bg-primary/5">
+        <Button onClick={() => setIsSuccess(false)} variant="outline" className="rounded-2xl px-8 h-12 border-primary/20 text-primary hover:bg-primary/5 font-bold transition-all">
           {t('submit_another')}
         </Button>
       </div>
@@ -65,61 +65,100 @@ export function DonationForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* Premium Quantity Stepper */}
         <FormField
           control={form.control}
           name="quantity"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1">
-                {t('quantity')}
-              </FormLabel>
+            <FormItem className="space-y-4">
+              <div className="flex items-center justify-between px-1">
+                <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
+                  {t('quantity')}
+                </FormLabel>
+                <span className="text-xs font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
+                  {field.value} Packets
+                </span>
+              </div>
               <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={e => field.onChange(parseInt(e.target.value))}
-                  className="h-12 rounded-xl border-border bg-background focus:ring-primary shadow-sm transition-all focus:border-primary/50"
-                />
+                <div className="flex items-center justify-between gap-2 pt-2">
+                  {/* Sleek Pill Button: Decrease */}
+                  <button
+                    type="button"
+                    className="h-12 w-8 rounded-full border border-border/60 bg-white dark:bg-slate-900 flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/40 transition-all active:scale-90 shadow-sm"
+                    onClick={() => field.onChange(Math.max(1, field.value - 1))}
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+
+                  <div className="flex-grow flex justify-center relative group">
+                    <input
+                      type="number"
+                      value={field.value}
+                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      className="w-24 text-center text-4xl font-black text-foreground bg-transparent border-none focus:ring-0 p-0 tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none relative z-10"
+                    />
+                    {/* Interaction Affordance: Subtle 'Shelf' */}
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-[2px] bg-primary/10 rounded-full group-focus-within:w-16 group-focus-within:bg-primary/40 transition-all duration-500" />
+                  </div>
+
+                  {/* Sleek Pill Button: Increase */}
+                  <button
+                    type="button"
+                    className="h-12 w-8 rounded-full border border-border/60 bg-white dark:bg-slate-900 flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/40 transition-all active:scale-90 shadow-sm"
+                    onClick={() => field.onChange(field.value + 1)}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
               </FormControl>
-              <FormMessage className="text-[11px] font-medium" />
+              <FormMessage className="text-[11px] font-medium text-destructive/80" />
             </FormItem>
           )}
         />
 
+        {/* Improved Receipt Link Input */}
         <FormField
           control={form.control}
           name="proof_url"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1">
+            <FormItem className="space-y-4">
+              <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70 px-1">
                 {t('proof_of_payment')}
               </FormLabel>
               <FormControl>
-                <div className="relative">
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-primary/5 rounded-2xl blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity" />
                   <Input
-                    placeholder="https://upload-your-receipt-here.com"
+                    placeholder="https://upload.example/receipt.pdf"
                     {...field}
-                    className="h-12 rounded-xl border-border bg-background ps-11 focus:ring-primary shadow-sm transition-all focus:border-primary/50"
+                    className="h-14 rounded-2xl border-border bg-background ps-12 focus:ring-primary/20 shadow-sm transition-all focus:border-primary/50 relative z-10"
                   />
-                  <Upload className="absolute start-4 top-3.5 w-5 h-5 text-muted-foreground/50" />
+                  <Receipt className="absolute start-4 top-4.5 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors z-20" />
                 </div>
               </FormControl>
-              <FormMessage className="text-[11px] font-medium" />
+              <FormMessage className="text-[11px] font-medium text-destructive/80" />
             </FormItem>
           )}
         />
 
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full h-14 text-lg font-black rounded-xl shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all bg-primary hover:bg-primary/90"
-        >
-          {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : t('submit_donation')}
-        </Button>
+        <div className="pt-4">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full h-16 text-lg font-black rounded-2xl shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.01] active:scale-[0.98] transition-all bg-primary hover:bg-primary/90 text-primary-foreground group"
+          >
+            {isSubmitting ? (
+              <Loader2 className="w-6 h-6 animate-spin" />
+            ) : (
+              <div className="flex items-center gap-2">
+                <span>{t('submit_donation')}</span>
+                <CheckCircle2 className="w-5 h-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+              </div>
+            )}
+          </Button>
 
-        <div className="text-center">
-          <p className="text-[10px] text-muted-foreground/60 italic font-medium px-4">
+          <p className="mt-6 text-[10px] text-muted-foreground/50 italic font-medium text-center px-6 leading-relaxed">
             {t('verification_notice')}
           </p>
         </div>
