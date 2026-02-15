@@ -5,6 +5,7 @@ import { TolgeeNextProvider } from '@/components/TolgeeNextProvider';
 import QueryProvider from '@/providers/QueryProvider';
 import { ALL_LOCALES } from '@/i18n';
 import { notFound } from 'next/navigation';
+import { cn } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
 
 const inter = Inter({
@@ -26,6 +27,9 @@ export function generateStaticParams() {
   return ALL_LOCALES.map((locale) => ({ locale }));
 }
 
+import { AppHeader } from '@/components/AppHeader';
+import { BottomNav } from '@/components/BottomNav';
+
 export default async function RootLayout({
   children,
   params,
@@ -44,13 +48,22 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={dir} className={`${inter.variable} ${cairo.variable}`}>
-      <body className={`${fontClass} font-sans antialiased`}>
+      <body className={cn(fontClass, "font-sans antialiased text-foreground bg-background h-[100dvh] w-full overflow-hidden select-none")}>
         <TolgeeNextProvider locale={locale}>
           <QueryProvider>
-            <Navbar locale={locale} />
-            <main className="min-h-screen">
+            {/* Background Ambience Shared across pages */}
+            <div className="fixed inset-0 arabesque-pattern pointer-events-none opacity-30 px-6 overflow-hidden z-0">
+              <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[30%] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+              <div className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[30%] bg-lantern/5 blur-[100px] rounded-full pointer-events-none" />
+            </div>
+
+            <AppHeader locale={locale} />
+
+            <main className="relative z-10 h-full w-full">
               {children}
             </main>
+
+            <BottomNav locale={locale} />
           </QueryProvider>
         </TolgeeNextProvider>
       </body>
