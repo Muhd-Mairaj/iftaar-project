@@ -37,6 +37,7 @@ import {
   User,
   Users,
 } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -44,6 +45,8 @@ type Profile = Database['public']['Tables']['profiles']['Row'];
 
 export default function AdminUsersPage() {
   const { t } = useTranslate();
+  const params = useParams();
+  const locale = params.locale as string;
   const [users, setUsers] = useState<Profile[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,7 +76,7 @@ export default function AdminUsersPage() {
   async function onSubmit(data: InviteUserInput) {
     setIsSubmitting(true);
     try {
-      const result = await inviteUser(data);
+      const result = await inviteUser(data, locale);
 
       if (result?.error) {
         alert(result.error);
