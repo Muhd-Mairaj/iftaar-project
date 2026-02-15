@@ -35,5 +35,7 @@
     "success_title": "JazakAllah Khair!",
     "success_desc": "Your donation has been received and is currently under review by our team.",
     "submit_another": "Submit Another",
-    "verification_notice": "* Verification may take up to 24 hours during peak Ramadan times."
+    "verification_notice": "* Verification may take up to 24 hours during peak Ramadan times.",
+    "nav_home": "Home",
+    "nav_partners": "Partners"
 }
