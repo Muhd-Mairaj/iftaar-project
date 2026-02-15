@@ -75,6 +75,10 @@
   "no_users_found": "لا يوجد مستخدمين.",
   "role_muazzin": "مؤذن",
   "role_restaurant_admin": "مدير مطعم",
-  "invited_success": "تم إرسال الدعوة بنجاح",
-  "email_placeholder": "user@example.com"
+  "invited_success": "تم الدعوة بنجاح",
+  "email_placeholder": "user@example.com",
+  "logout_confirm_title": "تسجيل الخروج؟",
+  "logout_confirm_desc": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "logout_button": "خروج",
+  "cancel": "إلغاء"
 }

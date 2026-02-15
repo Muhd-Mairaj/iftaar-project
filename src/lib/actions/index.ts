@@ -31,6 +31,18 @@ export async function loginUser(data: LoginInput) {
   }
 }
 
+export async function logoutUser() {
+  try {
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+    revalidatePath('/', 'layout');
+    return { success: true };
+  } catch (error) {
+    console.error('Logout error:', error);
+    return { error: 'Failed to logout' };
+  }
+}
+
 export async function submitDonation(formData: FormData) {
   try {
     const supabase = await createClient();

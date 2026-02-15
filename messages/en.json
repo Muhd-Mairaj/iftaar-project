@@ -71,10 +71,14 @@
   "invite_user_title": "Invite New User",
   "user_role_label": "Role",
   "invite_button": "Send Invitation",
-  "users_list_title": "System Users",
+  "users_list_title": "All Users",
   "no_users_found": "No users found.",
   "role_muazzin": "Muazzin",
   "role_restaurant_admin": "Restaurant Admin",
   "invited_success": "Invitation sent successfully",
-  "email_placeholder": "user@example.com"
+  "email_placeholder": "user@example.com",
+  "logout_confirm_title": "Log out?",
+  "logout_confirm_desc": "Are you sure you want to sign out of your account?",
+  "logout_button": "Log out",
+  "cancel": "Cancel"
 }

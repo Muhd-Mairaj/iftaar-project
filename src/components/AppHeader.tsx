@@ -1,23 +1,36 @@
 'use client';
 
-import { useTranslate } from '@tolgee/react';
-import { Globe, LogIn } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUser } from '@/hooks/useUser';
 import { cn } from '@/lib/utils';
+import { useTranslate } from '@tolgee/react';
+import { Globe, LogIn, LogOut } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export function AppHeader({ locale }: { locale: string }) {
   const { t } = useTranslate();
   const pathname = usePathname();
   const router = useRouter();
+  const { user, logout } = useUser();
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
   const toggleLanguage = (newLocale: string) => {
     if (newLocale === locale) return;
@@ -25,6 +38,12 @@ export function AppHeader({ locale }: { locale: string }) {
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
     const newPathname = pathname.replace(`/${locale}`, `/${newLocale}`);
     router.push(newPathname, { scroll: false });
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setIsLogoutDialogOpen(false);
+    router.push('/');
   };
 
   return (
@@ -82,17 +101,64 @@ export function AppHeader({ locale }: { locale: string }) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Link href={`/${locale}/login`}>
-          <Button
-            size="sm"
-            className="rounded-full h-9 px-4 bg-card/50 backdrop-blur-md border border-border/40 hover:bg-card/80 text-foreground shadow-sm group"
+        {user ? (
+          <Dialog
+            open={isLogoutDialogOpen}
+            onOpenChange={setIsLogoutDialogOpen}
           >
-            <LogIn className="w-3 h-3 group-hover:text-primary transition-colors" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">
-              {t('login')}
-            </span>
-          </Button>
-        </Link>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full h-9 w-9 border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-colors shadow-sm"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl border-white/10 rounded-[2rem] p-6 shadow-2xl">
+              <DialogHeader className="text-center space-y-3">
+                <div className="mx-auto w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center mb-2">
+                  <LogOut className="w-6 h-6 text-destructive" />
+                </div>
+                <DialogTitle className="text-xl font-black">
+                  {t('logout_confirm_title')}
+                </DialogTitle>
+                <p className="text-sm text-muted-foreground font-medium">
+                  {t('logout_confirm_desc')}
+                </p>
+              </DialogHeader>
+              <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+                <DialogClose asChild>
+                  <Button
+                    variant="ghost"
+                    className="rounded-xl h-12 font-bold hover:bg-muted"
+                  >
+                    {t('cancel')}
+                  </Button>
+                </DialogClose>
+                <Button
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className="rounded-xl h-12 font-bold shadow-lg shadow-destructive/20"
+                >
+                  {t('logout_button')}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <Link href={`/${locale}/login`}>
+            <Button
+              size="sm"
+              className="rounded-full h-9 px-4 bg-card/50 backdrop-blur-md border border-border/40 hover:bg-card/80 text-foreground shadow-sm group"
+            >
+              <LogIn className="w-3 h-3 group-hover:text-primary transition-colors" />
+              <span className="text-[10px] font-bold uppercase tracking-widest">
+                {t('login')}
+              </span>
+            </Button>
+          </Link>
+        )}
       </div>
     </header>
   );
