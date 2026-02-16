@@ -59,9 +59,9 @@ export default function LoginPage() {
           .single();
 
         if (profile?.role === 'muazzin') {
-          router.push('/muazzin/dashboard');
+          router.push('/muazzin');
         } else if (profile?.role === 'restaurant_admin') {
-          router.push('/restaurant/dashboard');
+          router.push('/restaurant');
         } else if (profile?.role === 'super_admin') {
           router.push('/admin/users');
         } else {

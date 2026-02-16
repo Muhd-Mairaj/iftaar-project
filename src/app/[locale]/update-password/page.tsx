@@ -70,9 +70,9 @@ export default function UpdatePasswordPage() {
       const role = profile?.role;
 
       if (role === 'muazzin') {
-        router.replace('/muazzin/dashboard');
+        router.replace('/muazzin');
       } else if (role === 'restaurant_admin') {
-        router.replace('/restaurant/dashboard');
+        router.replace('/restaurant');
       } else {
         router.replace('/');
       }
