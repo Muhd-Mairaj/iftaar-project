@@ -15,21 +15,22 @@ import {
   type UpdatePasswordInput,
   UpdatePasswordSchema,
 } from '@/lib/validations';
+import { useAuth } from '@/providers/AuthProvider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslate } from '@tolgee/react';
 import { Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export default function UpdatePasswordPage() {
   const { t } = useTranslate();
   const router = useRouter();
-  const [isSessionReady, setIsSessionReady] = useState(false);
+  const { isSessionReady, loading: authLoading } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = createClient();
 
   const form = useForm<UpdatePasswordInput>({
     resolver: zodResolver(UpdatePasswordSchema),
@@ -38,57 +39,6 @@ export default function UpdatePasswordPage() {
       confirmPassword: '',
     },
   });
-
-  // @supabase/ssr's createBrowserClient does NOT auto-parse URL hash fragments.
-  // We must manually extract tokens and call setSession ourselves.
-  // The onAuthStateChange listener will then pick up the SIGNED_IN event.
-  useEffect(() => {
-    let mounted = true;
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!mounted) return;
-
-      if (session) {
-        setIsSessionReady(true);
-
-        // Clean hash from URL bar
-        if (window.location.hash) {
-          const cleanUrl = window.location.pathname + window.location.search;
-          window.history.replaceState(null, '', cleanUrl);
-        }
-      }
-    });
-
-    // Manually parse the hash and set the session
-    const hash = window.location.hash.replace(/^#/, '');
-    if (hash) {
-      const params = new URLSearchParams(hash);
-      const access_token = params.get('access_token');
-      const refresh_token = params.get('refresh_token');
-
-      if (access_token && refresh_token) {
-        supabase.auth
-          .setSession({ access_token, refresh_token })
-          .then(({ error }) => {
-            if (error) console.error('setSession error:', error);
-            // Session state is handled by onAuthStateChange listener above
-          })
-          .catch((err) => {
-            // Silently handle AbortError from Strict Mode lock contention
-            if (err?.name !== 'AbortError') {
-              console.error('setSession failed:', err);
-            }
-          });
-      }
-    }
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, [supabase]);
 
   async function onSubmit(data: UpdatePasswordInput) {
     if (!isSessionReady) return;
@@ -119,9 +69,6 @@ export default function UpdatePasswordPage() {
 
       const role = profile?.role;
 
-      // Refresh server-side state/cookies
-      router.refresh();
-
       if (role === 'muazzin') {
         router.replace('/muazzin/dashboard');
       } else if (role === 'restaurant_admin') {
@@ -137,7 +84,7 @@ export default function UpdatePasswordPage() {
     }
   }
 
-  if (!isSessionReady) {
+  if (authLoading || !isSessionReady) {
     return (
       <div className="flex flex-col h-screen items-center justify-center p-6 bg-background relative overflow-hidden">
         <div className="fixed inset-0 pointer-events-none">
