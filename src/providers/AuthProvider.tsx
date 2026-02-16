@@ -86,14 +86,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
     getUserAndRole();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (!mounted) return;
 
         const currentUser = session?.user ?? null;
         setUser(currentUser);
 
         if (currentUser) {
-          await fetchRole(currentUser.id);
+          fetchRole(currentUser.id);
         } else {
           setRole('public');
         }
