@@ -37,7 +37,10 @@ export default function LoginPage() {
   async function onSubmit(data: LoginInput) {
     setIsSubmitting(true);
     try {
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
@@ -66,7 +69,6 @@ export default function LoginPage() {
         }
         router.refresh();
       }
-
     } catch (error) {
       console.error(error);
       alert(t('error_unexpected'));

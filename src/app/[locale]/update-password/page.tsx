@@ -1,11 +1,5 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslate } from '@tolgee/react';
-import { Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -21,15 +15,21 @@ import {
   type UpdatePasswordInput,
   UpdatePasswordSchema,
 } from '@/lib/validations';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslate } from '@tolgee/react';
+import { Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 export default function UpdatePasswordPage() {
   const { t } = useTranslate();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [isSessionReady, setIsSessionReady] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const form = useForm<UpdatePasswordInput>({
     resolver: zodResolver(UpdatePasswordSchema),
@@ -39,10 +39,66 @@ export default function UpdatePasswordPage() {
     },
   });
 
+  // @supabase/ssr's createBrowserClient does NOT auto-parse URL hash fragments.
+  // We must manually extract tokens and call setSession ourselves.
+  // The onAuthStateChange listener will then pick up the SIGNED_IN event.
+  useEffect(() => {
+    let mounted = true;
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+
+      if (session) {
+        setIsSessionReady(true);
+
+        // Clean hash from URL bar
+        if (window.location.hash) {
+          const cleanUrl = window.location.pathname + window.location.search;
+          window.history.replaceState(null, '', cleanUrl);
+        }
+      }
+    });
+
+    // Manually parse the hash and set the session
+    const hash = window.location.hash.replace(/^#/, '');
+    if (hash) {
+      const params = new URLSearchParams(hash);
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+
+      if (access_token && refresh_token) {
+        supabase.auth
+          .setSession({ access_token, refresh_token })
+          .then(({ error }) => {
+            if (error) console.error('setSession error:', error);
+            // Session state is handled by onAuthStateChange listener above
+          })
+          .catch((err) => {
+            // Silently handle AbortError from Strict Mode lock contention
+            if (err?.name !== 'AbortError') {
+              console.error('setSession failed:', err);
+            }
+          });
+      }
+    }
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
   async function onSubmit(data: UpdatePasswordInput) {
-    setLoading(true);
+    if (!isSessionReady) return;
+
+    setSubmitting(true);
     try {
-      const { error } = await supabase.auth.updateUser({
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.updateUser({
         password: data.password,
       });
 
@@ -50,12 +106,11 @@ export default function UpdatePasswordPage() {
         throw error;
       }
 
-      // Fetch user role to redirect appropriately
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      if (!user) {
+        throw new Error('No user found');
+      }
 
+      // Fetch user role to redirect appropriately
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
@@ -64,20 +119,39 @@ export default function UpdatePasswordPage() {
 
       const role = profile?.role;
 
+      // Refresh server-side state/cookies
+      router.refresh();
+
       if (role === 'muazzin') {
-        router.push('/muazzin/dashboard');
+        router.replace('/muazzin/dashboard');
       } else if (role === 'restaurant_admin') {
-        router.push('/restaurant/dashboard');
+        router.replace('/restaurant/dashboard');
       } else {
-        // Fallback or specific admin route
-        router.push('/');
+        router.replace('/');
       }
     } catch (error: any) {
       console.error('Error updating password:', error);
       alert(error.message || 'Failed to update password');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
+  }
+
+  if (!isSessionReady) {
+    return (
+      <div className="flex flex-col h-screen items-center justify-center p-6 bg-background relative overflow-hidden">
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-lantern/5 blur-[120px] rounded-full" />
+        </div>
+        <div className="relative z-10 flex flex-col items-center space-y-4">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="text-muted-foreground font-medium animate-pulse">
+            Verifying secure link...
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -178,10 +252,10 @@ export default function UpdatePasswordPage() {
 
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={submitting}
                 className="w-full h-14 rounded-2xl text-lg font-black shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all bg-primary hover:bg-primary/90 text-primary-foreground group mt-2"
               >
-                {loading ? (
+                {submitting ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 ) : (
                   t('update_password_button')
