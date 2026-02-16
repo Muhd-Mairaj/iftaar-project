@@ -92,5 +92,17 @@
   "muazzin_nav_card_donations_desc": "Review and verify incoming food packet donations.",
   "muazzin_nav_card_collections_title": "Collection Requests",
   "muazzin_nav_card_collections_desc": "Manage mosque collection goals and history.",
-  "manage": "Manage"
+  "manage": "Manage",
+  "no_requests_found": "No requests found",
+  "change_filter_hint": "Try changing the filter above.",
+  "all": "All",
+  "pending": "Pending",
+  "approved": "Approved",
+  "overdue": "Overdue",
+  "submitted_on": "Submitted",
+  "packets_needed": "Packets Needed",
+  "submit_request": "Submit Request",
+  "history_desc": "History of your mosque's requests.",
+  "plan_goal_desc": "Plan your next food packet goal.",
+  "today": "Today"
 }

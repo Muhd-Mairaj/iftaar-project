@@ -92,5 +92,17 @@
   "muazzin_nav_card_donations_desc": "مراجعة والتحقق من التبرعات الواردة.",
   "muazzin_nav_card_collections_title": "طلبات الاستلام",
   "muazzin_nav_card_collections_desc": "إدارة أهداف الاستلام وسجل الطلبات.",
-  "manage": "إدارة"
+  "manage": "إدارة",
+  "no_requests_found": "لا يوجد طلبات",
+  "change_filter_hint": "حاول تغيير الفلتر أعلاه.",
+  "all": "الكل",
+  "pending": "قيد المراجعة",
+  "approved": "مقبول",
+  "overdue": "متأخر",
+  "submitted_on": "تم الإرسال في",
+  "packets_needed": "الوجبات المطلوبة",
+  "submit_request": "إرسال الطلب",
+  "history_desc": "سجل طلبات المسجد الخاص بك.",
+  "plan_goal_desc": "خطط لهدفك القادم من وجبات الطعام.",
+  "today": "اليوم"
 }
