@@ -1,10 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { createClient } from '@/lib/supabase/client';
-import { cn } from '@/lib/utils';
-import { Tables } from '@/types/database.types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useTranslate } from '@tolgee/react';
 import {
@@ -16,9 +11,19 @@ import {
   XOctagon,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { createClient } from '@/lib/supabase/client';
+import { cn } from '@/lib/utils';
+import { Tables } from '@/types/database.types';
 
 type Collection = Tables<'collection_requests'>;
-type FilterStatus = 'all' | 'pending' | 'approved' | 'collected' | 'uncollected';
+type FilterStatus =
+  | 'all'
+  | 'pending'
+  | 'approved'
+  | 'collected'
+  | 'uncollected';
 
 const PAGE_SIZE = 10;
 
@@ -95,25 +100,24 @@ export function CollectionsList({
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery({
-    queryKey: ['collections', filter, userId],
-    queryFn: ({ pageParam }) => fetchCollectionsPage(pageParam, filter, userId),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-      if (lastPage.length < PAGE_SIZE) return undefined;
-      return lastPageParam + 1;
-    },
-    initialData: filter === 'all' ? {
-      pages: [initialCollections],
-      pageParams: [0],
-    } : undefined,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ['collections', filter, userId],
+      queryFn: ({ pageParam }) =>
+        fetchCollectionsPage(pageParam, filter, userId),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+        if (lastPage.length < PAGE_SIZE) return undefined;
+        return lastPageParam + 1;
+      },
+      initialData:
+        filter === 'all'
+          ? {
+              pages: [initialCollections],
+              pageParams: [0],
+            }
+          : undefined,
+    });
 
   const allCollections = data?.pages.flat() ?? [];
 
@@ -123,7 +127,7 @@ export function CollectionsList({
     if (!sentinel) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
@@ -136,7 +140,8 @@ export function CollectionsList({
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const getStatus = (status: string | null) =>
-    STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.pending;
+    STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] ||
+    STATUS_CONFIG.pending;
 
   const filters: { key: FilterStatus; label: string }[] = [
     { key: 'all', label: t('all') || 'All' },
@@ -194,7 +199,8 @@ export function CollectionsList({
               const Icon = status.icon;
               const targetDate = new Date(collection.target_date);
               const createdDate = new Date(collection.created_at || '');
-              const isToday = targetDate.toDateString() === new Date().toDateString();
+              const isToday =
+                targetDate.toDateString() === new Date().toDateString();
               const isPast = targetDate < new Date() && !isToday;
 
               return (
@@ -203,7 +209,7 @@ export function CollectionsList({
                   className={cn(
                     'border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:bg-card/60',
                     status.border,
-                    'animate-in fade-in slide-in-from-bottom-2',
+                    'animate-in fade-in slide-in-from-bottom-2'
                   )}
                   style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
                 >
@@ -234,7 +240,8 @@ export function CollectionsList({
                           <div
                             className={cn(
                               'px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1',
-                              status.bg, status.color,
+                              status.bg,
+                              status.color
                             )}
                           >
                             <Icon className="w-3 h-3" />
@@ -249,7 +256,9 @@ export function CollectionsList({
                               <Calendar className="w-3.5 h-3.5" />
                               <span>
                                 {isToday ? (
-                                  <span className="text-primary font-bold">{t('today')}</span>
+                                  <span className="text-primary font-bold">
+                                    {t('today')}
+                                  </span>
                                 ) : (
                                   targetDate.toLocaleDateString(locale, {
                                     month: 'short',
@@ -265,7 +274,8 @@ export function CollectionsList({
                             )}
                           </div>
                           <span className="text-[10px] text-muted-foreground/40 font-medium">
-                            {t('submitted_on')} {createdDate.toLocaleDateString(locale, {
+                            {t('submitted_on')}{' '}
+                            {createdDate.toLocaleDateString(locale, {
                               month: 'short',
                               day: 'numeric',
                             })}

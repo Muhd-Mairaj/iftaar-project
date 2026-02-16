@@ -1,5 +1,11 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslate } from '@tolgee/react';
+import { Loader2, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -15,14 +21,8 @@ import {
   CollectionRequestInput,
   CollectionRequestSchema,
 } from '@/lib/validations';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslate } from '@tolgee/react';
-import { Loader2, Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 
-export function CollectionForm({ locale }: { locale: string }) {
+export function CollectionForm() {
   const { t } = useTranslate();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,7 +73,9 @@ export function CollectionForm({ locale }: { locale: string }) {
                     min={1}
                     className="bg-background/50 border-input/50 h-12 rounded-2xl focus:ring-primary/20 focus:border-primary/50 transition-all font-bold text-lg"
                     {...field}
-                    onChange={e => field.onChange(parseInt(e.target.value))}
+                    onChange={e =>
+                      field.onChange(Number.parseInt(e.target.value, 10))
+                    }
                   />
                 </FormControl>
                 <FormMessage className="text-[11px] font-bold text-destructive ml-1" />

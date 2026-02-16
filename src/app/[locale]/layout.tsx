@@ -1,3 +1,6 @@
+import type { Metadata } from 'next';
+import { Cairo, Inter } from 'next/font/google';
+import { notFound } from 'next/navigation';
 import { AppHeader } from '@/components/AppHeader';
 import { BottomNav } from '@/components/BottomNav';
 import { TolgeeNextProvider } from '@/components/TolgeeNextProvider';
@@ -5,9 +8,6 @@ import { ALL_LOCALES } from '@/i18n';
 import { cn } from '@/lib/utils';
 import { AuthProvider } from '@/providers/AuthProvider';
 import QueryProvider from '@/providers/QueryProvider';
-import type { Metadata } from 'next';
-import { Cairo, Inter } from 'next/font/google';
-import { notFound } from 'next/navigation';
 import '../globals.css';
 
 const inter = Inter({

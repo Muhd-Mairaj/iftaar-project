@@ -1,5 +1,10 @@
 'use client';
 
+import { useTranslate } from '@tolgee/react';
+import { Globe, LogIn, LogOut } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,11 +24,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/AuthProvider';
-import { useTranslate } from '@tolgee/react';
-import { Globe, LogIn, LogOut } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 export function AppHeader({ locale }: { locale: string }) {
   const { t } = useTranslate();

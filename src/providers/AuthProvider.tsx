@@ -1,7 +1,5 @@
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
-import { Database } from '@/types/database.types';
 import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import {
@@ -11,6 +9,8 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { Database } from '@/types/database.types';
 
 type UserRole = Database['public']['Enums']['user_role'] | 'public';
 
@@ -81,8 +81,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
             if (error) throw error;
 
             // Clean URL so tokens aren't visible
-            const cleanUrl =
-              window.location.pathname + window.location.search;
+            const cleanUrl = window.location.pathname + window.location.search;
             window.history.replaceState(null, '', cleanUrl);
           }
         }
@@ -112,23 +111,21 @@ export function AuthProvider({ children }: PropsWithChildren) {
       // 3. Register listener AFTER init is complete (avoids concurrent lock acquisition)
       if (!mounted) return;
 
-      const { data } = supabase.auth.onAuthStateChange(
-        (event, session) => {
-          if (!mounted) return;
+      const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!mounted) return;
 
-          const currentUser = session?.user ?? null;
-          setUser(currentUser);
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
 
-          if (currentUser) {
-            setIsSessionReady(true);
-            fetchRole(currentUser.id);
-          } else {
-            setRole('public');
-            setIsSessionReady(false);
-            setLoading(false);
-          }
+        if (currentUser) {
+          setIsSessionReady(true);
+          fetchRole(currentUser.id);
+        } else {
+          setRole('public');
+          setIsSessionReady(false);
+          setLoading(false);
         }
-      );
+      });
       authListener = data;
     }
 

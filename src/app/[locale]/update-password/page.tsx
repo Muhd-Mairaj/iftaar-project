@@ -1,5 +1,11 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslate } from '@tolgee/react';
+import { Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -16,12 +22,6 @@ import {
   UpdatePasswordSchema,
 } from '@/lib/validations';
 import { useAuth } from '@/providers/AuthProvider';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslate } from '@tolgee/react';
-import { Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 
 export default function UpdatePasswordPage() {
   const { t } = useTranslate();

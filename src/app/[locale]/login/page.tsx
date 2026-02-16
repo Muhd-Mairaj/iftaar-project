@@ -1,5 +1,11 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslate } from '@tolgee/react';
+import { Eye, EyeOff, Loader2, LogIn } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -12,12 +18,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 import { LoginInput, LoginSchema } from '@/lib/validations';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslate } from '@tolgee/react';
-import { Eye, EyeOff, Loader2, LogIn } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 
 export default function LoginPage() {
   const { t } = useTranslate();

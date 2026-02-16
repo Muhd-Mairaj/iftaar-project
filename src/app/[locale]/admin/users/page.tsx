@@ -1,5 +1,18 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslate } from '@tolgee/react';
+import {
+  Loader2,
+  Mail,
+  PlusCircle,
+  ShieldCheck,
+  User,
+  Users,
+} from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -27,19 +40,6 @@ import {
 import { getUsers, inviteUser } from '@/lib/actions/admin';
 import { InviteUserInput, InviteUserSchema } from '@/lib/validations';
 import { Database } from '@/types/database.types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslate } from '@tolgee/react';
-import {
-  Loader2,
-  Mail,
-  PlusCircle,
-  ShieldCheck,
-  User,
-  Users,
-} from 'lucide-react';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -60,18 +60,18 @@ export default function AdminUsersPage() {
     },
   });
 
-  useEffect(() => {
-    // Check if user is super_admin, otherwise redirect
-    // For now, we rely on the component mounting to fetch data
-    fetchUsers();
-  }, []);
-
-  async function fetchUsers() {
+  const fetchUsers = useCallback(async () => {
     setIsLoading(true);
     const data = await getUsers();
     setUsers(data as unknown as Profile[]);
     setIsLoading(false);
-  }
+  }, []);
+
+  useEffect(() => {
+    // Check if user is super_admin, otherwise redirect
+    // For now, we rely on the component mounting to fetch data
+    fetchUsers();
+  }, [fetchUsers]);
 
   async function onSubmit(data: InviteUserInput) {
     setIsSubmitting(true);

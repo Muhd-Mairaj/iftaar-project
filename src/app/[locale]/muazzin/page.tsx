@@ -1,8 +1,8 @@
-import { createClient } from '@/lib/supabase/server';
-import { Card, CardContent } from '@/components/ui/card';
-import { HeartHandshake, History, TrendingUp, Clock } from 'lucide-react';
+import { Clock, HeartHandshake, History, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
 import { getTolgee } from '@/i18n';
+import { createClient } from '@/lib/supabase/server';
 
 export default async function MuazzinDashboard({
   params,
@@ -28,18 +28,22 @@ export default async function MuazzinDashboard({
     //   .from('collection_requests')
     //   .select('*', { count: 'exact', head: true })
     //   .eq('status', 'approved'),
-    supabase
-      .from('donations')
-      .select('quantity')
-      .eq('status', 'approved'),
-    supabase
-      .from('collection_requests')
-      .select('quantity'),
+    supabase.from('donations').select('quantity').eq('status', 'approved'),
+    supabase.from('collection_requests').select('quantity'),
   ]);
 
-  const totalApprovedPackets = (approvedDonations ?? []).reduce((sum, d) => sum + (d.quantity || 0), 0);
-  const totalCollectedPackets = (collectionRequests ?? []).reduce((sum, c) => sum + (c.quantity || 0), 0);
-  const packetsAvailable = Math.max(0, totalApprovedPackets - totalCollectedPackets);
+  const totalApprovedPackets = (approvedDonations ?? []).reduce(
+    (sum, d) => sum + (d.quantity || 0),
+    0
+  );
+  const totalCollectedPackets = (collectionRequests ?? []).reduce(
+    (sum, c) => sum + (c.quantity || 0),
+    0
+  );
+  const packetsAvailable = Math.max(
+    0,
+    totalApprovedPackets - totalCollectedPackets
+  );
 
   const stats = [
     {
@@ -87,7 +91,7 @@ export default async function MuazzinDashboard({
                     ' p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300'
                   }
                 >
-                  <stat.icon className={'w-8 h-8 ' + stat.color} />
+                  <stat.icon className={`w-8 h-8 ${stat.color}`} />
                 </div>
               </div>
             </CardContent>

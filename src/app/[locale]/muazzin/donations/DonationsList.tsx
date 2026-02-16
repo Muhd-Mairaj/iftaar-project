@@ -1,31 +1,32 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import {
+  Calendar,
+  Check,
+  CheckCircle2,
+  Clock,
+  Eye,
+  Hash,
+  Loader2,
+  X,
+  XCircle,
+} from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  Check,
-  X,
-  Eye,
-  Calendar,
-  Hash,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Loader2,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { reviewDonation } from '@/lib/actions';
-import { useRouter } from 'next/navigation';
-import { Tables } from '@/types/database.types';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
+import { cn } from '@/lib/utils';
+import { Tables } from '@/types/database.types';
 
 type DonationWithSignedUrls = Tables<'donations'> & {
   signed_proof_url: string | null;
@@ -58,9 +59,12 @@ async function fetchDonationsPage(
 
   // Batch sign URLs
   const proofPaths = donations.map(d => d.proof_url).filter(Boolean);
-  const { data: signedUrls } = proofPaths.length > 0
-    ? await supabase.storage.from('receipts').createSignedUrls(proofPaths, 3600)
-    : { data: [] };
+  const { data: signedUrls } =
+    proofPaths.length > 0
+      ? await supabase.storage
+          .from('receipts')
+          .createSignedUrls(proofPaths, 3600)
+      : { data: [] };
 
   const signedUrlMap = new Map(
     (signedUrls || []).map(entry => [entry.path, entry.signedUrl])
@@ -87,27 +91,26 @@ export function DonationsList({
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery({
-    queryKey: ['donations', filter],
-    queryFn: ({ pageParam }) => fetchDonationsPage(pageParam, pageSize, filter),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-      // If we got fewer items than pageSize, there are no more pages
-      if (lastPage.length < pageSize) return undefined;
-      return lastPageParam + 1;
-    },
-    // Use server data for the first page of 'all' filter
-    initialData: filter === 'pending' ? {
-      pages: [initialDonations],
-      pageParams: [0],
-    } : undefined,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ['donations', filter],
+      queryFn: ({ pageParam }) =>
+        fetchDonationsPage(pageParam, pageSize, filter),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+        // If we got fewer items than pageSize, there are no more pages
+        if (lastPage.length < pageSize) return undefined;
+        return lastPageParam + 1;
+      },
+      // Use server data for the first page of 'all' filter
+      initialData:
+        filter === 'pending'
+          ? {
+              pages: [initialDonations],
+              pageParams: [0],
+            }
+          : undefined,
+    });
 
   const allDonations = data?.pages.flat() ?? [];
 
@@ -117,7 +120,7 @@ export function DonationsList({
     if (!sentinel) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
@@ -157,22 +160,24 @@ export function DonationsList({
     <div className="flex flex-col flex-1 min-h-0 gap-4">
       {/* Filter bar — fixed */}
       <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 w-fit overflow-x-auto">
-        {(['all', 'pending', 'approved', 'rejected'] as FilterStatus[]).map(f => (
-          <Button
-            key={f}
-            variant="ghost"
-            size="sm"
-            onClick={() => setFilter(f)}
-            className={cn(
-              'rounded-lg px-4 h-9 font-bold text-xs uppercase tracking-widest transition-all whitespace-nowrap',
-              filter === f
-                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                : 'text-muted-foreground hover:bg-white/5'
-            )}
-          >
-            {f}
-          </Button>
-        ))}
+        {(['all', 'pending', 'approved', 'rejected'] as FilterStatus[]).map(
+          f => (
+            <Button
+              key={f}
+              variant="ghost"
+              size="sm"
+              onClick={() => setFilter(f)}
+              className={cn(
+                'rounded-lg px-4 h-9 font-bold text-xs uppercase tracking-widest transition-all whitespace-nowrap',
+                filter === f
+                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+                  : 'text-muted-foreground hover:bg-white/5'
+              )}
+            >
+              {f}
+            </Button>
+          )
+        )}
       </div>
 
       {/* Scrollable card list */}
@@ -216,7 +221,9 @@ export function DonationsList({
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
                           <Calendar className="w-3 h-3" />
-                          {new Date(donation.created_at || '').toLocaleDateString(locale)}
+                          {new Date(
+                            donation.created_at || ''
+                          ).toLocaleDateString(locale)}
                         </div>
                       </div>
                       <div
@@ -247,9 +254,11 @@ export function DonationsList({
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-2xl bg-card/95 backdrop-blur-xl border-white/10 p-0 overflow-hidden rounded-[2rem]">
-                          <DialogTitle className="sr-only">Donation Proof</DialogTitle>
+                          <DialogTitle className="sr-only">
+                            Donation Proof
+                          </DialogTitle>
                           <div className="aspect-auto max-h-[80vh] w-full flex items-center justify-center p-4">
-                            <img
+                            <Image
                               src={donation.signed_proof_url || ''}
                               alt="Donation Proof"
                               className="max-w-full max-h-full rounded-2xl object-contain shadow-2xl"
@@ -264,7 +273,9 @@ export function DonationsList({
                             size="sm"
                             variant="destructive"
                             disabled={isSubmitting === donation.id}
-                            onClick={() => handleReview(donation.id, 'rejected')}
+                            onClick={() =>
+                              handleReview(donation.id, 'rejected')
+                            }
                             className="rounded-xl h-10 w-10 p-0"
                           >
                             <X className="w-4 h-4" />
@@ -272,7 +283,9 @@ export function DonationsList({
                           <Button
                             size="sm"
                             disabled={isSubmitting === donation.id}
-                            onClick={() => handleReview(donation.id, 'approved')}
+                            onClick={() =>
+                              handleReview(donation.id, 'approved')
+                            }
                             className="flex-1 rounded-xl h-10 font-bold gap-2 bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20"
                           >
                             <Check className="w-4 h-4" />

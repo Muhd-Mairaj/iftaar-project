@@ -39,9 +39,7 @@ export default async function CollectionsPage({
       {/* History section — scrollable */}
       <div className="flex flex-col flex-1 min-h-0 gap-3">
         <div className="flex-none">
-          <h2 className="text-xl font-black">
-            {t('collection_requests')}
-          </h2>
+          <h2 className="text-xl font-black">{t('collection_requests')}</h2>
           <p className="text-xs text-muted-foreground/70 font-medium">
             {t('history_desc')}
           </p>

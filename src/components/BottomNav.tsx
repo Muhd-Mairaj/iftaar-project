@@ -2,17 +2,17 @@
 
 import { useTranslate } from '@tolgee/react';
 import {
-  Home,
-  Utensils,
-  LayoutDashboard,
   HeartHandshake,
   History,
+  Home,
+  LayoutDashboard,
+  Utensils,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/AuthProvider';
-import { useMemo } from 'react';
 
 interface NavItem {
   id: string;
@@ -74,10 +74,14 @@ export function BottomNav({ locale }: { locale: string }) {
 
   // Determine active tab
   const activeIndex = useMemo(() => {
-    if (pathname.includes('/muazzin/donations')) return tabs.findIndex(t => t.id === 'donations');
-    if (pathname.includes('/muazzin/collections')) return tabs.findIndex(t => t.id === 'collections');
-    if (pathname.includes('/muazzin')) return tabs.findIndex(t => t.id === 'dashboard');
-    if (pathname.includes('/partners')) return tabs.findIndex(t => t.id === 'restaurants');
+    if (pathname.includes('/muazzin/donations'))
+      return tabs.findIndex(t => t.id === 'donations');
+    if (pathname.includes('/muazzin/collections'))
+      return tabs.findIndex(t => t.id === 'collections');
+    if (pathname.includes('/muazzin'))
+      return tabs.findIndex(t => t.id === 'dashboard');
+    if (pathname.includes('/partners'))
+      return tabs.findIndex(t => t.id === 'restaurants');
     return tabs.findIndex(t => t.id === 'home');
   }, [pathname, tabs]);
 
@@ -104,7 +108,7 @@ export function BottomNav({ locale }: { locale: string }) {
           }}
         />
 
-        {tabs.map((tab) => {
+        {tabs.map(tab => {
           const Icon = tab.icon;
           const isActive = tabs[activeIndex]?.id === tab.id;
 
@@ -114,26 +118,20 @@ export function BottomNav({ locale }: { locale: string }) {
               href={tab.href}
               className={cn(
                 'flex-1 flex items-center justify-center gap-1.5 z-10 transition-all duration-500 h-full rounded-[1.5rem] px-1',
-                isActive
-                  ? 'text-primary-foreground'
-                  : 'text-muted-foreground'
+                isActive ? 'text-primary-foreground' : 'text-muted-foreground'
               )}
             >
               <Icon
                 className={cn(
                   'w-4 h-4 transition-all flex-shrink-0',
-                  isActive
-                    ? 'scale-110 fill-current'
-                    : 'scale-100 opacity-60'
+                  isActive ? 'scale-110 fill-current' : 'scale-100 opacity-60'
                 )}
               />
               {!isMuazzin && (
                 <span
                   className={cn(
                     'text-[10px] uppercase font-black tracking-widest transition-all duration-500 overflow-hidden whitespace-nowrap',
-                    isActive
-                      ? 'opacity-100 max-w-[100px]'
-                      : 'opacity-0 max-w-0'
+                    isActive ? 'opacity-100 max-w-[100px]' : 'opacity-0 max-w-0'
                   )}
                 >
                   {tab.label}

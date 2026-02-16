@@ -1,5 +1,5 @@
-import { createClient } from '@/lib/supabase/server';
 import { getTolgee } from '@/i18n';
+import { createClient } from '@/lib/supabase/server';
 import { DonationsList } from './DonationsList';
 
 const PAGE_SIZE = 10;
@@ -22,13 +22,14 @@ export default async function DonationsPage({
     .range(0, PAGE_SIZE - 1);
 
   // Generate signed URLs in a single batch
-  const proofPaths = (donations || [])
-    .map(d => d.proof_url)
-    .filter(Boolean);
+  const proofPaths = (donations || []).map(d => d.proof_url).filter(Boolean);
 
-  const { data: signedUrls } = proofPaths.length > 0
-    ? await supabase.storage.from('receipts').createSignedUrls(proofPaths, 3600)
-    : { data: [] };
+  const { data: signedUrls } =
+    proofPaths.length > 0
+      ? await supabase.storage
+          .from('receipts')
+          .createSignedUrls(proofPaths, 3600)
+      : { data: [] };
 
   const signedUrlMap = new Map(
     (signedUrls || []).map(entry => [entry.path, entry.signedUrl])
