@@ -15,5 +15,7 @@ export async function getTolgee(locale: string) {
       },
     });
 
+  await tolgee.run();
+
   return tolgee;
 }
