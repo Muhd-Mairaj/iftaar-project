@@ -80,5 +80,17 @@
   "logout_confirm_title": "Log out?",
   "logout_confirm_desc": "Are you sure you want to sign out of your account?",
   "logout_button": "Log out",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "muazzin_nav_dashboard": "Dashboard",
+  "muazzin_nav_donations": "Donations",
+  "muazzin_nav_collections": "Collections",
+  "muazzin_stats_collected": "Packets Collected",
+  "muazzin_stats_pending": "Pending Reviews",
+  "muazzin_stats_packets": "Packets Available",
+  "muazzin_stat_label": "Total Impacts",
+  "muazzin_nav_card_donations_title": "Donation Requests",
+  "muazzin_nav_card_donations_desc": "Review and verify incoming food packet donations.",
+  "muazzin_nav_card_collections_title": "Collection Requests",
+  "muazzin_nav_card_collections_desc": "Manage mosque collection goals and history.",
+  "manage": "Manage"
 }

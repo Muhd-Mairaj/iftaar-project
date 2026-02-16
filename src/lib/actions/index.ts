@@ -91,3 +91,26 @@ export async function createCollectionRequest(data: CollectionRequestInput) {
   revalidatePath('/[locale]/muazzin/dashboard', 'page');
   return { success: true };
 }
+
+export async function reviewDonation(
+  id: string,
+  status: 'approved' | 'rejected'
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase
+    .from('donations')
+    .update({
+      status,
+      reviewed_by: user?.id,
+    })
+    .eq('id', id);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/[locale]/muazzin/donations', 'page');
+  return { success: true };
+}

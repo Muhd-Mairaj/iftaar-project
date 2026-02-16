@@ -80,5 +80,17 @@
   "logout_confirm_title": "تسجيل الخروج؟",
   "logout_confirm_desc": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
   "logout_button": "خروج",
-  "cancel": "إلغاء"
+  "cancel": "إلغاء",
+  "muazzin_nav_dashboard": "لوحة التحكم",
+  "muazzin_nav_donations": "التبرعات",
+  "muazzin_nav_collections": "طلبات الاستلام",
+  "muazzin_stats_collected": "وجبات مستلمة",
+  "muazzin_stats_pending": "في انتظار المراجعة",
+  "muazzin_stats_packets": "وجبات متاحة",
+  "muazzin_stat_label": "إجمالي الأثر",
+  "muazzin_nav_card_donations_title": "طلبات التبرع",
+  "muazzin_nav_card_donations_desc": "مراجعة والتحقق من التبرعات الواردة.",
+  "muazzin_nav_card_collections_title": "طلبات الاستلام",
+  "muazzin_nav_card_collections_desc": "إدارة أهداف الاستلام وسجل الطلبات.",
+  "manage": "إدارة"
 }
