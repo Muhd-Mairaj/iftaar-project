@@ -87,13 +87,17 @@ export default function PartnersPage() {
               </div>
             </div>
           ))}
+        </div>
 
-          <div className="p-6 rounded-[2.5rem] bg-lantern/5 border border-lantern/10 text-center space-y-3 mt-4 mb-20">
-            <Receipt className="w-6 h-6 text-lantern mx-auto opacity-40" />
-            <p className="text-[9px] font-bold text-lantern/80 uppercase tracking-widest leading-relaxed px-4">
-              {t('receipt_instruction')}
-            </p>
-          </div>
+        <div className="fixed bottom-[92px] left-1/2 -translate-x-1/2 w-full max-w-sm px-6 z-40 pointer-events-none">
+          <footer className="animate-in slide-in-from-bottom duration-500 pointer-events-auto">
+            <div className="p-3 rounded-[1.5rem] bg-lantern/5 border border-lantern/10 flex items-center justify-center gap-3 backdrop-blur-md">
+              <Receipt className="w-4 h-4 text-lantern opacity-40" />
+              <p className="text-[9px] font-bold text-lantern/80 uppercase tracking-widest leading-none">
+                {t('receipt_instruction')}
+              </p>
+            </div>
+          </footer>
         </div>
       </div>
     </div>
