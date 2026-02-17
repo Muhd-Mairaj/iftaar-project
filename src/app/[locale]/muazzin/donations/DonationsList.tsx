@@ -1,6 +1,6 @@
 'use client';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Calendar,
   Check,
@@ -62,8 +62,8 @@ async function fetchDonationsPage(
   const { data: signedUrls } =
     proofPaths.length > 0
       ? await supabase.storage
-          .from('receipts')
-          .createSignedUrls(proofPaths, 3600)
+        .from('receipts')
+        .createSignedUrls(proofPaths, 3600)
       : { data: [] };
 
   const signedUrlMap = new Map(
@@ -85,6 +85,7 @@ export function DonationsList({
   locale: string;
   pageSize: number;
 }) {
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<FilterStatus>('pending');
   const [isSubmitting, setIsSubmitting] = useState<string | null>(null);
   const router = useRouter();
@@ -106,9 +107,9 @@ export function DonationsList({
       initialData:
         filter === 'pending'
           ? {
-              pages: [initialDonations],
-              pageParams: [0],
-            }
+            pages: [initialDonations],
+            pageParams: [0],
+          }
           : undefined,
     });
 
@@ -136,6 +137,7 @@ export function DonationsList({
     setIsSubmitting(id);
     try {
       await reviewDonation(id, status);
+      await queryClient.invalidateQueries({ queryKey: ['donations'] });
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -159,7 +161,7 @@ export function DonationsList({
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4">
       {/* Filter bar — fixed */}
-      <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 w-fit overflow-x-auto">
+      <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 max-w-full overflow-x-auto no-scrollbar">
         {(['all', 'pending', 'approved', 'rejected'] as FilterStatus[]).map(
           f => (
             <Button
