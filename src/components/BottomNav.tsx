@@ -3,7 +3,7 @@
 import { useTranslate } from '@tolgee/react';
 import {
   HeartHandshake,
-  History,
+  Boxes,
   Home,
   LayoutDashboard,
   Utensils,
@@ -62,7 +62,7 @@ export function BottomNav({ locale }: { locale: string }) {
           id: 'collections',
           href: `/${locale}/muazzin/collections`,
           label: t('muazzin_nav_collections'),
-          icon: History,
+          icon: Boxes,
         }
       );
     }
