@@ -29,13 +29,13 @@ export default function PartnersPage() {
   };
 
   return (
-    <div className="flex-grow flex flex-col items-center p-6 transition-all duration-700 h-full">
+    <div className="flex-grow flex flex-col items-center p-6 h-full animate-in fade-in duration-500">
       <div className="w-full max-w-sm mx-auto flex flex-col h-full overflow-hidden">
-        <header className="mb-6 px-2 text-center animate-in fade-in duration-500">
-          <h1 className="text-2xl font-black text-foreground tracking-tight">
+        <header className="mb-6 flex-none">
+          <h1 className="text-3xl font-black tracking-tight text-foreground">
             {t('partners_title')}
           </h1>
-          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1 opacity-50">
+          <p className="text-sm text-muted-foreground font-medium opacity-80 mt-1">
             {t('partners_subtitle')}
           </p>
         </header>

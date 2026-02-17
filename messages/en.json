@@ -82,6 +82,7 @@
   "logout_button": "Log out",
   "cancel": "Cancel",
   "muazzin_nav_dashboard": "Dashboard",
+  "muazzin_nav_dashboard_desc": "Overview of your mosque activities and impact.",
   "muazzin_nav_donations": "Donations",
   "muazzin_nav_collections": "Collections",
   "muazzin_stats_collected": "Packets Collected",

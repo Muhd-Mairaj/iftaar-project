@@ -82,6 +82,7 @@
   "logout_button": "خروج",
   "cancel": "إلغاء",
   "muazzin_nav_dashboard": "لوحة التحكم",
+  "muazzin_nav_dashboard_desc": "نظرة عامة على نشاط المسجد وتأثيره.",
   "muazzin_nav_donations": "التبرعات",
   "muazzin_nav_collections": "طلبات الاستلام",
   "muazzin_stats_collected": "وجبات مستلمة",
