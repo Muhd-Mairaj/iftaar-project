@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { createCollectionRequest } from '@/lib/actions';
+import { createCollectionRequest } from '@/lib/actions/muazzin';
 import {
   CollectionRequestInput,
   CollectionRequestSchema,

@@ -1,5 +1,5 @@
 import { getTolgee } from '@/i18n';
-import { createClient } from '@/lib/supabase/server';
+import { getMuazzinDonations } from '@/lib/actions/muazzin';
 import { DonationsList } from './DonationsList';
 
 const PAGE_SIZE = 10;
@@ -11,34 +11,9 @@ export default async function DonationsPage({
 }) {
   const { locale } = await params;
   const { t } = await getTolgee(locale);
-  const supabase = await createClient();
 
-  // Fetch first page of donations
-  const { data: donations } = await supabase
-    .from('donations')
-    .select('*')
-    .eq('status', 'pending')
-    .order('updated_at', { ascending: false })
-    .range(0, PAGE_SIZE - 1);
-
-  // Generate signed URLs in a single batch
-  const proofPaths = (donations || []).map(d => d.proof_url).filter(Boolean);
-
-  const { data: signedUrls } =
-    proofPaths.length > 0
-      ? await supabase.storage
-          .from('receipts')
-          .createSignedUrls(proofPaths, 3600)
-      : { data: [] };
-
-  const signedUrlMap = new Map(
-    (signedUrls || []).map(entry => [entry.path, entry.signedUrl])
-  );
-
-  const donationsWithUrls = (donations || []).map(donation => ({
-    ...donation,
-    signed_proof_url: signedUrlMap.get(donation.proof_url) || null,
-  }));
+  // Fetch first page of donations using the standardized server action
+  const donationsWithUrls = await getMuazzinDonations(0, PAGE_SIZE, 'pending');
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-6 animate-in fade-in duration-500">

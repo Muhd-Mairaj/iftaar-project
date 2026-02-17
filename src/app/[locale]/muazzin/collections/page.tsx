@@ -1,4 +1,5 @@
 import { getTolgee } from '@/i18n';
+import { getMuazzinCollectionRequests } from '@/lib/actions/muazzin';
 import { createClient } from '@/lib/supabase/server';
 import { CollectionForm } from './CollectionForm';
 import { CollectionsList } from './CollectionsList';
@@ -28,16 +29,8 @@ export default async function CollectionsPage({
     );
   }
 
-  const { data: collections, error: queryError } = await supabase
-    .from('collection_requests')
-    .select('*')
-    .eq('created_by', user.id)
-    .order('updated_at', { ascending: false })
-    .range(0, 9);
-
-  if (queryError) {
-    console.error('Query error:', queryError);
-  }
+  // Fetch first page of collections using the standardized server action
+  const collections = await getMuazzinCollectionRequests(user.id, 0, 10);
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4 animate-in fade-in duration-500">
