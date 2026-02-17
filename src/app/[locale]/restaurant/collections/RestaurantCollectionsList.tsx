@@ -94,9 +94,9 @@ export function RestaurantCollectionsList({
       initialData:
         filter === 'pending'
           ? {
-            pages: [initialRequests],
-            pageParams: [0],
-          }
+              pages: [initialRequests],
+              pageParams: [0],
+            }
           : undefined,
     });
 

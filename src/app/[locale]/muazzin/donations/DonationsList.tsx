@@ -62,8 +62,8 @@ async function fetchDonationsPage(
   const { data: signedUrls } =
     proofPaths.length > 0
       ? await supabase.storage
-        .from('receipts')
-        .createSignedUrls(proofPaths, 3600)
+          .from('receipts')
+          .createSignedUrls(proofPaths, 3600)
       : { data: [] };
 
   const signedUrlMap = new Map(
@@ -107,9 +107,9 @@ export function DonationsList({
       initialData:
         filter === 'pending'
           ? {
-            pages: [initialDonations],
-            pageParams: [0],
-          }
+              pages: [initialDonations],
+              pageParams: [0],
+            }
           : undefined,
     });
 
