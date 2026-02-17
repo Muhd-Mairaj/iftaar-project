@@ -25,7 +25,7 @@ export async function getCollectionRequests(
         email
       )
     `)
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
     .range(from, to);
 
   if (status) {

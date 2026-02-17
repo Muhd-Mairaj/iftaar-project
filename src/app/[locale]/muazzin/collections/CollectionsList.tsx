@@ -13,7 +13,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { createClient } from '@/lib/supabase/client';
+import { getMuazzinCollectionRequests } from '@/lib/actions/muazzin';
 import { cn } from '@/lib/utils';
 import { Tables } from '@/types/database.types';
 
@@ -26,30 +26,6 @@ type FilterStatus =
   | 'uncollected';
 
 const PAGE_SIZE = 10;
-
-async function fetchCollectionsPage(
-  page: number,
-  filter: FilterStatus,
-  userId: string
-): Promise<Collection[]> {
-  const supabase = createClient();
-  const from = page * PAGE_SIZE;
-  const to = from + PAGE_SIZE - 1;
-
-  let query = supabase
-    .from('collection_requests')
-    .select('*')
-    .eq('created_by', userId)
-    .order('created_at', { ascending: false })
-    .range(from, to);
-
-  if (filter !== 'all') {
-    query = query.eq('status', filter);
-  }
-
-  const { data } = await query;
-  return data || [];
-}
 
 const STATUS_CONFIG = {
   approved: {
@@ -104,7 +80,7 @@ export function CollectionsList({
     useInfiniteQuery({
       queryKey: ['collections', filter, userId],
       queryFn: ({ pageParam }) =>
-        fetchCollectionsPage(pageParam, filter, userId),
+        getMuazzinCollectionRequests(userId, pageParam, PAGE_SIZE, filter),
       initialPageParam: 0,
       getNextPageParam: (lastPage, _allPages, lastPageParam) => {
         if (lastPage.length < PAGE_SIZE) return undefined;

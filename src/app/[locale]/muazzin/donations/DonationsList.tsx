@@ -23,65 +23,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { reviewDonation } from '@/lib/actions';
-import { createClient } from '@/lib/supabase/client';
+import {
+  type DonationWithSignedUrl,
+  getMuazzinDonations,
+  reviewDonation,
+} from '@/lib/actions/muazzin';
 import { cn } from '@/lib/utils';
-import { Tables } from '@/types/database.types';
-
-type DonationWithSignedUrls = Tables<'donations'> & {
-  signed_proof_url: string | null;
-};
 
 type FilterStatus = 'all' | 'pending' | 'approved' | 'rejected';
-
-async function fetchDonationsPage(
-  page: number,
-  pageSize: number,
-  filter: FilterStatus
-): Promise<DonationWithSignedUrls[]> {
-  const supabase = createClient();
-  const from = page * pageSize;
-  const to = from + pageSize - 1;
-
-  let query = supabase
-    .from('donations')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .range(from, to);
-
-  if (filter !== 'all') {
-    query = query.eq('status', filter);
-  }
-
-  const { data: donations } = await query;
-
-  if (!donations || donations.length === 0) return [];
-
-  // Batch sign URLs
-  const proofPaths = donations.map(d => d.proof_url).filter(Boolean);
-  const { data: signedUrls } =
-    proofPaths.length > 0
-      ? await supabase.storage
-        .from('receipts')
-        .createSignedUrls(proofPaths, 3600)
-      : { data: [] };
-
-  const signedUrlMap = new Map(
-    (signedUrls || []).map(entry => [entry.path, entry.signedUrl])
-  );
-
-  return donations.map(donation => ({
-    ...donation,
-    signed_proof_url: signedUrlMap.get(donation.proof_url) || null,
-  }));
-}
 
 export function DonationsList({
   initialDonations,
   locale,
   pageSize,
 }: {
-  initialDonations: DonationWithSignedUrls[];
+  initialDonations: DonationWithSignedUrl[];
   locale: string;
   pageSize: number;
 }) {
@@ -96,7 +52,7 @@ export function DonationsList({
     useInfiniteQuery({
       queryKey: ['donations', filter],
       queryFn: ({ pageParam }) =>
-        fetchDonationsPage(pageParam, pageSize, filter),
+        getMuazzinDonations(pageParam, pageSize, filter),
       initialPageParam: 0,
       getNextPageParam: (lastPage, _allPages, lastPageParam) => {
         // If we got fewer items than pageSize, there are no more pages

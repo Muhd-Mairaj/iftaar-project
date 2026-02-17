@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { VerticalListSkeleton } from '@/components/skeletons';
 import { getTolgee } from '@/i18n';
+import { getMuazzinCollectionRequests } from '@/lib/actions/muazzin';
 import { createClient } from '@/lib/supabase/server';
 import { CollectionForm } from './CollectionForm';
 import { CollectionsList } from './CollectionsList';
@@ -60,6 +61,9 @@ export default async function CollectionsPage({
       </div>
     );
   }
+
+  // Fetch first page of collections using the standardized server action
+  const collections = await getMuazzinCollectionRequests(user.id, 0, 10);
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4 animate-in fade-in duration-500">
