@@ -46,7 +46,7 @@ async function fetchDonationsPage(
   let query = supabase
     .from('donations')
     .select('*')
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
     .range(from, to);
 
   if (filter !== 'all') {

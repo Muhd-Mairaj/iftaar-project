@@ -40,7 +40,7 @@ async function fetchCollectionsPage(
     .from('collection_requests')
     .select('*')
     .eq('created_by', userId)
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
     .range(from, to);
 
   if (filter !== 'all') {

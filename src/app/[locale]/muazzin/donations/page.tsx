@@ -18,7 +18,7 @@ export default async function DonationsPage({
     .from('donations')
     .select('*')
     .eq('status', 'pending')
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
     .range(0, PAGE_SIZE - 1);
 
   // Generate signed URLs in a single batch

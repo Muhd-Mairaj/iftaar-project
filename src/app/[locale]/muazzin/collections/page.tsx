@@ -32,7 +32,7 @@ export default async function CollectionsPage({
     .from('collection_requests')
     .select('*')
     .eq('created_by', user.id)
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
     .range(0, 9);
 
   if (queryError) {
