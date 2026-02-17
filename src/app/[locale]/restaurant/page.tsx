@@ -1,16 +1,16 @@
 import { CheckCircle2, Clock, ListChecks, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { StatsSkeleton } from '@/components/skeletons';
 import { getTolgee } from '@/i18n';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 
-export default async function RestaurantDashboard({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
+/**
+ * PART A: Async Stats Component
+ */
+async function RestaurantStatsLoader({ locale }: { locale: string }) {
   const { t } = await getTolgee(locale);
   const supabase = await createClient();
 
@@ -49,6 +49,48 @@ export default async function RestaurantDashboard({
   ];
 
   return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {dashboardStats.map(stat => (
+        <Card
+          key={stat.title}
+          className="border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden group"
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
+                  {stat.title}
+                </p>
+                <h3 className="text-4xl font-black">{stat.value}</h3>
+              </div>
+              <div
+                className={cn(
+                  stat.bg,
+                  'p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300'
+                )}
+              >
+                <stat.icon className={cn('w-8 h-8', stat.color)} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * PART B: Main Page Component
+ */
+export default async function RestaurantDashboard({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const { t } = await getTolgee(locale);
+
+  return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
@@ -59,33 +101,9 @@ export default async function RestaurantDashboard({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {dashboardStats.map(stat => (
-          <Card
-            key={stat.title}
-            className="border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden group"
-          >
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                    {stat.title}
-                  </p>
-                  <h3 className="text-4xl font-black">{stat.value}</h3>
-                </div>
-                <div
-                  className={cn(
-                    stat.bg,
-                    'p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300'
-                  )}
-                >
-                  <stat.icon className={cn('w-8 h-8', stat.color)} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Suspense fallback={<StatsSkeleton count={3} />}>
+        <RestaurantStatsLoader locale={locale} />
+      </Suspense>
 
       <div className="grid grid-cols-1 gap-3">
         <Link

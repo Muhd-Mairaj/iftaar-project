@@ -1,22 +1,21 @@
 import { Boxes, Clock, HeartHandshake, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { StatsSkeleton } from '@/components/skeletons';
 import { getTolgee } from '@/i18n';
 import { createClient } from '@/lib/supabase/server';
 
-export default async function MuazzinDashboard({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
+/**
+ * PART A: Async Stats Component
+ */
+async function MuazzinStatsLoader({ locale }: { locale: string }) {
   const { t } = await getTolgee(locale);
   const supabase = await createClient();
 
   // Fetch summary stats
   const [
     { count: pendingCount },
-    // { count: approvedCount },
     { data: approvedDonations },
     { data: collectionRequests },
   ] = await Promise.all([
@@ -24,10 +23,6 @@ export default async function MuazzinDashboard({
       .from('donations')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'pending'),
-    // supabase
-    //   .from('collection_requests')
-    //   .select('*', { count: 'exact', head: true })
-    //   .eq('status', 'approved'),
     supabase.from('donations').select('quantity').eq('status', 'approved'),
     supabase.from('collection_requests').select('quantity'),
   ]);
@@ -70,6 +65,48 @@ export default async function MuazzinDashboard({
   ];
 
   return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {stats.map(stat => (
+        <Card
+          key={stat.title}
+          className="border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden group"
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
+                  {stat.title}
+                </p>
+                <h3 className="text-4xl font-black">{stat.value}</h3>
+              </div>
+              <div
+                className={
+                  stat.bg +
+                  ' p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300'
+                }
+              >
+                <stat.icon className={`w-8 h-8 ${stat.color}`} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * PART B: Main Page Component
+ */
+export default async function MuazzinDashboard({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const { t } = await getTolgee(locale);
+
+  return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
@@ -81,33 +118,9 @@ export default async function MuazzinDashboard({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {stats.map(stat => (
-          <Card
-            key={stat.title}
-            className="border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden group"
-          >
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                    {stat.title}
-                  </p>
-                  <h3 className="text-4xl font-black">{stat.value}</h3>
-                </div>
-                <div
-                  className={
-                    stat.bg +
-                    ' p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300'
-                  }
-                >
-                  <stat.icon className={`w-8 h-8 ${stat.color}`} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Suspense fallback={<StatsSkeleton count={3} />}>
+        <MuazzinStatsLoader locale={locale} />
+      </Suspense>
 
       <div className="grid grid-cols-2 gap-3">
         <Link

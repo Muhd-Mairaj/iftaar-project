@@ -1,14 +1,14 @@
+import { Suspense } from 'react';
+import { VerticalListSkeleton } from '@/components/skeletons';
 import { getTolgee } from '@/i18n';
 import { createClient } from '@/lib/supabase/server';
 import { CollectionForm } from './CollectionForm';
 import { CollectionsList } from './CollectionsList';
 
-export default async function CollectionsPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
+/**
+ * PART A: Async Data Component
+ */
+async function CollectionsDataLoader({ locale }: { locale: string }) {
   const { t } = await getTolgee(locale);
   const supabase = await createClient();
 
@@ -40,6 +40,36 @@ export default async function CollectionsPage({
   }
 
   return (
+    <div className="flex flex-col flex-1 min-h-0 gap-2">
+      <div className="flex-none">
+        <h2 className="text-lg font-black tracking-tight text-foreground">
+          {t('collection_requests')}
+        </h2>
+        <p className="text-[11px] text-muted-foreground font-medium opacity-70">
+          {t('history_desc')}
+        </p>
+      </div>
+      <CollectionsList
+        initialCollections={collections || []}
+        locale={locale}
+        userId={user?.id || ''}
+      />
+    </div>
+  );
+}
+
+/**
+ * PART B: Main Page Component
+ */
+export default async function CollectionsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const { t } = await getTolgee(locale);
+
+  return (
     <div className="flex flex-col flex-1 min-h-0 gap-4 animate-in fade-in duration-500">
       <div className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
@@ -55,22 +85,10 @@ export default async function CollectionsPage({
         <CollectionForm />
       </div>
 
-      {/* History section — scrollable */}
-      <div className="flex flex-col flex-1 min-h-0 gap-2">
-        <div className="flex-none">
-          <h2 className="text-lg font-black tracking-tight text-foreground">
-            {t('collection_requests')}
-          </h2>
-          <p className="text-[11px] text-muted-foreground font-medium opacity-70">
-            {t('history_desc')}
-          </p>
-        </div>
-        <CollectionsList
-          initialCollections={collections || []}
-          locale={locale}
-          userId={user?.id || ''}
-        />
-      </div>
+      {/* History section — scrollable with Suspense */}
+      <Suspense fallback={<VerticalListSkeleton count={4} />}>
+        <CollectionsDataLoader locale={locale} />
+      </Suspense>
     </div>
   );
 }

@@ -40,13 +40,12 @@ export function UsersList({ users, isLoading }: UsersListProps) {
         >
           <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
             <div
-              className={`w-2 h-2 rounded-full ${
-                user.role === 'super_admin'
+              className={`w-2 h-2 rounded-full ${user.role === 'super_admin'
                   ? 'bg-purple-500'
                   : user.role === 'muazzin'
                     ? 'bg-primary'
                     : 'bg-orange-500'
-              } animate-pulse`}
+                } animate-pulse`}
             />
           </div>
           <div className="flex items-center gap-4">

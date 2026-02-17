@@ -1,9 +1,29 @@
+import { Suspense } from 'react';
+import { ListSkeleton } from '@/components/skeletons';
 import { getTolgee } from '@/i18n';
 import { getCollectionRequests } from '@/lib/actions/restaurant';
 import { RestaurantCollectionsList } from './RestaurantCollectionsList';
 
 const PAGE_SIZE = 10;
 
+/**
+ * PART A: Async Data Component
+ */
+async function RestaurantCollectionsDataLoader({ locale }: { locale: string }) {
+  const requests = await getCollectionRequests(0, PAGE_SIZE - 1, 'pending');
+
+  return (
+    <RestaurantCollectionsList
+      initialRequests={requests}
+      locale={locale}
+      pageSize={PAGE_SIZE}
+    />
+  );
+}
+
+/**
+ * PART B: Main Page Component
+ */
 export default async function RestaurantCollectionsPage({
   params,
 }: {
@@ -11,7 +31,6 @@ export default async function RestaurantCollectionsPage({
 }) {
   const { locale } = await params;
   const { t } = await getTolgee(locale);
-  const requests = await getCollectionRequests(0, PAGE_SIZE - 1, 'pending');
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-6 animate-in fade-in duration-500">
@@ -24,11 +43,9 @@ export default async function RestaurantCollectionsPage({
         </p>
       </header>
 
-      <RestaurantCollectionsList
-        initialRequests={requests}
-        locale={locale}
-        pageSize={PAGE_SIZE}
-      />
+      <Suspense fallback={<ListSkeleton count={6} />}>
+        <RestaurantCollectionsDataLoader locale={locale} />
+      </Suspense>
     </div>
   );
 }
