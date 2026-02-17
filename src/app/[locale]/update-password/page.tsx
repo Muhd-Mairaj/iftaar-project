@@ -109,7 +109,7 @@ export default function UpdatePasswordPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-lantern/5 blur-[120px] rounded-full" />
       </div>
 
-      <div className="w-full max-w-md space-y-8 relative z-10 animate-in fade-in zoom-in duration-500">
+      <div className="w-full max-w-md space-y-8 relative z-10 animate-in fade-in duration-500">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-primary/10 text-primary mb-4 shadow-xl shadow-primary/5 border border-primary/20 backdrop-blur-sm">
             <LockKeyhole className="w-8 h-8" />

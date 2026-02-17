@@ -31,7 +31,7 @@ export default function PartnersPage() {
   return (
     <div className="flex-grow flex flex-col items-center p-6 transition-all duration-700 h-full">
       <div className="w-full max-w-sm mx-auto flex flex-col h-full overflow-hidden">
-        <header className="mb-6 px-2 text-center animate-in fade-in slide-in-from-top-4 duration-1000">
+        <header className="mb-6 px-2 text-center animate-in fade-in duration-500">
           <h1 className="text-2xl font-black text-foreground tracking-tight">
             {t('partners_title')}
           </h1>
@@ -44,7 +44,7 @@ export default function PartnersPage() {
           {RESTAURANTS.map(res => (
             <div
               key={res.id}
-              className="bg-card/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2.5rem] p-5 flex flex-col gap-4 group transition-all hover:bg-card/60 shadow-xl shadow-black/5 animate-in fade-in slide-in-from-bottom-4 duration-700"
+              className="bg-card/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2.5rem] p-5 flex flex-col gap-4 group transition-all hover:bg-card/60 shadow-xl shadow-black/5 animate-in fade-in duration-500"
             >
               <div className="flex items-start justify-between">
                 <div>

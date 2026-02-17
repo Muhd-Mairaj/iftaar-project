@@ -64,7 +64,7 @@ export function DonationForm() {
 
   if (isSuccess) {
     return (
-      <div className="text-center py-12 animate-in fade-in zoom-in duration-500">
+      <div className="text-center py-12 animate-in fade-in duration-500">
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 text-primary mb-6 shadow-xl shadow-primary/5 border border-primary/20">
           <CheckCircle2 className="w-10 h-10" />
         </div>

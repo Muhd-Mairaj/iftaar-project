@@ -31,7 +31,7 @@ export default async function MuazzinLayout({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 h-full flex flex-col">
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex-1 min-h-0 flex flex-col">
+      <div className="animate-in fade-in duration-300 flex-1 min-h-0 flex flex-col">
         {children}
       </div>
     </div>
