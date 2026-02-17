@@ -29,7 +29,20 @@ export function BottomNav({ locale }: { locale: string }) {
   const isMuazzin = role === 'muazzin';
 
   const tabs: NavItem[] = useMemo(() => {
-    const items: NavItem[] = [];
+    const items: NavItem[] = [
+      {
+        id: 'home',
+        href: `/${locale}`,
+        label: t('nav_home'),
+        icon: Home,
+      },
+      {
+        id: 'restaurants',
+        href: `/${locale}/partners`,
+        label: t('nav_partners'),
+        icon: Utensils,
+      },
+    ];
 
     if (isMuazzin) {
       items.push(
@@ -53,21 +66,6 @@ export function BottomNav({ locale }: { locale: string }) {
         }
       );
     }
-
-    items.push(
-      {
-        id: 'home',
-        href: `/${locale}`,
-        label: t('nav_home'),
-        icon: Home,
-      },
-      {
-        id: 'restaurants',
-        href: `/${locale}/partners`,
-        label: t('nav_partners'),
-        icon: Utensils,
-      }
-    );
 
     return items;
   }, [isMuazzin, locale, t]);
