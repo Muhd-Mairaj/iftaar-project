@@ -87,30 +87,29 @@ export function DonationForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* Premium Quantity Stepper */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* Compact Quantity Stepper */}
         <FormField
           control={form.control}
           name="quantity"
           render={({ field }) => (
-            <FormItem className="space-y-4">
+            <FormItem className="space-y-2">
               <div className="flex items-center justify-between px-1">
                 <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
                   {t('quantity')}
                 </FormLabel>
-                <span className="text-xs font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
+                <span className="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
                   {field.value} {t('packets_label')}
                 </span>
               </div>
               <FormControl>
-                <div className="flex items-center justify-between gap-2 pt-2">
-                  {/* Sleek Pill Button: Decrease */}
+                <div className="flex items-center justify-between gap-2">
                   <button
                     type="button"
-                    className="h-12 w-8 rounded-full border border-border/60 bg-white dark:bg-slate-900 flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/40 transition-all active:scale-90 shadow-sm"
+                    className="h-10 w-8 rounded-full border border-border/60 bg-white dark:bg-slate-900 flex items-center justify-center text-foreground/70 active:scale-90 shadow-sm"
                     onClick={() => field.onChange(Math.max(1, field.value - 1))}
                   >
-                    <Minus className="w-4 h-4" />
+                    <Minus className="w-3.5 h-3.5" />
                   </button>
 
                   <div className="flex-grow flex justify-center relative group">
@@ -120,94 +119,88 @@ export function DonationForm() {
                       onChange={e =>
                         field.onChange(Number.parseInt(e.target.value, 10) || 0)
                       }
-                      className="w-24 text-center text-4xl font-black text-foreground bg-transparent border-none focus:ring-0 p-0 tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none relative z-10"
+                      className="w-20 text-center text-3xl font-black text-foreground bg-transparent border-none focus:ring-0 p-0 tabular-nums auto-cols-min"
                     />
-                    {/* Interaction Affordance: Subtle 'Shelf' */}
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-[2px] bg-primary/10 rounded-full group-focus-within:w-16 group-focus-within:bg-primary/40 transition-all duration-500" />
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[1.5px] bg-primary/10 rounded-full" />
                   </div>
 
-                  {/* Sleek Pill Button: Increase */}
                   <button
                     type="button"
-                    className="h-12 w-8 rounded-full border border-border/60 bg-white dark:bg-slate-900 flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/40 transition-all active:scale-90 shadow-sm"
+                    className="h-10 w-8 rounded-full border border-border/60 bg-white dark:bg-slate-900 flex items-center justify-center text-foreground/70 active:scale-90 shadow-sm"
                     onClick={() => field.onChange(field.value + 1)}
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </FormControl>
-              <FormMessage className="text-[11px] font-medium text-destructive/80" />
+              <FormMessage className="text-[10px] font-medium text-destructive/80" />
             </FormItem>
           )}
         />
 
-        {/* Premium Receipt Upload */}
+        {/* Compact Receipt Upload */}
         <FormField
           control={form.control}
           name="proof_url"
           render={({ field }) => (
-            <FormItem className="space-y-4">
+            <FormItem className="space-y-2">
               <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70 px-1">
                 {t('proof_of_payment')}
               </FormLabel>
               <FormControl>
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-primary/5 rounded-3xl blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <label
-                    htmlFor="receipt-upload"
-                    className="flex flex-col items-center justify-center h-32 w-full rounded-3xl border-2 border-dashed border-border group-hover:border-primary/50 bg-background/50 backdrop-blur-sm shadow-sm transition-all cursor-pointer relative z-10 overflow-hidden"
-                  >
-                    <div className="flex flex-col items-center gap-2 text-center p-4">
-                      <div className="p-3 rounded-full bg-primary/10 text-primary group-hover:scale-110 transition-transform">
-                        <Receipt className="w-6 h-6" />
-                      </div>
-                      <span className="text-xs font-bold text-foreground/70">
-                        {form.watch('proof_url')
-                          ? t('receipt_selected')
-                          : t('receipt_placeholder')}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
-                        {t('receipt_hint')}
-                      </span>
+                <label
+                  htmlFor="receipt-upload"
+                  className="flex flex-col items-center justify-center h-24 w-full rounded-2xl border-2 border-dashed border-border bg-background/50 backdrop-blur-sm transition-all cursor-pointer relative overflow-hidden"
+                >
+                  <div className="flex flex-col items-center gap-1.5 text-center p-2">
+                    <div className="p-2 rounded-full bg-primary/10 text-primary">
+                      <Receipt className="w-5 h-5" />
                     </div>
-
-                    <input
-                      id="receipt-upload"
-                      type="file"
-                      accept="image/*,.pdf"
-                      className="hidden"
-                      onChange={e => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          field.onChange(file.name);
-                        }
-                      }}
-                    />
-                  </label>
-                </div>
+                    <span className="text-[11px] font-bold text-foreground/70">
+                      {form.watch('proof_url')
+                        ? t('receipt_selected')
+                        : t('receipt_placeholder')}
+                    </span>
+                    <span className="text-[9px] text-muted-foreground font-medium uppercase tracking-tight opacity-60">
+                      {t('receipt_hint')}
+                    </span>
+                  </div>
+                  <input
+                    id="receipt-upload"
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="hidden"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        field.onChange(file.name);
+                      }
+                    }}
+                  />
+                </label>
               </FormControl>
-              <FormMessage className="text-[11px] font-medium text-destructive/80" />
+              <FormMessage className="text-[10px] font-medium text-destructive/80" />
             </FormItem>
           )}
         />
 
-        <div className="pt-4">
+        <div className="pt-2">
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-16 text-lg font-black rounded-2xl shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.01] active:scale-[0.98] transition-all bg-primary hover:bg-primary/90 text-primary-foreground group"
+            className="w-full h-12 text-base font-black rounded-xl shadow-lg shadow-primary/10 active:scale-[0.98] transition-all bg-primary hover:bg-primary/90 text-primary-foreground group"
           >
             {isSubmitting ? (
-              <Loader2 className="w-6 h-6 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <div className="flex items-center gap-2">
                 <span>{t('submit_donation')}</span>
-                <CheckCircle2 className="w-5 h-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                <CheckCircle2 className="w-4 h-4" />
               </div>
             )}
           </Button>
 
-          <p className="mt-6 text-[10px] text-muted-foreground/50 italic font-medium text-center px-6 leading-relaxed">
+          <p className="mt-3 text-[9px] text-muted-foreground/50 italic font-medium text-center px-4 leading-normal">
             {t('verification_notice')}
           </p>
         </div>

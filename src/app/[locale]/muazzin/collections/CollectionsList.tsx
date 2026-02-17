@@ -113,9 +113,9 @@ export function CollectionsList({
       initialData:
         filter === 'all'
           ? {
-              pages: [initialCollections],
-              pageParams: [0],
-            }
+            pages: [initialCollections],
+            pageParams: [0],
+          }
           : undefined,
     });
 
@@ -218,42 +218,42 @@ export function CollectionsList({
                       {/* Left accent strip */}
                       <div className={cn('w-1 flex-none', status.bg)} />
 
-                      <div className="flex-1 p-4 space-y-3">
+                      <div className="flex-1 p-3 space-y-2.5">
                         {/* Top row: quantity + status */}
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10">
-                              <span className="text-xl font-black leading-none">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 border border-white/10">
+                              <span className="text-lg font-black leading-none">
                                 {collection.quantity}
                               </span>
                             </div>
                             <div>
-                              <p className="text-sm font-bold leading-tight">
+                              <p className="text-xs font-bold leading-tight">
                                 {t('packets_label')}
                               </p>
-                              <p className="text-[10px] text-muted-foreground/60 font-mono uppercase tracking-wider">
-                                #{collection.id.slice(0, 8)}
+                              <p className="text-[9px] text-muted-foreground/50 font-mono uppercase tracking-wider">
+                                #{collection.id.slice(0, 6)}
                               </p>
                             </div>
                           </div>
 
                           <div
                             className={cn(
-                              'px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1',
+                              'px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1',
                               status.bg,
                               status.color
                             )}
                           >
-                            <Icon className="w-3 h-3" />
+                            <Icon className="w-2.5 h-2.5" />
                             {t(status.label)}
                           </div>
                         </div>
 
                         {/* Bottom row: dates */}
-                        <div className="flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1.5 text-muted-foreground font-medium">
-                              <Calendar className="w-3.5 h-3.5" />
+                        <div className="flex items-center justify-between text-[10px]">
+                          <div className="flex items-center gap-2.5">
+                            <div className="flex items-center gap-1 text-muted-foreground font-medium">
+                              <Calendar className="w-3 h-3" />
                               <span>
                                 {isToday ? (
                                   <span className="text-primary font-bold">
@@ -268,12 +268,12 @@ export function CollectionsList({
                               </span>
                             </div>
                             {isPast && collection.status === 'pending' && (
-                              <span className="text-[9px] font-bold text-destructive/70 uppercase tracking-wider">
+                              <span className="text-[8px] font-bold text-destructive/70 uppercase tracking-wider">
                                 {t('overdue')}
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] text-muted-foreground/40 font-medium">
+                          <span className="text-[9px] text-muted-foreground/30 font-medium whitespace-nowrap">
                             {t('submitted_on')}{' '}
                             {createdDate.toLocaleDateString(locale, {
                               month: 'short',

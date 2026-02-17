@@ -40,7 +40,7 @@ export default async function CollectionsPage({
   }
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 gap-6 animate-in fade-in duration-500">
+    <div className="flex flex-col flex-1 min-h-0 gap-4 animate-in fade-in duration-500">
       <div className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
           {t('muazzin_nav_collections')}
@@ -51,20 +51,12 @@ export default async function CollectionsPage({
       </div>
 
       {/* Form section — fixed at top */}
-      <div className="flex-none space-y-3">
-        <div>
-          <h2 className="text-xl font-black tracking-tight text-foreground">
-            {t('create_request')}
-          </h2>
-          <p className="text-[11px] text-muted-foreground font-medium opacity-70">
-            {t('plan_goal_desc')}
-          </p>
-        </div>
+      <div className="flex-none">
         <CollectionForm />
       </div>
 
       {/* History section — scrollable */}
-      <div className="flex flex-col flex-1 min-h-0 gap-3">
+      <div className="flex flex-col flex-1 min-h-0 gap-2">
         <div className="flex-none">
           <h2 className="text-lg font-black tracking-tight text-foreground">
             {t('collection_requests')}
