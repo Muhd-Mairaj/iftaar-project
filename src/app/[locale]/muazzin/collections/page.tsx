@@ -7,8 +7,41 @@ import { CollectionsList } from './CollectionsList';
 
 /**
  * PART A: Async Data Component
+ * Handles the collection requests fetching logic.
  */
-async function CollectionsDataLoader({ locale }: { locale: string }) {
+async function CollectionsDataLoader({ locale, userId }: { locale: string; userId: string }) {
+  const supabase = await createClient();
+
+  const { data: collections, error: queryError } = await supabase
+    .from('collection_requests')
+    .select('*')
+    .eq('created_by', userId)
+    .order('created_at', { ascending: false })
+    .range(0, 9);
+
+  if (queryError) {
+    console.error('Query error:', queryError);
+  }
+
+  return (
+    <CollectionsList
+      initialCollections={collections || []}
+      locale={locale}
+      userId={userId}
+    />
+  );
+}
+
+/**
+ * PART B: Main Page Component
+ * Renders the layout/shell immediately.
+ */
+export default async function CollectionsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const { t } = await getTolgee(locale);
   const supabase = await createClient();
 
@@ -28,47 +61,6 @@ async function CollectionsDataLoader({ locale }: { locale: string }) {
     );
   }
 
-  const { data: collections, error: queryError } = await supabase
-    .from('collection_requests')
-    .select('*')
-    .eq('created_by', user.id)
-    .order('created_at', { ascending: false })
-    .range(0, 9);
-
-  if (queryError) {
-    console.error('Query error:', queryError);
-  }
-
-  return (
-    <div className="flex flex-col flex-1 min-h-0 gap-2">
-      <div className="flex-none">
-        <h2 className="text-lg font-black tracking-tight text-foreground">
-          {t('collection_requests')}
-        </h2>
-        <p className="text-[11px] text-muted-foreground font-medium opacity-70">
-          {t('history_desc')}
-        </p>
-      </div>
-      <CollectionsList
-        initialCollections={collections || []}
-        locale={locale}
-        userId={user?.id || ''}
-      />
-    </div>
-  );
-}
-
-/**
- * PART B: Main Page Component
- */
-export default async function CollectionsPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  const { t } = await getTolgee(locale);
-
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4 animate-in fade-in duration-500">
       <div className="flex-none">
@@ -85,10 +77,21 @@ export default async function CollectionsPage({
         <CollectionForm />
       </div>
 
-      {/* History section — scrollable with Suspense */}
-      <Suspense fallback={<VerticalListSkeleton count={4} />}>
-        <CollectionsDataLoader locale={locale} />
-      </Suspense>
+      {/* History section — scrollable */}
+      <div className="flex flex-col flex-1 min-h-0 gap-2">
+        <div className="flex-none">
+          <h2 className="text-lg font-black tracking-tight text-foreground">
+            {t('collection_requests')}
+          </h2>
+          <p className="text-[11px] text-muted-foreground font-medium opacity-70">
+            {t('history_desc')}
+          </p>
+        </div>
+
+        <Suspense fallback={<VerticalListSkeleton count={4} />}>
+          <CollectionsDataLoader locale={locale} userId={user.id} />
+        </Suspense>
+      </div>
     </div>
   );
 }

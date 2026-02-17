@@ -1,4 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export function ListSkeleton({ count = 3 }: { count?: number }) {
   return (
@@ -15,7 +16,7 @@ export function ListSkeleton({ count = 3 }: { count?: number }) {
         {Array.from({ length: count }).map((_, i) => (
           <div
             key={i}
-            className="h-[200px] rounded-[2rem] border border-white/10 bg-card/40 backdrop-blur-xl p-6 space-y-5 animate-in fade-in duration-500"
+            className="h-[200px] rounded-[2rem] border border-white/10 bg-card/60 backdrop-blur-xl p-6 space-y-5 animate-in fade-in duration-500"
             style={{ animationDelay: `${i * 100}ms` }}
           >
             <div className="flex items-start justify-between">
@@ -47,7 +48,7 @@ export function StatsSkeleton({ count = 3 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="h-32 rounded-3xl border border-white/10 bg-card/40 backdrop-blur-xl p-6 animate-in fade-in duration-500"
+          className="h-32 rounded-3xl border border-white/10 bg-card/60 backdrop-blur-xl p-6 animate-in fade-in duration-500"
           style={{ animationDelay: `${i * 100}ms` }}
         >
           <div className="flex items-center justify-between h-full">
@@ -69,7 +70,7 @@ export function VerticalListSkeleton({ count = 4 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="h-[92px] rounded-xl border border-white/10 bg-card/40 backdrop-blur-xl flex items-stretch overflow-hidden animate-in fade-in duration-500"
+          className="h-[92px] rounded-xl border border-white/10 bg-card/60 backdrop-blur-xl flex items-stretch overflow-hidden animate-in fade-in duration-500"
           style={{ animationDelay: `${i * 50}ms` }}
         >
           <div className="w-1 bg-muted/20" />

@@ -7,7 +7,8 @@ import { getTolgee } from '@/i18n';
 import { createClient } from '@/lib/supabase/server';
 
 /**
- * PART A: Async Stats Component
+ * PART A: Async Data Component
+ * Handles the stats fetching logic.
  */
 async function MuazzinStatsLoader({ locale }: { locale: string }) {
   const { t } = await getTolgee(locale);
@@ -97,6 +98,7 @@ async function MuazzinStatsLoader({ locale }: { locale: string }) {
 
 /**
  * PART B: Main Page Component
+ * Renders the layout/shell immediately.
  */
 export default async function MuazzinDashboard({
   params,

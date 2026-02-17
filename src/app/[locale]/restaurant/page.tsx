@@ -8,7 +8,8 @@ import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 
 /**
- * PART A: Async Stats Component
+ * PART A: Async Data Component
+ * Handles the restaurant stats fetching logic.
  */
 async function RestaurantStatsLoader({ locale }: { locale: string }) {
   const { t } = await getTolgee(locale);
@@ -81,6 +82,7 @@ async function RestaurantStatsLoader({ locale }: { locale: string }) {
 
 /**
  * PART B: Main Page Component
+ * Renders the layout/shell immediately.
  */
 export default async function RestaurantDashboard({
   params,

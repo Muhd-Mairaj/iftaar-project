@@ -8,6 +8,7 @@ const PAGE_SIZE = 10;
 
 /**
  * PART A: Async Data Component
+ * Handles the collection requests fetching logic.
  */
 async function RestaurantCollectionsDataLoader({ locale }: { locale: string }) {
   const requests = await getCollectionRequests(0, PAGE_SIZE - 1, 'pending');
@@ -23,6 +24,7 @@ async function RestaurantCollectionsDataLoader({ locale }: { locale: string }) {
 
 /**
  * PART B: Main Page Component
+ * Renders the layout/shell immediately.
  */
 export default async function RestaurantCollectionsPage({
   params,
