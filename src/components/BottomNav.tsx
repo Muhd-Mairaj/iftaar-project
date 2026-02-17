@@ -29,6 +29,7 @@ export function BottomNav({ locale }: { locale: string }) {
 
   const isMuazzin = role === 'muazzin';
   const isSuperAdmin = role === 'super_admin';
+  const isRestaurantAdmin = role === 'restaurant_admin';
 
   const tabs: NavItem[] = useMemo(() => {
     const items: NavItem[] = [
@@ -78,8 +79,25 @@ export function BottomNav({ locale }: { locale: string }) {
       });
     }
 
+    if (isRestaurantAdmin) {
+      items.push(
+        {
+          id: 'restaurant_dashboard',
+          href: `/${locale}/restaurant`,
+          label: t('nav_dashboard') || 'Dashboard',
+          icon: LayoutDashboard,
+        },
+        {
+          id: 'restaurant_collections',
+          href: `/${locale}/restaurant/collections`,
+          label: t('muazzin_nav_collections'),
+          icon: Boxes,
+        }
+      );
+    }
+
     return items;
-  }, [isMuazzin, isSuperAdmin, locale, t]);
+  }, [isMuazzin, isSuperAdmin, isRestaurantAdmin, locale, t]);
 
   // Determine active tab
   const activeIndex = useMemo(() => {
@@ -93,6 +111,10 @@ export function BottomNav({ locale }: { locale: string }) {
           return 'dashboard';
         case pathname.includes('/admin/users'):
           return 'users';
+        case pathname.includes('/restaurant/collections'):
+          return 'restaurant_collections';
+        case pathname.includes('/restaurant'):
+          return 'restaurant_dashboard';
         case pathname.includes('/partners'):
           return 'restaurants';
         default:
@@ -114,7 +136,7 @@ export function BottomNav({ locale }: { locale: string }) {
       <div
         className={cn(
           'flex items-center bg-card/60 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-[2rem] p-1.5 shadow-2xl relative h-14 pointer-events-auto',
-          isMuazzin || isSuperAdmin
+          isMuazzin || isSuperAdmin || isRestaurantAdmin
             ? 'w-full max-w-[420px]'
             : 'w-full max-w-[320px]'
         )}
@@ -147,7 +169,7 @@ export function BottomNav({ locale }: { locale: string }) {
                   isActive ? 'scale-110 fill-current' : 'scale-100 opacity-60'
                 )}
               />
-              {!isMuazzin && (
+              {!(isMuazzin || isRestaurantAdmin) && (
                 <span
                   className={cn(
                     'text-[10px] uppercase font-black tracking-widest transition-all duration-500 overflow-hidden whitespace-nowrap',

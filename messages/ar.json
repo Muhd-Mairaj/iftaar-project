@@ -106,5 +106,18 @@
   "history_desc": "سجل طلبات المسجد الخاص بك.",
   "plan_goal_desc": "خطط لهدفك القادم من وجبات الطعام.",
   "today": "اليوم",
-  "admin_nav_users": "المستخدمين"
+  "admin_nav_users": "المستخدمين",
+  "nav_dashboard": "لوحة التحكم",
+  "restaurant_dashboard_desc": "إدارة وتلبية طلبات استلام الوجبات للمساجد.",
+  "restaurant_stats_pending": "طلبات قيد الانتظار",
+  "restaurant_stats_approved": "طلبات معتمدة",
+  "restaurant_stats_fulfilled": "إجمالي المستلم",
+  "restaurant_collections_title": "طلبات الاستلام",
+  "restaurant_collections_desc": "مراجعة وإدارة طلبات استلام الوجبات الواردة من المساجد.",
+  "restaurant_action_collections_desc": "مراجعة وإدارة كافة الطلبات الواردة من المساجد",
+  "restaurant_action_accept": "قبول الطلب",
+  "restaurant_action_mark_collected": "تأكيد الاستلام",
+  "status_all": "الكل",
+  "status_uncollected": "لم يتم الاستلام",
+  "collections_by": "بواسطة"
 }

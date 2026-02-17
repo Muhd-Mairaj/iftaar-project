@@ -106,5 +106,18 @@
   "history_desc": "History of your mosque's requests.",
   "plan_goal_desc": "Plan your next food packet goal.",
   "today": "Today",
-  "admin_nav_users": "Users"
+  "admin_nav_users": "Users",
+  "nav_dashboard": "Dashboard",
+  "restaurant_dashboard_desc": "Manage and fulfill mosque collection requests.",
+  "restaurant_stats_pending": "Pending Requests",
+  "restaurant_stats_approved": "Approved Requests",
+  "restaurant_stats_fulfilled": "Total Fulfilled",
+  "restaurant_collections_title": "Collection Requests",
+  "restaurant_collections_desc": "Review and manage incoming food collection requests from mosques.",
+  "restaurant_action_collections_desc": "Review and manage incoming requests from mosques",
+  "restaurant_action_accept": "Accept Request",
+  "restaurant_action_mark_collected": "Mark as Collected",
+  "status_all": "All Feed",
+  "status_uncollected": "No Show",
+  "collections_by": "By"
 }
