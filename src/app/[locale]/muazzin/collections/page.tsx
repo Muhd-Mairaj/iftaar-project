@@ -14,14 +14,30 @@ export default async function CollectionsPage({
 
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser();
 
-  const { data: collections } = await supabase
+  if (authError || !user) {
+    return (
+      <div className="p-6 text-center">
+        <p className="text-destructive font-bold">Error loading user profile</p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Please try logging in again.
+        </p>
+      </div>
+    );
+  }
+
+  const { data: collections, error: queryError } = await supabase
     .from('collection_requests')
     .select('*')
-    .eq('created_by', user?.id)
+    .eq('created_by', user.id)
     .order('created_at', { ascending: false })
     .range(0, 9);
+
+  if (queryError) {
+    console.error('Query error:', queryError);
+  }
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-6">
@@ -33,7 +49,7 @@ export default async function CollectionsPage({
             {t('plan_goal_desc')}
           </p>
         </div>
-        <CollectionForm locale={locale} />
+        <CollectionForm />
       </div>
 
       {/* History section — scrollable */}
