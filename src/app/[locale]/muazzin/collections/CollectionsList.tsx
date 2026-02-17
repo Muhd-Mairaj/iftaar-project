@@ -113,9 +113,9 @@ export function CollectionsList({
       initialData:
         filter === 'all'
           ? {
-            pages: [initialCollections],
-            pageParams: [0],
-          }
+              pages: [initialCollections],
+              pageParams: [0],
+            }
           : undefined,
     });
 

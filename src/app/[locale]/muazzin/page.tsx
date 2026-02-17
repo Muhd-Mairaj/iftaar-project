@@ -1,4 +1,4 @@
-import { Clock, HeartHandshake, Boxes, TrendingUp } from 'lucide-react';
+import { Boxes, Clock, HeartHandshake, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { getTolgee } from '@/i18n';

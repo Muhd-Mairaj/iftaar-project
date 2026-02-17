@@ -105,5 +105,6 @@
   "submit_request": "Submit Request",
   "history_desc": "History of your mosque's requests.",
   "plan_goal_desc": "Plan your next food packet goal.",
-  "today": "Today"
+  "today": "Today",
+  "admin_nav_users": "Users"
 }

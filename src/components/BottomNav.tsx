@@ -2,10 +2,11 @@
 
 import { useTranslate } from '@tolgee/react';
 import {
-  HeartHandshake,
   Boxes,
+  HeartHandshake,
   Home,
   LayoutDashboard,
+  Users,
   Utensils,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -27,6 +28,7 @@ export function BottomNav({ locale }: { locale: string }) {
   const { role } = useAuth();
 
   const isMuazzin = role === 'muazzin';
+  const isSuperAdmin = role === 'super_admin';
 
   const tabs: NavItem[] = useMemo(() => {
     const items: NavItem[] = [
@@ -67,20 +69,38 @@ export function BottomNav({ locale }: { locale: string }) {
       );
     }
 
+    if (isSuperAdmin) {
+      items.push({
+        id: 'users',
+        href: `/${locale}/admin/users`,
+        label: t('admin_nav_users') || 'Users',
+        icon: Users,
+      });
+    }
+
     return items;
-  }, [isMuazzin, locale, t]);
+  }, [isMuazzin, isSuperAdmin, locale, t]);
 
   // Determine active tab
   const activeIndex = useMemo(() => {
-    if (pathname.includes('/muazzin/donations'))
-      return tabs.findIndex(t => t.id === 'donations');
-    if (pathname.includes('/muazzin/collections'))
-      return tabs.findIndex(t => t.id === 'collections');
-    if (pathname.includes('/muazzin'))
-      return tabs.findIndex(t => t.id === 'dashboard');
-    if (pathname.includes('/partners'))
-      return tabs.findIndex(t => t.id === 'restaurants');
-    return tabs.findIndex(t => t.id === 'home');
+    const activeId = (() => {
+      switch (true) {
+        case pathname.includes('/muazzin/donations'):
+          return 'donations';
+        case pathname.includes('/muazzin/collections'):
+          return 'collections';
+        case pathname.includes('/muazzin'):
+          return 'dashboard';
+        case pathname.includes('/admin/users'):
+          return 'users';
+        case pathname.includes('/partners'):
+          return 'restaurants';
+        default:
+          return 'home';
+      }
+    })();
+
+    return tabs.findIndex(t => t.id === activeId);
   }, [pathname, tabs]);
 
   const tabCount = tabs.length;
@@ -94,7 +114,9 @@ export function BottomNav({ locale }: { locale: string }) {
       <div
         className={cn(
           'flex items-center bg-card/60 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-[2rem] p-1.5 shadow-2xl relative h-14 pointer-events-auto',
-          isMuazzin ? 'w-full max-w-[420px]' : 'w-full max-w-[320px]'
+          isMuazzin || isSuperAdmin
+            ? 'w-full max-w-[420px]'
+            : 'w-full max-w-[320px]'
         )}
       >
         {/* Sliding indicator */}
