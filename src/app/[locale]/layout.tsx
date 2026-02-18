@@ -54,7 +54,7 @@ export default async function RootLayout({
       <body
         className={cn(
           fontClass,
-          'font-sans antialiased text-foreground bg-background h-[100dvh] w-full overflow-hidden select-none'
+          'font-sans antialiased text-foreground bg-background h-[100dvh] w-full overflow-hidden select-none flex flex-col'
         )}
       >
         <TolgeeNextProvider locale={locale}>
@@ -68,7 +68,7 @@ export default async function RootLayout({
             <AuthProvider>
               <AppHeader locale={locale} />
 
-              <main className="relative z-10 h-full w-full overflow-y-auto pt-[4.5rem] pb-24">
+              <main className="flex-1 min-h-0 relative z-10 overflow-y-auto overflow-x-hidden">
                 {children}
               </main>
 

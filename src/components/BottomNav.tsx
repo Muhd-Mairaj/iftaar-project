@@ -132,18 +132,18 @@ export function BottomNav({ locale }: { locale: string }) {
   const indicatorOffset = `calc(${activeIndex} * (100% - 12px) / ${tabCount} + 6px)`;
 
   return (
-    <nav className="fixed bottom-6 left-4 right-4 z-50 flex justify-center pointer-events-none">
+    <footer className="flex-none z-50 bg-background/80 backdrop-blur-lg border-t border-white/5 px-4">
       <div
         className={cn(
-          'flex items-center bg-card/60 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-[2rem] p-1.5 shadow-2xl relative h-14 pointer-events-auto',
+          'flex items-center bg-card/60 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-[2.5rem] p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative h-14 mx-auto',
           isMuazzin || isSuperAdmin || isRestaurantAdmin
-            ? 'w-full max-w-[420px]'
-            : 'w-full max-w-[320px]'
+            ? 'w-full max-w-[440px]'
+            : 'w-full max-w-[340px]'
         )}
       >
         {/* Sliding indicator */}
         <div
-          className="absolute top-1.5 bottom-1.5 bg-primary rounded-[1.5rem] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-lg shadow-primary/30"
+          className="absolute top-1.5 bottom-1.5 bg-primary rounded-[2rem] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-lg shadow-primary/30"
           style={{
             width: indicatorWidth,
             insetInlineStart: indicatorOffset,
@@ -159,30 +159,34 @@ export function BottomNav({ locale }: { locale: string }) {
               key={tab.id}
               href={tab.href}
               className={cn(
-                'flex-1 flex items-center justify-center gap-1.5 z-10 transition-all duration-500 h-full rounded-[1.5rem] px-1',
+                'flex-1 flex flex-col items-center justify-center gap-1 z-10 transition-all duration-300 h-full rounded-[2rem] px-1',
                 isActive ? 'text-primary-foreground' : 'text-muted-foreground'
               )}
             >
               <Icon
                 className={cn(
-                  'w-4 h-4 transition-all flex-shrink-0',
-                  isActive ? 'scale-110 fill-current' : 'scale-100 opacity-60'
+                  'w-5 h-5 transition-all duration-300 shrink-0',
+                  isActive
+                    ? 'scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]'
+                    : 'scale-100 opacity-50'
                 )}
               />
               {!(isMuazzin || isRestaurantAdmin) && (
                 <span
                   className={cn(
-                    'text-[10px] uppercase font-black tracking-widest transition-all duration-500 overflow-hidden whitespace-nowrap',
-                    isActive ? 'opacity-100 max-w-[100px]' : 'opacity-0 max-w-0'
+                    'text-[8px] font-black uppercase tracking-widest transition-all duration-300',
+                    isActive
+                      ? 'opacity-100 translate-y-0'
+                      : 'opacity-0 translate-y-1'
                   )}
                 >
-                  {tab.label}
+                  {tab.label.split(' ').pop()}
                 </span>
               )}
             </Link>
           );
         })}
       </div>
-    </nav>
+    </footer>
   );
 }

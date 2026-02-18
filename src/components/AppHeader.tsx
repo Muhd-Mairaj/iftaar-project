@@ -46,8 +46,8 @@ export function AppHeader({ locale }: { locale: string }) {
   };
 
   return (
-    <header className="absolute top-0 inset-x-0 z-50 h-16 flex items-center justify-between px-6 pointer-events-none">
-      <div className="flex items-center gap-2 pointer-events-auto">
+    <header className="flex-none z-50 h-16 flex items-center justify-between px-6 bg-background/50 backdrop-blur-md border-b border-white/5 shadow-sm">
+      <div className="flex items-center gap-2">
         <Link href={`/${locale}`} className="group flex items-center gap-2">
           <Logo className="w-9 h-9" />
           <span className="text-xs font-black uppercase tracking-[0.2em] text-foreground/80 group-hover:text-primary transition-colors">
@@ -59,7 +59,7 @@ export function AppHeader({ locale }: { locale: string }) {
         </Link>
       </div>
 
-      <div className="flex items-center gap-2 pointer-events-auto">
+      <div className="flex items-center gap-2">
         <DropdownMenu dir={locale === 'ar' ? 'rtl' : 'ltr'}>
           <DropdownMenuTrigger asChild>
             <Button
