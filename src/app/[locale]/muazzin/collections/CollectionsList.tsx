@@ -10,14 +10,14 @@ import {
   Package,
   XOctagon,
 } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { ListSkeleton } from '@/components/Skeletons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { getMuazzinCollectionRequests } from '@/lib/actions/muazzin';
+import { getMuazzinCollectionRequests } from '@/lib/api/muazzin';
 import { cn } from '@/lib/utils';
-import { Tables } from '@/types/database.types';
 
-type Collection = Tables<'collection_requests'>;
 type FilterStatus =
   | 'all'
   | 'pending'
@@ -62,38 +62,38 @@ const STATUS_CONFIG = {
   },
 } as const;
 
-export function CollectionsList({
-  initialCollections,
-  locale,
-  userId,
-}: {
-  initialCollections: Collection[];
-  locale: string;
-  userId: string;
-}) {
+export function CollectionsList({ userId }: { userId: string | null }) {
   const { t } = useTranslate();
+  const params = useParams();
+  const locale = params.locale as string;
   const [filter, setFilter] = useState<FilterStatus>('all');
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ['collections', filter, userId],
-      queryFn: ({ pageParam }) =>
-        getMuazzinCollectionRequests(userId, pageParam, PAGE_SIZE, filter),
-      initialPageParam: 0,
-      getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-        if (lastPage.length < PAGE_SIZE) return undefined;
-        return lastPageParam + 1;
-      },
-      initialData:
-        filter === 'all'
-          ? {
-              pages: [initialCollections],
-              pageParams: [0],
-            }
-          : undefined,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ['collections', filter, userId],
+    queryFn: ({ pageParam }) =>
+      getMuazzinCollectionRequests({
+        userId: userId!,
+        pageParam,
+        pageSize: PAGE_SIZE,
+        filter,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      if (lastPage.length < PAGE_SIZE) return undefined;
+      return lastPageParam + 1;
+    },
+    enabled: !!userId,
+  });
 
   const allCollections = data?.pages.flat() ?? [];
 
@@ -152,11 +152,18 @@ export function CollectionsList({
       {/* Scrollable list */}
       <div
         ref={scrollRef}
-        className="flex-1 min-h-0 overflow-y-auto overscroll-contain rounded-xl"
+        className="flex-1 min-h-0 overflow-y-auto overscroll-contain rounded-xl no-scrollbar"
       >
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        {!userId || isLoading ? (
+          <ListSkeleton />
+        ) : isError ? (
+          <div className="text-center py-20">
+            <p className="text-destructive font-bold mb-4">
+              Error loading collections
+            </p>
+            <Button onClick={() => refetch()} variant="outline">
+              Try Again
+            </Button>
           </div>
         ) : allCollections.length === 0 ? (
           <div className="text-center py-16 px-6 rounded-[2rem] border border-dashed border-white/10 bg-white/5">

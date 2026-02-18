@@ -86,7 +86,7 @@ export async function reviewDonation(
 /**
  * Fetch collection requests for a muazzin
  */
-export async function getMuazzinCollections({
+export async function getMuazzinCollectionRequests({
   userId,
   pageParam = 0,
   pageSize = 10,
