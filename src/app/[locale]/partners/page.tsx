@@ -29,9 +29,9 @@ export default function PartnersPage() {
   };
 
   return (
-    <div className="flex-grow flex flex-col items-center p-6 h-full animate-in fade-in duration-500">
-      <div className="w-full max-w-sm mx-auto flex flex-col h-full overflow-hidden">
-        <header className="mb-6 flex-none">
+    <div className="h-full flex flex-col items-center animate-in fade-in duration-500 overflow-hidden">
+      <div className="w-full max-w-sm mx-auto flex flex-col gap-3 h-full">
+        <header className="flex-none">
           <h1 className="text-3xl font-black tracking-tight text-foreground">
             {t('partners_title')}
           </h1>
@@ -40,7 +40,7 @@ export default function PartnersPage() {
           </p>
         </header>
 
-        <div className="space-y-4 overflow-y-auto no-scrollbar pr-1 flex-grow pb-12">
+        <div className="flex flex-col flex-1 gap-3 pr-1 overflow-y-auto no-scrollbar min-h-0">
           {RESTAURANTS.map(res => (
             <div
               key={res.id}
@@ -89,11 +89,11 @@ export default function PartnersPage() {
           ))}
         </div>
 
-        <div className="fixed bottom-[92px] left-1/2 -translate-x-1/2 w-full max-w-sm px-6 z-40 pointer-events-none">
-          <footer className="animate-in slide-in-from-bottom duration-500 pointer-events-auto">
-            <div className="p-3 rounded-[1.5rem] bg-lantern/5 border border-lantern/10 flex items-center justify-center gap-3 backdrop-blur-md">
-              <Receipt className="w-4 h-4 text-lantern opacity-40" />
-              <p className="text-[9px] font-bold text-lantern/80 uppercase tracking-widest leading-none">
+        <div className="flex-none">
+          <footer className="animate-in slide-in-from-bottom duration-500">
+            <div className="p-4 rounded-[2rem] bg-lantern/10 border border-lantern/20 flex items-center justify-center gap-3 backdrop-blur-md shadow-lg">
+              <Receipt className="w-4 h-4 text-lantern" />
+              <p className="text-[10px] font-black text-lantern uppercase tracking-widest leading-tight text-center">
                 {t('receipt_instruction')}
               </p>
             </div>
