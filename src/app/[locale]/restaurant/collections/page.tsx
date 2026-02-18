@@ -14,7 +14,7 @@ export default async function RestaurantCollectionsPage({
   const requests = await getCollectionRequests(0, PAGE_SIZE - 1, 'pending');
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 gap-6 animate-in fade-in duration-500">
+    <>
       <header className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
           {t('restaurant_collections_title')}
@@ -29,6 +29,6 @@ export default async function RestaurantCollectionsPage({
         locale={locale}
         pageSize={PAGE_SIZE}
       />
-    </div>
+    </>
   );
 }

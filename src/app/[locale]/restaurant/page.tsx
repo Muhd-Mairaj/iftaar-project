@@ -49,7 +49,7 @@ export default async function RestaurantDashboard({
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <>
       <div className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
           {t('nav_dashboard')}
@@ -59,7 +59,7 @@ export default async function RestaurantDashboard({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex flex-col flex-1 gap-3">
         {dashboardStats.map(stat => (
           <Card
             key={stat.title}
@@ -87,7 +87,7 @@ export default async function RestaurantDashboard({
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-3">
+      <div className="flex flex-col flex-1 gap-3">
         <Link
           href={`/${locale}/restaurant/collections`}
           className="group flex items-center gap-4 px-6 py-5 rounded-[2rem] bg-card/40 backdrop-blur-xl border border-white/10 hover:bg-primary hover:border-primary/30 transition-all duration-300 active:scale-[0.98] shadow-sm hover:shadow-lg hover:shadow-primary/10"
@@ -105,6 +105,6 @@ export default async function RestaurantDashboard({
           </div>
         </Link>
       </div>
-    </div>
+    </>
   );
 }
