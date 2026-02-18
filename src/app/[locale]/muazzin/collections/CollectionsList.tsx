@@ -89,9 +89,9 @@ export function CollectionsList({
       initialData:
         filter === 'all'
           ? {
-            pages: [initialCollections],
-            pageParams: [0],
-          }
+              pages: [initialCollections],
+              pageParams: [0],
+            }
           : undefined,
     });
 
@@ -130,7 +130,7 @@ export function CollectionsList({
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4">
       {/* Filter bar */}
-      <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 max-w-full overflow-x-auto scrollbar-none">
+      <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border max-w-full overflow-x-auto no-scrollbar">
         {filters.map(f => (
           <Button
             key={f.key}
@@ -183,7 +183,7 @@ export function CollectionsList({
                 <Card
                   key={collection.id}
                   className={cn(
-                    'bg-card/40 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:bg-card/60 touch-pan-y',
+                    'bg-card/40 shadow-black/5 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:bg-card/60 touch-pan-y',
                     status.border,
                     'animate-in fade-in'
                   )}

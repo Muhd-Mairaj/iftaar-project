@@ -14,6 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { NumberInput } from '@/components/ui/number-input';
 import { submitDonation } from '@/lib/actions';
 import { DonationInput, DonationSchema } from '@/lib/validations';
 
@@ -113,12 +114,8 @@ export function DonationForm() {
                   </button>
 
                   <div className="flex-grow flex justify-center relative group">
-                    <input
-                      type="number"
-                      value={field.value}
-                      onChange={e =>
-                        field.onChange(Number.parseInt(e.target.value, 10) || 0)
-                      }
+                    <NumberInput
+                      {...field}
                       className="w-20 text-center text-3xl font-black text-foreground bg-transparent border-none focus:ring-0 p-0 tabular-nums auto-cols-min"
                     />
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[1.5px] bg-primary/10 rounded-full" />

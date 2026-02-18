@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { NumberInput } from '@/components/ui/number-input';
 import { createCollectionRequest } from '@/lib/actions/muazzin';
 import {
   CollectionRequestInput,
@@ -56,67 +57,64 @@ export function CollectionForm() {
   }
 
   return (
-    <div className="bg-card/30 backdrop-blur-xl border rounded-[2rem] p-4 shadow-xl shadow-black/5">
+    <div className="bg-card/40 backdrop-blur-xl border rounded-[2.5rem] p-3 shadow-xl shadow-black/5 relative group">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem className="space-y-1.5">
-                  <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 ml-1">
-                    {t('packets_needed')}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min={1}
-                      className="bg-background/40 border-input/40 h-10 rounded-xl focus:ring-primary/20 focus:border-primary/50 transition-all font-bold text-base"
-                      {...field}
-                      onChange={e =>
-                        field.onChange(Number.parseInt(e.target.value, 10))
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[10px] font-bold text-destructive ml-1" />
-                </FormItem>
-              )}
-            />
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-3"
+        >
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70 ml-1">
+                  {t('packets_needed')}
+                </FormLabel>
+                <FormControl>
+                  <NumberInput
+                    min={1}
+                    className="bg-background/50 border-input/50 h-10 rounded-2xl focus:ring-primary/20 focus:border-primary/50 transition-all font-black text-xl pl-6"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[11px] font-bold text-destructive ml-1" />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="target_date"
-              render={({ field }) => (
-                <FormItem className="space-y-1.5">
-                  <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 ml-1">
-                    {t('target_date')}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      className="bg-background/40 border-input/40 h-10 rounded-xl focus:ring-primary/20 focus:border-primary/50 transition-all font-medium text-xs [&::-webkit-calendar-picker-indicator]:invert-[0.2]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[10px] font-bold text-destructive ml-1" />
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="target_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70 ml-1">
+                  {t('target_date')}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    className="bg-background/50 border-input/50 h-12 rounded-2xl focus:ring-primary/20 focus:border-primary/50 transition-all font-bold text-base pl-6 pr-4 [&::-webkit-calendar-picker-indicator]:opacity-40 [&::-webkit-calendar-picker-indicator]:invert dark:[&::-webkit-calendar-picker-indicator]:invert-0"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[11px] font-bold text-destructive ml-1" />
+              </FormItem>
+            )}
+          />
 
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-11 rounded-xl text-sm font-black shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all bg-primary hover:bg-primary/90 text-primary-foreground group"
+            className="w-full h-12 rounded-2xl text-lg font-black shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all bg-primary hover:bg-primary/90 text-primary-foreground active:scale-[0.98]"
           >
             {isSubmitting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             ) : (
-              <>
-                <Plus className="mr-2 h-5 w-4" />
-                {t('submit_request')}
-              </>
+              <div className="flex items-center gap-2">
+                <Plus className="w-5 h-5" />
+                <span>{t('submit_request')}</span>
+              </div>
             )}
           </Button>
         </form>
