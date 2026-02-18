@@ -183,7 +183,7 @@ export function CollectionsList({
                 <Card
                   key={collection.id}
                   className={cn(
-                    'border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:bg-card/60',
+                    'bg-card/40 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:bg-card/60',
                     status.border,
                     'animate-in fade-in'
                   )}

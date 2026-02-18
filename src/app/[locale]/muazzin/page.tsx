@@ -70,7 +70,7 @@ export default async function MuazzinDashboard({
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <>
       <div className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
           {t('muazzin_dashboard')}
@@ -81,7 +81,7 @@ export default async function MuazzinDashboard({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {stats.map(stat => (
           <Card
             key={stat.title}
@@ -134,6 +134,6 @@ export default async function MuazzinDashboard({
           </span>
         </Link>
       </div>
-    </div>
+    </>
   );
 }

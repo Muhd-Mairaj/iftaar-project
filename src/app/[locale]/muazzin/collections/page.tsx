@@ -33,7 +33,7 @@ export default async function CollectionsPage({
   const collections = await getMuazzinCollectionRequests(user.id, 0, 10);
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 gap-4 animate-in fade-in duration-500">
+    <>
       <div className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
           {t('muazzin_nav_collections')}
@@ -64,6 +64,6 @@ export default async function CollectionsPage({
           userId={user?.id || ''}
         />
       </div>
-    </div>
+    </>
   );
 }

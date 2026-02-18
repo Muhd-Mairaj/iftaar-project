@@ -115,7 +115,7 @@ export function DonationsList({
   };
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 gap-4">
+    <div className="flex flex-col flex-1 min-h-0 gap-3">
       {/* Filter bar — fixed */}
       <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 max-w-full overflow-x-auto no-scrollbar">
         {(['all', 'pending', 'approved', 'rejected'] as FilterStatus[]).map(
@@ -162,7 +162,7 @@ export function DonationsList({
             {allDonations.map(donation => (
               <Card
                 key={donation.id}
-                className="border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden group hover:border-primary/20 transition-all duration-300"
+                className="border-2 bg-card/40 backdrop-blur-xl overflow-hidden group hover:border-primary/20 transition-all duration-300"
               >
                 <CardContent className="p-0">
                   <div className="p-5 space-y-4">

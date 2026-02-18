@@ -16,7 +16,7 @@ export default async function DonationsPage({
   const donationsWithUrls = await getMuazzinDonations(0, PAGE_SIZE, 'pending');
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 gap-6 animate-in fade-in duration-500">
+    <>
       {/* Fixed header */}
       <div className="flex-none">
         <h1 className="text-3xl font-black tracking-tight text-foreground">
@@ -33,6 +33,6 @@ export default async function DonationsPage({
         locale={locale}
         pageSize={PAGE_SIZE}
       />
-    </div>
+    </>
   );
 }

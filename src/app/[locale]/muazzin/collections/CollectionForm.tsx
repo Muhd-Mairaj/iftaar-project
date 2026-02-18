@@ -56,7 +56,7 @@ export function CollectionForm() {
   }
 
   return (
-    <div className="bg-card/30 backdrop-blur-xl border border-white/10 rounded-[2rem] px-4 py-2 shadow-xl">
+    <div className="bg-card/30 backdrop-blur-xl border rounded-[2rem] p-4 shadow-xl shadow-black/5">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
