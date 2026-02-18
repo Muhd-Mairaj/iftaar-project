@@ -59,11 +59,11 @@ export default async function RestaurantDashboard({
         </p>
       </div>
 
-      <div className="flex flex-col flex-1 gap-3">
+      <div className="flex flex-col gap-3">
         {dashboardStats.map(stat => (
           <Card
             key={stat.title}
-            className="border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden group"
+            className="bg-card/40 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden group"
           >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -87,10 +87,10 @@ export default async function RestaurantDashboard({
         ))}
       </div>
 
-      <div className="flex flex-col flex-1 gap-3">
+      <div className="flex flex-col gap-3 mb-2">
         <Link
           href={`/${locale}/restaurant/collections`}
-          className="group flex items-center gap-4 px-6 py-5 rounded-[2rem] bg-card/40 backdrop-blur-xl border border-white/10 hover:bg-primary hover:border-primary/30 transition-all duration-300 active:scale-[0.98] shadow-sm hover:shadow-lg hover:shadow-primary/10"
+          className="group flex items-center gap-4 px-6 py-5 rounded-[2rem] bg-card/40 backdrop-blur-xl border hover:bg-primary hover:border-primary/30 transition-all duration-300 active:scale-[0.98] shadow-xl shadow-black/5 hover:shadow-primary/10"
         >
           <div className="w-14 h-14 rounded-2xl bg-primary/10 group-hover:bg-white/20 flex items-center justify-center shrink-0 transition-colors duration-300">
             <ListChecks className="w-7 h-7 text-primary group-hover:text-primary-foreground transition-colors" />

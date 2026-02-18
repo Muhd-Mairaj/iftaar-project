@@ -86,11 +86,7 @@ export default function UpdatePasswordPage() {
 
   if (authLoading || !isSessionReady) {
     return (
-      <div className="flex flex-col h-screen items-center justify-center p-6 bg-background relative overflow-hidden">
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-lantern/5 blur-[120px] rounded-full" />
-        </div>
+      <div className="flex flex-col items-center justify-center p-6 bg-background relative overflow-hidden min-h-[60vh]">
         <div className="relative z-10 flex flex-col items-center space-y-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
           <p className="text-muted-foreground font-medium animate-pulse">
@@ -102,13 +98,7 @@ export default function UpdatePasswordPage() {
   }
 
   return (
-    <div className="flex h-full items-center justify-center p-6 relative overflow-hidden">
-      {/* Background Ambient Glow */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-lantern/5 blur-[120px] rounded-full" />
-      </div>
-
+    <div className="flex items-center justify-center relative overflow-hidden min-h-[60vh]">
       <div className="w-full max-w-md space-y-8 relative z-10 animate-in fade-in duration-500">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-primary/10 text-primary mb-4 shadow-xl shadow-primary/5 border border-primary/20 backdrop-blur-sm">

@@ -16,7 +16,6 @@ export default async function MuazzinDashboard({
   // Fetch summary stats
   const [
     { count: pendingCount },
-    // { count: approvedCount },
     { data: approvedDonations },
     { data: collectionRequests },
   ] = await Promise.all([
@@ -24,10 +23,6 @@ export default async function MuazzinDashboard({
       .from('donations')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'pending'),
-    // supabase
-    //   .from('collection_requests')
-    //   .select('*', { count: 'exact', head: true })
-    //   .eq('status', 'approved'),
     supabase.from('donations').select('quantity').eq('status', 'approved'),
     supabase.from('collection_requests').select('quantity'),
   ]);
@@ -85,7 +80,7 @@ export default async function MuazzinDashboard({
         {stats.map(stat => (
           <Card
             key={stat.title}
-            className="border-white/10 bg-card/40 backdrop-blur-xl overflow-hidden group"
+            className="border-2 bg-card/40 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden group"
           >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -109,10 +104,10 @@ export default async function MuazzinDashboard({
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="flex flex-row gap-3 mb-2">
         <Link
           href={`/${locale}/muazzin/donations`}
-          className="group flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card/40 backdrop-blur-xl border border-white/10 hover:bg-primary hover:border-primary/30 transition-all duration-300 active:scale-[0.97] shadow-sm hover:shadow-lg hover:shadow-primary/10"
+          className="flex-1 group flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card/40 backdrop-blur-xl border hover:bg-primary hover:border-primary/30 transition-all duration-300 active:scale-[0.97] shadow-xl shadow-black/5 hover:shadow-primary/10"
         >
           <div className="w-10 h-10 rounded-xl bg-primary/10 group-hover:bg-white/20 flex items-center justify-center shrink-0 transition-colors duration-300">
             <HeartHandshake className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
@@ -124,7 +119,7 @@ export default async function MuazzinDashboard({
 
         <Link
           href={`/${locale}/muazzin/collections`}
-          className="group flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card/40 backdrop-blur-xl border border-white/10 hover:bg-lantern hover:border-lantern/30 transition-all duration-300 active:scale-[0.97] shadow-sm hover:shadow-lg hover:shadow-lantern/10"
+          className="flex-1 group flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card/40 backdrop-blur-xl border hover:bg-lantern hover:border-lantern/30 transition-all duration-300 active:scale-[0.97] shadow-xl shadow-black/5 hover:shadow-lantern/10"
         >
           <div className="w-10 h-10 rounded-xl bg-lantern/10 group-hover:bg-white/20 flex items-center justify-center shrink-0 transition-colors duration-300">
             <Boxes className="w-5 h-5 text-lantern group-hover:text-lantern-foreground transition-colors" />

@@ -63,9 +63,9 @@ export function DonationsList({
       initialData:
         filter === 'pending'
           ? {
-            pages: [initialDonations],
-            pageParams: [0],
-          }
+              pages: [initialDonations],
+              pageParams: [0],
+            }
           : undefined,
     });
 
@@ -117,7 +117,7 @@ export function DonationsList({
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-3">
       {/* Filter bar — fixed */}
-      <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 max-w-full overflow-x-auto no-scrollbar">
+      <div className="flex-none flex gap-1 p-1 bg-card/50 backdrop-blur-md rounded-xl border max-w-full overflow-x-auto no-scrollbar">
         {(['all', 'pending', 'approved', 'rejected'] as FilterStatus[]).map(
           f => (
             <Button
@@ -128,7 +128,7 @@ export function DonationsList({
               className={cn(
                 'rounded-lg px-4 h-9 font-bold text-xs uppercase tracking-widest transition-all whitespace-nowrap',
                 filter === f
-                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 shadow-sm'
                   : 'text-muted-foreground hover:bg-white/5'
               )}
             >
@@ -158,11 +158,11 @@ export function DonationsList({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+          <div className="flex flex-col gap-3">
             {allDonations.map(donation => (
               <Card
                 key={donation.id}
-                className="border-2 bg-card/40 backdrop-blur-xl overflow-hidden group hover:border-primary/20 transition-all duration-300 touch-pan-y"
+                className="border-2 bg-card/40 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden group hover:border-primary/20 transition-all duration-300 touch-pan-y"
               >
                 <CardContent className="p-0">
                   <div className="p-5 space-y-4">

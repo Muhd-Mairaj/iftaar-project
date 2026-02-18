@@ -78,7 +78,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full p-6">
+    <div className="flex flex-col items-center justify-center min-h-[60vh]">
       <div className="w-full max-w-sm space-y-8 animate-in fade-in duration-500">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-primary/10 text-primary mb-4 shadow-xl shadow-primary/5 border border-primary/20 backdrop-blur-sm">

@@ -89,9 +89,9 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 gap-8 animate-in fade-in duration-500">
+    <>
       {/* Header Section — Fixed */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 flex-none">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 flex-none">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
             <ShieldCheck className="w-8 h-8 text-primary" />
@@ -202,12 +202,11 @@ export default function AdminUsersPage() {
         </Dialog>
       </div>
 
-      {/* Users List — Scrollable container */}
-      <div className="flex-1 min-h-0 bg-card/40 backdrop-blur-md border border-white/10 rounded-[2.5rem] shadow-xl overflow-hidden flex flex-col">
+      <div className="flex-1 min-h-0 bg-card/40 backdrop-blur-md border border-white/10 rounded-[2.5rem] shadow-xl shadow-black/5 overflow-hidden flex flex-col">
         <div className="flex-1 overflow-y-auto no-scrollbar pt-2 pb-6">
           <UsersList users={users} isLoading={isLoading} />
         </div>
       </div>
-    </div>
+    </>
   );
 }

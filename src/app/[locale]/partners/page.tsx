@@ -89,9 +89,9 @@ export default function PartnersPage() {
           ))}
         </div>
 
-        <div className="flex-none">
+        <div className="flex-none mb-2">
           <footer className="animate-in slide-in-from-bottom duration-500">
-            <div className="p-4 rounded-[2rem] bg-lantern/10 border border-lantern/20 flex items-center justify-center gap-3 backdrop-blur-md shadow-lg">
+            <div className="p-4 rounded-[2rem] bg-lantern/10 border border-lantern/20 flex items-center justify-center gap-3 backdrop-blur-md shadow-lg shadow-black/5">
               <Receipt className="w-4 h-4 text-lantern" />
               <p className="text-[10px] font-black text-lantern uppercase tracking-widest leading-tight text-center">
                 {t('receipt_instruction')}

@@ -30,7 +30,7 @@ export default async function MuazzinLayout({
   }
 
   return (
-    <div className="animate-in fade-in duration-300 flex flex-col flex-1 gap-3 min-h-0 ">
+    <div className="animate-in fade-in duration-300 min-h-0 flex flex-col flex-1 gap-3">
       {children}
     </div>
   );
