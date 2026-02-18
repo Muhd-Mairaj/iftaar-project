@@ -1,92 +1,51 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import { useTranslate } from '@tolgee/react';
 import { Boxes, Clock, HeartHandshake, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
 import { StatsSkeleton } from '@/components/Skeletons';
 import { Card, CardContent } from '@/components/ui/card';
-import { createClient } from '@/lib/supabase/client';
+import { getMuazzinStats } from '@/lib/api/muazzin';
 
 export default function MuazzinDashboard() {
   const { t } = useTranslate();
   const params = useParams();
   const locale = params.locale as string;
 
-  const [stats, setStats] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: statsData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['muazzin-stats'],
+    queryFn: getMuazzinStats,
+  });
 
-  const fetchStats = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const supabase = createClient();
-
-      // Fetch summary stats
-      const [
-        { count: pendingCount },
-        { data: approvedDonations },
-        { data: collectionRequests },
-      ] = await Promise.all([
-        supabase
-          .from('donations')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'pending'),
-        supabase.from('donations').select('quantity').eq('status', 'approved'),
-        supabase.from('collection_requests').select('quantity'),
-      ]);
-
-      const totalApprovedPackets = (approvedDonations ?? []).reduce(
-        (sum, d) => sum + (d.quantity || 0),
-        0
-      );
-      const totalCollectedPackets = (collectionRequests ?? []).reduce(
-        (sum, c) => sum + (c.quantity || 0),
-        0
-      );
-      const packetsAvailable = Math.max(
-        0,
-        totalApprovedPackets - totalCollectedPackets
-      );
-
-      const statsData = [
-        {
-          title: t('muazzin_stats_pending'),
-          value: pendingCount || 0,
-          icon: Clock,
-          color: 'text-amber-500',
-          bg: 'bg-amber-500/10',
-        },
-        {
-          title: t('muazzin_stats_collected'),
-          value: totalCollectedPackets || 0,
-          icon: TrendingUp,
-          color: 'text-emerald-500',
-          bg: 'bg-emerald-500/10',
-        },
-        {
-          title: t('muazzin_stats_packets'),
-          value: packetsAvailable || 0,
-          icon: TrendingUp,
-          color: 'text-emerald-500',
-          bg: 'bg-emerald-500/10',
-        },
-      ];
-
-      setStats(statsData);
-    } catch (err: any) {
-      console.error('Error fetching dashboard stats:', err);
-      setError('Failed to load dashboard data');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [t]);
-
-  useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
+  const stats = [
+    {
+      title: t('muazzin_stats_pending'),
+      value: statsData?.pendingCount || 0,
+      icon: Clock,
+      color: 'text-amber-500',
+      bg: 'bg-amber-500/10',
+    },
+    {
+      title: t('muazzin_stats_collected'),
+      value: statsData?.totalCollectedPackets || 0,
+      icon: TrendingUp,
+      color: 'text-emerald-500',
+      bg: 'bg-emerald-500/10',
+    },
+    {
+      title: t('muazzin_stats_packets'),
+      value: statsData?.packetsAvailable || 0,
+      icon: TrendingUp,
+      color: 'text-emerald-500',
+      bg: 'bg-emerald-500/10',
+    },
+  ];
 
   return (
     <>
@@ -102,12 +61,14 @@ export default function MuazzinDashboard() {
 
       <div className="flex flex-col gap-6">
         {isLoading && <StatsSkeleton />}
-        {error && (
+
+        {isError && (
           <div className="text-center py-10 text-destructive font-bold">
-            {error}
+            {t('error_unexpected')}
           </div>
         )}
-        {!isLoading && !error && (
+
+        {!isLoading && !isError && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {stats.map(stat => (
               <Card
@@ -123,10 +84,7 @@ export default function MuazzinDashboard() {
                       <h3 className="text-4xl font-black">{stat.value}</h3>
                     </div>
                     <div
-                      className={
-                        stat.bg +
-                        ' p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300'
-                      }
+                      className={`${stat.bg} p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300`}
                     >
                       <stat.icon className={`w-8 h-8 ${stat.color}`} />
                     </div>

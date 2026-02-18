@@ -116,3 +116,43 @@ export async function getMuazzinCollectionRequests({
   if (error) throw error;
   return data || [];
 }
+
+/**
+ * Fetch summary stats for the muazzin dashboard
+ */
+export async function getMuazzinStats() {
+  const supabase = createClient();
+
+  // Fetch summary stats
+  const [
+    { count: pendingCount },
+    { data: approvedDonations },
+    { data: collectionRequests },
+  ] = await Promise.all([
+    supabase
+      .from('donations')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'pending'),
+    supabase.from('donations').select('quantity').eq('status', 'approved'),
+    supabase.from('collection_requests').select('quantity'),
+  ]);
+
+  const totalApprovedPackets = (approvedDonations ?? []).reduce(
+    (sum, d) => sum + (d.quantity || 0),
+    0
+  );
+  const totalCollectedPackets = (collectionRequests ?? []).reduce(
+    (sum, c) => sum + (c.quantity || 0),
+    0
+  );
+  const packetsAvailable = Math.max(
+    0,
+    totalApprovedPackets - totalCollectedPackets
+  );
+
+  return {
+    pendingCount: pendingCount || 0,
+    totalCollectedPackets,
+    packetsAvailable,
+  };
+}
