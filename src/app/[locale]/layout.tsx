@@ -54,7 +54,7 @@ export default async function RootLayout({
       <body
         className={cn(
           fontClass,
-          'font-sans antialiased text-foreground bg-background h-[100dvh] w-full overflow-hidden select-none flex flex-col'
+          'font-sans antialiased text-foreground bg-background h-[100dvh] w-full overflow-hidden flex flex-col'
         )}
       >
         <TolgeeNextProvider locale={locale}>

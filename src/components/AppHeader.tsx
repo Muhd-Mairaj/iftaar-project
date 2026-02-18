@@ -46,7 +46,7 @@ export function AppHeader({ locale }: { locale: string }) {
   };
 
   return (
-    <header className="flex-none z-50 h-16 flex items-center justify-between px-6 bg-background/50 backdrop-blur-md border-b border-white/5 shadow-sm">
+    <header className="flex-none z-50 h-16 flex items-center justify-between px-6 bg-background/50 backdrop-blur-md border-b border-white/5 shadow-sm select-none">
       <div className="flex items-center gap-2">
         <Link href={`/${locale}`} className="group flex items-center gap-2">
           <Logo className="w-9 h-9" />

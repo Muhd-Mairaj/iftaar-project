@@ -44,7 +44,7 @@ export default function PartnersPage() {
           {RESTAURANTS.map(res => (
             <div
               key={res.id}
-              className="bg-card/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2.5rem] p-5 flex flex-col gap-4 group transition-all hover:bg-card/60 shadow-xl shadow-black/5 animate-in fade-in duration-500"
+              className="bg-card/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2.5rem] p-5 flex flex-col gap-4 group transition-all hover:bg-card/60 shadow-xl shadow-black/5 animate-in fade-in duration-500 touch-pan-y"
             >
               <div className="flex items-start justify-between">
                 <div>

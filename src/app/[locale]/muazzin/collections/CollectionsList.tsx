@@ -89,9 +89,9 @@ export function CollectionsList({
       initialData:
         filter === 'all'
           ? {
-              pages: [initialCollections],
-              pageParams: [0],
-            }
+            pages: [initialCollections],
+            pageParams: [0],
+          }
           : undefined,
     });
 
@@ -183,7 +183,7 @@ export function CollectionsList({
                 <Card
                   key={collection.id}
                   className={cn(
-                    'bg-card/40 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:bg-card/60',
+                    'bg-card/40 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:bg-card/60 touch-pan-y',
                     status.border,
                     'animate-in fade-in'
                   )}

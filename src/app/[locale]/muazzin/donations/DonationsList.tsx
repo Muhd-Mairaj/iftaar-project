@@ -63,9 +63,9 @@ export function DonationsList({
       initialData:
         filter === 'pending'
           ? {
-              pages: [initialDonations],
-              pageParams: [0],
-            }
+            pages: [initialDonations],
+            pageParams: [0],
+          }
           : undefined,
     });
 
@@ -162,7 +162,7 @@ export function DonationsList({
             {allDonations.map(donation => (
               <Card
                 key={donation.id}
-                className="border-2 bg-card/40 backdrop-blur-xl overflow-hidden group hover:border-primary/20 transition-all duration-300"
+                className="border-2 bg-card/40 backdrop-blur-xl overflow-hidden group hover:border-primary/20 transition-all duration-300 touch-pan-y"
               >
                 <CardContent className="p-0">
                   <div className="p-5 space-y-4">
