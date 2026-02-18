@@ -42,6 +42,11 @@ export async function inviteUser(data: InviteUserInput, locale: string) {
       return { error: 'Failed to create user profile' };
     }
 
+    // 3. Set the role in auth.users.app_metadata for middleware RBAC
+    await supabase.auth.admin.updateUserById(inviteData.user.id, {
+      app_metadata: { role: validated.role },
+    });
+
     revalidatePath('/[locale]/admin/users', 'page');
     return { success: true };
   } catch (error) {
@@ -120,4 +125,22 @@ export async function getUsers(): Promise<ProfileWithStatus[]> {
       lastSignIn: authUser?.last_sign_in_at,
     };
   });
+}
+
+/**
+ * Syncs the user's role from the database to auth.users.app_metadata.
+ * This ensures the middleware can read the role without a DB hit.
+ */
+export async function syncUserRole(userId: string, role: string) {
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase.auth.admin.updateUserById(userId, {
+      app_metadata: { role },
+    });
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    console.error('Sync user role error:', error);
+    return { error: 'Failed to sync user role' };
+  }
 }
