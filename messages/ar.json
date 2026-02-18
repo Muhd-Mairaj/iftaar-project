@@ -124,5 +124,12 @@
   "status_all": "الكل",
   "status_uncollected": "لم يتم الاستلام",
   "collections_by": "بواسطة",
-  "approve_button": "اعتماد"
+  "approve_button": "اعتماد",
+  "user_status_active": "نشط",
+  "user_status_pending": "انتظار القبول",
+  "resend_invite": "إعادة دعوة",
+  "delete_user": "حذف المستخدم",
+  "confirm_delete_user": "هل أنت متأكد من حذف هذا المستخدم؟",
+  "last_login": "آخر دخول",
+  "invited_on": "تاريخ الدعوة"
 }

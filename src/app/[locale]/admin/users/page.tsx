@@ -32,8 +32,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { inviteUser } from '@/lib/actions/admin';
-import { getUsers } from '@/lib/api/admin';
+import { getUsers, inviteUser } from '@/lib/actions/admin';
+import { cn } from '@/lib/utils';
 import { InviteUserInput, InviteUserSchema } from '@/lib/validations';
 import { UsersList } from './UsersList';
 
@@ -43,6 +43,9 @@ export default function AdminUsersPage() {
   const locale = params.locale as string;
   const queryClient = useQueryClient();
 
+  const [statusFilter, setStatusFilter] = useState<
+    'all' | 'active' | 'pending'
+  >('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -83,7 +86,6 @@ export default function AdminUsersPage() {
       setIsSubmitting(false);
     }
   }
-
 
   return (
     <>
@@ -199,6 +201,30 @@ export default function AdminUsersPage() {
         </Dialog>
       </div>
 
+      {/* Filter bar */}
+      <div className="flex-none flex gap-1 p-1 w-full bg-card/50 backdrop-blur-md rounded-xl border overflow-x-auto no-scrollbar">
+        {(['all', 'active', 'pending'] as const).map(f => (
+          <Button
+            key={f}
+            variant="ghost"
+            size="sm"
+            onClick={() => setStatusFilter(f)}
+            className={cn(
+              'rounded-lg px-4 h-9 font-bold w-full text-xs uppercase tracking-widest transition-all whitespace-nowrap',
+              statusFilter === f
+                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+                : 'text-muted-foreground hover:bg-white/5'
+            )}
+          >
+            {f === 'all'
+              ? t('all')
+              : f === 'active'
+                ? t('user_status_active')
+                : t('user_status_pending')}
+          </Button>
+        ))}
+      </div>
+
       {/* Content Section */}
       <div className="flex-1 min-h-0 border rounded-xl shadow-xl shadow-black/5 overflow-hidden flex flex-col">
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pt-2 pb-6">
@@ -211,14 +237,20 @@ export default function AdminUsersPage() {
               <p className="font-black text-xl">{t('error_unexpected')}</p>
               <Button
                 variant="outline"
-                onClick={() => queryClient.invalidateQueries({ queryKey: ['admin_users'] })}
+                onClick={() =>
+                  queryClient.invalidateQueries({ queryKey: ['admin_users'] })
+                }
                 className="rounded-xl border-destructive/20 hover:bg-destructive/5"
               >
                 {t('try_again')}
               </Button>
             </div>
           ) : (
-            <UsersList users={users} isLoading={isLoading} />
+            <UsersList
+              users={users}
+              isLoading={isLoading}
+              filter={statusFilter}
+            />
           )}
         </div>
       </div>

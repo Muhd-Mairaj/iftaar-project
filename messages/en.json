@@ -124,5 +124,12 @@
   "status_all": "All Feed",
   "status_uncollected": "No Show",
   "collections_by": "By",
-  "approve_button": "Approve"
+  "approve_button": "Approve",
+  "user_status_active": "Active",
+  "user_status_pending": "Pending",
+  "resend_invite": "Re-invite",
+  "delete_user": "Delete User",
+  "confirm_delete_user": "Are you sure you want to delete this user?",
+  "last_login": "Last Login",
+  "invited_on": "Invited"
 }
