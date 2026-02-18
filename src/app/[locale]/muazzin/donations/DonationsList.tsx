@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ListSkeleton } from '@/components/Skeletons';
+import { StatusFilter } from '@/components/StatusFilter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -104,27 +105,11 @@ export function DonationsList({ pageSize = 10 }: { pageSize?: number }) {
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-3">
-      {/* Filter bar — fixed */}
-      <div className="flex-none flex gap-1 p-1 bg-card/50 backdrop-blur-md rounded-xl border max-w-full overflow-x-auto no-scrollbar">
-        {(['all', 'pending', 'approved', 'rejected'] as FilterStatus[]).map(
-          f => (
-            <Button
-              key={f}
-              variant="ghost"
-              size="sm"
-              onClick={() => setFilter(f)}
-              className={cn(
-                'rounded-lg px-4 h-9 font-bold text-xs uppercase tracking-widest transition-all whitespace-nowrap',
-                filter === f
-                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 shadow-sm'
-                  : 'text-muted-foreground hover:bg-white/5'
-              )}
-            >
-              {f}
-            </Button>
-          )
-        )}
-      </div>
+      <StatusFilter
+        options={['all', 'pending', 'approved', 'rejected'] as const}
+        value={filter}
+        onChange={setFilter}
+      />
 
       {/* Scrollable card list */}
       <div
@@ -212,13 +197,19 @@ export function DonationsList({ pageSize = 10 }: { pageSize?: number }) {
                             Donation Proof
                           </DialogTitle>
                           <div className="aspect-auto max-h-[80vh] w-full flex items-center justify-center p-4">
-                            <Image
-                              src={donation.signed_proof_url || ''}
-                              alt="Donation Proof"
-                              // width={800}
-                              // height={800}
-                              className="max-w-full max-h-full rounded-2xl object-contain shadow-2xl"
-                            />
+                            {donation.signed_proof_url ? (
+                              <Image
+                                src={donation.signed_proof_url}
+                                alt="Donation Proof"
+                                width={800}
+                                height={800}
+                                className="max-w-full max-h-full rounded-2xl object-contain shadow-2xl"
+                              />
+                            ) : (
+                              <div className="text-muted-foreground italic">
+                                No image available
+                              </div>
+                            )}
                           </div>
                         </DialogContent>
                       </Dialog>

@@ -8,6 +8,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ListSkeleton } from '@/components/Skeletons';
+import { StatusFilter } from '@/components/StatusFilter';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -33,7 +34,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getUsers, inviteUser } from '@/lib/actions/admin';
-import { cn } from '@/lib/utils';
 import { InviteUserInput, InviteUserSchema } from '@/lib/validations';
 import { UsersList } from './UsersList';
 
@@ -201,29 +201,18 @@ export default function AdminUsersPage() {
         </Dialog>
       </div>
 
-      {/* Filter bar */}
-      <div className="flex-none flex gap-1 p-1 w-full bg-card/50 backdrop-blur-md rounded-xl border overflow-x-auto no-scrollbar">
-        {(['all', 'active', 'pending'] as const).map(f => (
-          <Button
-            key={f}
-            variant="ghost"
-            size="sm"
-            onClick={() => setStatusFilter(f)}
-            className={cn(
-              'rounded-lg px-4 h-9 font-bold w-full text-xs uppercase tracking-widest transition-all whitespace-nowrap',
-              statusFilter === f
-                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                : 'text-muted-foreground hover:bg-white/5'
-            )}
-          >
-            {f === 'all'
-              ? t('all')
-              : f === 'active'
-                ? t('user_status_active')
-                : t('user_status_pending')}
-          </Button>
-        ))}
-      </div>
+      <StatusFilter
+        options={['all', 'active', 'pending'] as const}
+        value={statusFilter}
+        onChange={setStatusFilter}
+        fullWidth
+        getLabel={option => {
+          if (option === 'all') return t('all');
+          if (option === 'active') return t('user_status_active');
+          if (option === 'pending') return t('user_status_pending');
+          return option; // Fallback
+        }}
+      />
 
       {/* Content Section */}
       <div className="flex-1 min-h-0 border rounded-xl shadow-xl shadow-black/5 overflow-hidden flex flex-col">

@@ -15,6 +15,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ListSkeleton } from '@/components/Skeletons';
+import { StatusFilter } from '@/components/StatusFilter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { getMuazzinCollectionRequests } from '@/lib/api/muazzin';
@@ -134,36 +135,24 @@ export function CollectionsList({ userId }: { userId: string | null }) {
   const getStatus = (status: Enums<'collection_status'>) =>
     STATUS_CONFIG[status] || STATUS_CONFIG.pending;
 
-  const filters: { key: FilterStatus; label: string }[] = [
-    { key: 'all', label: t('all') || 'All' },
-    { key: 'pending', label: t('pending') },
-    { key: 'approved', label: t('approved') },
-    { key: 'collected', label: t('collected') },
-    { key: 'uncollected', label: t('uncollected') },
-    { key: 'rejected', label: t('rejected') },
-  ];
-
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4">
-      {/* Filter bar */}
-      <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border max-w-full overflow-x-auto no-scrollbar">
-        {filters.map(f => (
-          <Button
-            key={f.key}
-            variant="ghost"
-            size="sm"
-            onClick={() => setFilter(f.key)}
-            className={cn(
-              'rounded-lg px-3 h-8 font-bold text-[10px] uppercase tracking-widest transition-all whitespace-nowrap',
-              filter === f.key
-                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                : 'text-muted-foreground hover:bg-white/5'
-            )}
-          >
-            {f.label}
-          </Button>
-        ))}
-      </div>
+      <StatusFilter
+        options={
+          [
+            'all',
+            'pending',
+            'approved',
+            'collected',
+            'uncollected',
+            'rejected',
+          ] as const
+        }
+        value={filter}
+        onChange={setFilter}
+        containerClassName="gap-2"
+        className="px-3 h-8 text-[10px]"
+      />
 
       {/* Scrollable list */}
       <div

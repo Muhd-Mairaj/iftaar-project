@@ -18,6 +18,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ListSkeleton } from '@/components/Skeletons';
+import { StatusFilter } from '@/components/StatusFilter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -158,9 +159,8 @@ export function RestaurantCollectionsList({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-3">
-      {/* Filter bar */}
-      <div className="flex-none flex gap-1 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 max-w-full overflow-x-auto no-scrollbar">
-        {(
+      <StatusFilter
+        options={
           [
             'all',
             'pending',
@@ -168,24 +168,11 @@ export function RestaurantCollectionsList({
             'collected',
             'rejected',
             'uncollected',
-          ] as FilterStatus[]
-        ).map(f => (
-          <Button
-            key={f}
-            variant="ghost"
-            size="sm"
-            onClick={() => setFilter(f)}
-            className={cn(
-              'rounded-lg px-4 h-9 font-bold text-xs uppercase tracking-widest transition-all whitespace-nowrap',
-              filter === f
-                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                : 'text-muted-foreground hover:bg-white/5'
-            )}
-          >
-            {t(f)}
-          </Button>
-        ))}
-      </div>
+          ] as const
+        }
+        value={filter}
+        onChange={setFilter}
+      />
 
       {/* Scrollable list */}
       <div
