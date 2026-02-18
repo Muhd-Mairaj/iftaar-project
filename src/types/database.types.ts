@@ -20,7 +20,7 @@ export type Database = {
           created_by: string | null;
           id: string;
           quantity: number;
-          status: Database['public']['Enums']['collection_status'] | null;
+          status: Database['public']['Enums']['collection_status'];
           target_date: string;
           updated_at: string | null;
         };
@@ -29,7 +29,7 @@ export type Database = {
           created_by?: string | null;
           id?: string;
           quantity: number;
-          status?: Database['public']['Enums']['collection_status'] | null;
+          status?: Database['public']['Enums']['collection_status'];
           target_date: string;
           updated_at?: string | null;
         };
@@ -38,7 +38,7 @@ export type Database = {
           created_by?: string | null;
           id?: string;
           quantity?: number;
-          status?: Database['public']['Enums']['collection_status'] | null;
+          status?: Database['public']['Enums']['collection_status'];
           target_date?: string;
           updated_at?: string | null;
         };
@@ -59,7 +59,7 @@ export type Database = {
           proof_url: string;
           quantity: number;
           reviewed_by: string | null;
-          status: Database['public']['Enums']['donation_status'] | null;
+          status: Database['public']['Enums']['donation_status'];
           updated_at: string | null;
         };
         Insert: {
@@ -68,7 +68,7 @@ export type Database = {
           proof_url: string;
           quantity: number;
           reviewed_by?: string | null;
-          status?: Database['public']['Enums']['donation_status'] | null;
+          status?: Database['public']['Enums']['donation_status'];
           updated_at?: string | null;
         };
         Update: {
@@ -77,7 +77,7 @@ export type Database = {
           proof_url?: string;
           quantity?: number;
           reviewed_by?: string | null;
-          status?: Database['public']['Enums']['donation_status'] | null;
+          status?: Database['public']['Enums']['donation_status'];
           updated_at?: string | null;
         };
         Relationships: [
@@ -133,7 +133,12 @@ export type Database = {
       };
     };
     Enums: {
-      collection_status: 'pending' | 'approved' | 'collected' | 'uncollected';
+      collection_status:
+        | 'pending'
+        | 'approved'
+        | 'collected'
+        | 'uncollected'
+        | 'rejected';
       donation_status: 'pending' | 'approved' | 'rejected';
       user_role: 'muazzin' | 'restaurant_admin' | 'super_admin';
     };
@@ -266,7 +271,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      collection_status: ['pending', 'approved', 'collected', 'uncollected'],
+      collection_status: [
+        'pending',
+        'approved',
+        'collected',
+        'uncollected',
+        'rejected',
+      ],
       donation_status: ['pending', 'approved', 'rejected'],
       user_role: ['muazzin', 'restaurant_admin', 'super_admin'],
     },

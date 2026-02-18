@@ -1,47 +1,46 @@
+'use client';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslate } from '@tolgee/react';
 import { CheckCircle2, Clock, ListChecks, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { StatsSkeleton } from '@/components/Skeletons';
 import { Card, CardContent } from '@/components/ui/card';
-import { getTolgee } from '@/i18n';
-import { createClient } from '@/lib/supabase/server';
+import { getRestaurantStats } from '@/lib/api/restaurant';
 import { cn } from '@/lib/utils';
 
-export default async function RestaurantDashboard({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  const { t } = await getTolgee(locale);
-  const supabase = await createClient();
+export default function RestaurantDashboard() {
+  const { t } = useTranslate();
+  const params = useParams();
+  const locale = params.locale as string;
 
-  // Fetch summary stats
-  const { data: stats } = await supabase
-    .from('collection_requests')
-    .select('status');
-
-  const pendingCount = stats?.filter(r => r.status === 'pending').length || 0;
-  const approvedCount = stats?.filter(r => r.status === 'approved').length || 0;
-  const fulfilledCount =
-    stats?.filter(r => r.status === 'collected').length || 0;
+  const {
+    data: statsData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['restaurant-stats'],
+    queryFn: getRestaurantStats,
+  });
 
   const dashboardStats = [
     {
       title: t('restaurant_stats_pending'),
-      value: pendingCount,
+      value: statsData?.pendingCount || 0,
       icon: Clock,
       color: 'text-amber-500',
       bg: 'bg-amber-500/10',
     },
     {
       title: t('restaurant_stats_approved'),
-      value: approvedCount,
+      value: statsData?.approvedCount || 0,
       icon: CheckCircle2,
       color: 'text-primary',
       bg: 'bg-primary/10',
     },
     {
       title: t('restaurant_stats_fulfilled'),
-      value: fulfilledCount,
+      value: statsData?.fulfilledCount || 0,
       icon: TrendingUp,
       color: 'text-emerald-500',
       bg: 'bg-emerald-500/10',
@@ -60,34 +59,43 @@ export default async function RestaurantDashboard({
       </div>
 
       <div className="flex flex-col gap-3">
-        {dashboardStats.map(stat => (
-          <Card
-            key={stat.title}
-            className="bg-card/40 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden group"
-          >
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                    {stat.title}
-                  </p>
-                  <h3 className="text-4xl font-black">{stat.value}</h3>
-                </div>
-                <div
-                  className={cn(
-                    stat.bg,
-                    'p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300'
-                  )}
-                >
-                  <stat.icon className={cn('w-8 h-8', stat.color)} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+        {isLoading && <StatsSkeleton />}
 
-      <div className="flex flex-col gap-3 mb-2">
+        {isError && (
+          <div className="text-center py-10 text-destructive font-bold">
+            {t('error_unexpected')}
+          </div>
+        )}
+
+        {!isLoading &&
+          !isError &&
+          dashboardStats.map(stat => (
+            <Card
+              key={stat.title}
+              className="bg-card/40 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden group"
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
+                      {stat.title}
+                    </p>
+                    <h3 className="text-4xl font-black">{stat.value}</h3>
+                  </div>
+                  <div
+                    className={cn(
+                      stat.bg,
+                      'p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300'
+                    )}
+                  >
+                    <stat.icon className={cn('w-8 h-8', stat.color)} />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+
+        {/* <div className="flex flex-col gap-3 mb-2"> */}
         <Link
           href={`/${locale}/restaurant/collections`}
           className="group flex items-center gap-4 px-6 py-5 rounded-[2rem] bg-card/40 backdrop-blur-xl border hover:bg-primary hover:border-primary/30 transition-all duration-300 active:scale-[0.98] shadow-xl shadow-black/5 hover:shadow-primary/10"
@@ -104,6 +112,7 @@ export default async function RestaurantDashboard({
             </span>
           </div>
         </Link>
+        {/* </div> */}
       </div>
     </>
   );

@@ -41,6 +41,9 @@
   "packets_label": "Packets",
   "error_select_receipt": "Please select a receipt image",
   "error_unexpected": "An unexpected error occurred. Please try again.",
+  "error_loading_requests": "Error loading requests",
+  "try_again": "Try Again",
+  "status_update_failed": "Failed to update status",
   "receipt_selected": "Receipt Selected",
   "receipt_placeholder": "Tap to upload receipt",
   "receipt_hint": "PNG, JPG or PDF up to 5MB",
@@ -99,6 +102,7 @@
   "all": "All",
   "pending": "Pending",
   "approved": "Approved",
+  "rejected": "Rejected",
   "overdue": "Overdue",
   "submitted_on": "Submitted",
   "packets_needed": "Packets Needed",
@@ -119,5 +123,6 @@
   "restaurant_action_mark_collected": "Mark as Collected",
   "status_all": "All Feed",
   "status_uncollected": "No Show",
-  "collections_by": "By"
+  "collections_by": "By",
+  "approve_button": "Approve"
 }

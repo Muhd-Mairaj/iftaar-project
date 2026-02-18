@@ -7,7 +7,9 @@ import {
   CheckCircle2,
   Clock,
   Loader2,
+  LucideIcon,
   Package,
+  XCircle,
   XOctagon,
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
@@ -17,17 +19,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { getMuazzinCollectionRequests } from '@/lib/api/muazzin';
 import { cn } from '@/lib/utils';
+import { Enums } from '@/types/database.types';
 
-type FilterStatus =
-  | 'all'
-  | 'pending'
-  | 'approved'
-  | 'collected'
-  | 'uncollected';
+type FilterStatus = Enums<'collection_status'> | 'all';
 
 const PAGE_SIZE = 10;
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<
+  Enums<'collection_status'>,
+  {
+    label: string;
+    icon: LucideIcon;
+    color: string;
+    bg: string;
+    border: string;
+    glow: string;
+  }
+> = {
   approved: {
     label: 'approved',
     icon: CheckCircle2,
@@ -47,6 +55,14 @@ const STATUS_CONFIG = {
   uncollected: {
     label: 'uncollected',
     icon: XOctagon,
+    color: 'text-destructive',
+    bg: 'bg-destructive/10',
+    border: 'border-destructive/20',
+    glow: 'shadow-destructive/5',
+  },
+  rejected: {
+    label: 'rejected',
+    icon: XCircle,
     color: 'text-destructive',
     bg: 'bg-destructive/10',
     border: 'border-destructive/20',
@@ -115,9 +131,8 @@ export function CollectionsList({ userId }: { userId: string | null }) {
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const getStatus = (status: string | null) =>
-    STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] ||
-    STATUS_CONFIG.pending;
+  const getStatus = (status: Enums<'collection_status'>) =>
+    STATUS_CONFIG[status] || STATUS_CONFIG.pending;
 
   const filters: { key: FilterStatus; label: string }[] = [
     { key: 'all', label: t('all') || 'All' },
@@ -125,6 +140,7 @@ export function CollectionsList({ userId }: { userId: string | null }) {
     { key: 'approved', label: t('approved') },
     { key: 'collected', label: t('collected') },
     { key: 'uncollected', label: t('uncollected') },
+    { key: 'rejected', label: t('rejected') },
   ];
 
   return (

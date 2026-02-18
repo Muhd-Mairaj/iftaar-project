@@ -9,96 +9,112 @@ import {
   Clock,
   Hash,
   Loader2,
+  LucideIcon,
+  Package,
   X,
   XCircle,
+  XOctagon,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { ListSkeleton } from '@/components/Skeletons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { updateCollectionStatus } from '@/lib/actions/restaurant';
-import { createClient } from '@/lib/supabase/client';
+import {
+  getRestaurantCollections,
+  updateCollectionRequestStatus,
+} from '@/lib/api/restaurant';
 import { cn } from '@/lib/utils';
-import { Database } from '@/types/database.types';
+import { Enums } from '@/types/database.types';
 
-type CollectionRequest =
-  Database['public']['Tables']['collection_requests']['Row'] & {
-    profiles: { email: string } | null;
-  };
+type FilterStatus = Enums<'collection_status'> | 'all';
 
-type FilterStatus =
-  | 'all'
-  | 'pending'
-  | 'approved'
-  | 'collected'
-  | 'uncollected';
-
-async function fetchCollectionsPage(
-  page: number,
-  pageSize: number,
-  filter: FilterStatus
-): Promise<CollectionRequest[]> {
-  const supabase = createClient();
-  const from = page * pageSize;
-  const to = from + pageSize - 1;
-
-  let query = supabase
-    .from('collection_requests')
-    .select(`
-      *,
-      profiles!collection_requests_created_by_fkey (
-        email
-      )
-    `)
-    .order('created_at', { ascending: false })
-    .range(from, to);
-
-  if (filter !== 'all') {
-    query = query.eq('status', filter);
+const STATUS_CONFIG: Record<
+  Enums<'collection_status'>,
+  {
+    label: string;
+    icon: LucideIcon;
+    color: string;
+    bg: string;
+    border: string;
+    glow: string;
   }
-
-  const { data, error } = await query;
-  if (error || !data) return [];
-
-  return data as any;
-}
+> = {
+  approved: {
+    label: 'approved',
+    icon: CheckCircle2,
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/20',
+    glow: 'shadow-emerald-500/5',
+  },
+  collected: {
+    label: 'collected',
+    icon: Package,
+    color: 'text-sky-500',
+    bg: 'bg-sky-500/10',
+    border: 'border-sky-500/20',
+    glow: 'shadow-sky-500/5',
+  },
+  uncollected: {
+    label: 'uncollected',
+    icon: XOctagon,
+    color: 'text-destructive',
+    bg: 'bg-destructive/10',
+    border: 'border-destructive/20',
+    glow: 'shadow-destructive/5',
+  },
+  rejected: {
+    label: 'rejected',
+    icon: XCircle,
+    color: 'text-destructive',
+    bg: 'bg-destructive/10',
+    border: 'border-destructive/20',
+    glow: 'shadow-destructive/5',
+  },
+  pending: {
+    label: 'pending',
+    icon: Clock,
+    color: 'text-amber-500',
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/20',
+    glow: 'shadow-amber-500/5',
+  },
+} as const;
 
 export function RestaurantCollectionsList({
-  initialRequests,
-  locale,
   pageSize = 10,
 }: {
-  initialRequests: CollectionRequest[];
-  locale: string;
   pageSize?: number;
 }) {
   const { t } = useTranslate();
   const queryClient = useQueryClient();
+  const params = useParams();
+  const locale = params.locale as string;
 
   const [filter, setFilter] = useState<FilterStatus>('pending');
   const [isSubmitting, setIsSubmitting] = useState<string | null>(null);
-  const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ['restaurant_collections', filter],
-      queryFn: ({ pageParam }) =>
-        fetchCollectionsPage(pageParam, pageSize, filter),
-      initialPageParam: 0,
-      getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-        if (lastPage.length < pageSize) return undefined;
-        return lastPageParam + 1;
-      },
-      initialData:
-        filter === 'pending'
-          ? {
-              pages: [initialRequests],
-              pageParams: [0],
-            }
-          : undefined,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ['restaurant_collections', filter],
+    queryFn: ({ pageParam }) =>
+      getRestaurantCollections({ pageParam, pageSize, filter }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      if (lastPage.length < pageSize) return undefined;
+      return lastPageParam + 1;
+    },
+  });
 
   const allRequests = data?.pages.flat() ?? [];
 
@@ -119,60 +135,38 @@ export function RestaurantCollectionsList({
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const handleStatusUpdate = async (id: string, status: any) => {
+  const handleStatusUpdate = async (
+    id: string,
+    status: Enums<'collection_status'>
+  ) => {
     setIsSubmitting(id);
     try {
-      const result = await updateCollectionStatus(id, status);
-      if (result.success) {
-        await queryClient.invalidateQueries({
-          queryKey: ['restaurant_collections'],
-        });
-        router.refresh();
-      }
+      await updateCollectionRequestStatus(id, status);
+      await queryClient.invalidateQueries({
+        queryKey: ['restaurant_collections'],
+      });
+    } catch (error) {
+      console.error(error);
+      alert('Failed to update status');
     } finally {
       setIsSubmitting(null);
     }
   };
 
-  const getStatusIcon = (status: string | null) => {
-    switch (status) {
-      case 'approved':
-      case 'collected':
-        return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
-      case 'uncollected':
-        return <XCircle className="w-4 h-4 text-destructive" />;
-      default:
-        return <Clock className="w-4 h-4 text-amber-500" />;
-    }
-  };
-
-  const getFilterLabel = (f: FilterStatus) => {
-    switch (f) {
-      case 'all':
-        return t('status_all');
-      case 'pending':
-        return t('pending');
-      case 'approved':
-        return t('approved');
-      case 'collected':
-        return t('collected');
-      case 'uncollected':
-        return t('status_uncollected');
-      default:
-        return f;
-    }
-  };
+  const getStatus = (status: Enums<'collection_status'>) =>
+    STATUS_CONFIG[status] || STATUS_CONFIG.pending;
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-3">
-      {/* Filter bar — matches muazzin side */}
-      <div className="flex-none flex gap-2 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 max-w-full overflow-x-auto no-scrollbar">
+      {/* Filter bar */}
+      <div className="flex-none flex gap-1 p-1 bg-card/50 backdrop-blur-md rounded-xl border border-white/5 max-w-full overflow-x-auto no-scrollbar">
         {(
           [
             'all',
             'pending',
             'approved',
             'collected',
+            'rejected',
             'uncollected',
           ] as FilterStatus[]
         ).map(f => (
@@ -188,7 +182,7 @@ export function RestaurantCollectionsList({
                 : 'text-muted-foreground hover:bg-white/5'
             )}
           >
-            {getFilterLabel(f)}
+            {t(f)}
           </Button>
         ))}
       </div>
@@ -198,11 +192,20 @@ export function RestaurantCollectionsList({
         ref={scrollRef}
         className="flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar rounded-xl"
       >
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        {isLoading && <ListSkeleton />}
+
+        {isError && (
+          <div className="text-center py-20">
+            <p className="text-destructive font-bold mb-4">
+              Error loading requests
+            </p>
+            <Button onClick={() => refetch()} variant="outline">
+              Try Again
+            </Button>
           </div>
-        ) : allRequests.length === 0 ? (
+        )}
+
+        {!isLoading && !isError && allRequests.length === 0 && (
           <div className="text-center py-20 px-6 rounded-[2rem] border border-dashed border-white/10 bg-white/5">
             <Clock className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-muted-foreground">
@@ -212,109 +215,129 @@ export function RestaurantCollectionsList({
               {t('change_filter_hint')}
             </p>
           </div>
-        ) : (
+        )}
+
+        {!isLoading && !isError && allRequests.length > 0 && (
           <div className="flex flex-col gap-3">
-            {allRequests.map(req => (
-              <Card
-                key={req.id}
-                className="bg-card/40 shadow-xl border-2 shadow-black/5 backdrop-blur-xl overflow-hidden group hover:border-primary/20 transition-all duration-300 touch-pan-y"
-              >
-                <CardContent className="p-0">
-                  <div className="p-5 space-y-4">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Hash className="w-4 h-4 text-primary" />
-                          <span className="text-2xl font-black">
-                            {req.quantity}
-                          </span>
-                          <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                            {t('packets_label')}
-                          </span>
+            {allRequests.map(req => {
+              const status = getStatus(req.status);
+              const Icon = status.icon;
+              const targetDate = new Date(req.target_date).toLocaleDateString(
+                locale
+              );
+
+              return (
+                <Card
+                  key={req.id}
+                  className="bg-card/40 shadow-xl border-2 shadow-black/5 backdrop-blur-xl overflow-hidden group hover:border-primary/20 transition-all duration-300 touch-pan-y"
+                >
+                  <CardContent className="p-0">
+                    <div className="p-5 space-y-4">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Hash className="w-4 h-4 text-primary" />
+                            <span className="text-2xl font-black">
+                              {req.quantity}
+                            </span>
+                            <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                              {t('packets_label')}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-muted-foreground/60 font-medium truncate max-w-[150px]">
+                            {t('collections_by')} {req.profiles?.email}
+                          </p>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium pt-1">
+                            <Calendar className="w-3 h-3" />
+                            {targetDate}
+                          </div>
                         </div>
-                        <p className="text-[10px] text-muted-foreground/60 font-medium truncate max-w-[150px]">
-                          {t('collections_by')} {req.profiles?.email}
-                        </p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium pt-1">
-                          <Calendar className="w-3 h-3" />
-                          {new Date(req.target_date).toLocaleDateString(locale)}
+                        <div
+                          className={cn(
+                            'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5',
+                            status.bg,
+                            status.color,
+                            status.border,
+                            'border'
+                          )}
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                          {t(status.label)}
                         </div>
                       </div>
-                      <div
-                        className={cn(
-                          'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5',
-                          req.status === 'approved' ||
-                            req.status === 'collected'
-                            ? 'bg-emerald-500/10 text-emerald-500'
-                            : req.status === 'uncollected'
-                              ? 'bg-destructive/10 text-destructive'
-                              : 'bg-amber-500/10 text-amber-500'
+
+                      <div className="flex gap-2 pt-2">
+                        {req.status === 'pending' && (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              disabled={isSubmitting === req.id}
+                              onClick={() =>
+                                handleStatusUpdate(req.id, 'rejected')
+                              }
+                              className="rounded-xl h-11 w-11 p-0 active:scale-95 transition-transform"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              disabled={isSubmitting === req.id}
+                              onClick={() =>
+                                handleStatusUpdate(req.id, 'approved')
+                              }
+                              className="flex-1 rounded-xl h-11 font-black gap-2 bg-emerald-500 hover:bg-emerald-600 shadow-xl shadow-emerald-500/10 text-white transition-all active:scale-[0.98]"
+                            >
+                              {isSubmitting === req.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <>
+                                  <Check className="w-4 h-4" />
+                                  {t('approve_button')}
+                                </>
+                              )}
+                            </Button>
+                          </>
                         )}
-                      >
-                        {getStatusIcon(req.status)}
-                        {getFilterLabel(req.status as FilterStatus)}
+
+                        {req.status === 'approved' && (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              disabled={isSubmitting === req.id}
+                              onClick={() =>
+                                handleStatusUpdate(req.id, 'uncollected')
+                              }
+                              className="rounded-xl h-11 w-11 p-0 active:scale-95 transition-transform"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              disabled={isSubmitting === req.id}
+                              onClick={() =>
+                                handleStatusUpdate(req.id, 'collected')
+                              }
+                              className="flex-1 rounded-xl h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-black gap-2 shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
+                            >
+                              {isSubmitting === req.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <>
+                                  <CheckCircle2 className="w-4 h-4" />
+                                  {t('restaurant_action_mark_collected')}
+                                </>
+                              )}
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </div>
-
-                    <div className="flex gap-2 pt-2">
-                      {req.status === 'pending' && (
-                        <>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            disabled={isSubmitting === req.id}
-                            onClick={() =>
-                              handleStatusUpdate(req.id, 'uncollected')
-                            }
-                            className="rounded-xl h-11 w-11 p-0 border-white/10 transition-all shrink-0"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            disabled={isSubmitting === req.id}
-                            onClick={() =>
-                              handleStatusUpdate(req.id, 'approved')
-                            }
-                            className="flex-1 rounded-xl h-11 font-black gap-2 bg-emerald-500 hover:bg-emerald-600 shadow-xl shadow-emerald-500/10 text-white transition-all active:scale-[0.98]"
-                          >
-                            <Check className="w-4 h-4" />
-                            {t('restaurant_action_accept')}
-                          </Button>
-                        </>
-                      )}
-
-                      {req.status === 'approved' && (
-                        <>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            disabled={isSubmitting === req.id}
-                            onClick={() =>
-                              handleStatusUpdate(req.id, 'uncollected')
-                            }
-                            className="rounded-xl h-11 w-11 p-0 border-white/10 transition-all shrink-0"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            disabled={isSubmitting === req.id}
-                            onClick={() =>
-                              handleStatusUpdate(req.id, 'collected')
-                            }
-                            className="flex-1 rounded-xl h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-black gap-2 shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
-                          >
-                            <CheckCircle2 className="w-4 h-4" />
-                            {t('restaurant_action_mark_collected')}
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              );
+            })}
 
             {/* Infinite scroll sentinel */}
             <div ref={sentinelRef} className="h-4" />
