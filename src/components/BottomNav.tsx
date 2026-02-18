@@ -132,7 +132,7 @@ export function BottomNav({ locale }: { locale: string }) {
   const indicatorOffset = `calc(${activeIndex} * (100% - 12px) / ${tabCount} + 6px)`;
 
   return (
-    <footer className="flex-none z-50 bg-background/80 backdrop-blur-lg border-t border-white/5 px-4">
+    <footer className="flex-none z-50 bg-background/80 backdrop-blur-lg border-t border-white/5 px-4 py-2">
       <div
         className={cn(
           'flex items-center bg-card/60 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-[2.5rem] p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative h-14 mx-auto select-none',
