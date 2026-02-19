@@ -13,8 +13,10 @@ import {
   XCircle,
 } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { ListSkeleton } from '@/components/Skeletons';
+import { StatusFilter } from '@/components/StatusFilter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -23,51 +25,39 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  type DonationWithSignedUrl,
-  getMuazzinDonations,
-  reviewDonation,
-} from '@/lib/actions/muazzin';
+import { getDonations, reviewDonation } from '@/lib/api/muazzin';
 import { cn } from '@/lib/utils';
+import { Enums } from '@/types/database.types';
 
-type FilterStatus = 'all' | 'pending' | 'approved' | 'rejected';
+type FilterStatus = Enums<'donation_status'> | 'all';
 
-export function DonationsList({
-  initialDonations,
-  locale,
-  pageSize,
-}: {
-  initialDonations: DonationWithSignedUrl[];
-  locale: string;
-  pageSize: number;
-}) {
+export function DonationsList({ pageSize = 10 }: { pageSize?: number }) {
   const queryClient = useQueryClient();
+  const params = useParams();
+  const locale = params.locale as string;
   const [filter, setFilter] = useState<FilterStatus>('pending');
   const [isSubmitting, setIsSubmitting] = useState<string | null>(null);
-  const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ['donations', filter],
-      queryFn: ({ pageParam }) =>
-        getMuazzinDonations(pageParam, pageSize, filter),
-      initialPageParam: 0,
-      getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-        // If we got fewer items than pageSize, there are no more pages
-        if (lastPage.length < pageSize) return undefined;
-        return lastPageParam + 1;
-      },
-      // Use server data for the first page of 'all' filter
-      initialData:
-        filter === 'pending'
-          ? {
-              pages: [initialDonations],
-              pageParams: [0],
-            }
-          : undefined,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ['donations', filter],
+    queryFn: ({ pageParam }) =>
+      getDonations({ page: pageParam, pageSize, status: filter }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      if (lastPage.length < pageSize) return undefined;
+      return lastPageParam + 1;
+    },
+  });
 
   const allDonations = data?.pages.flat() ?? [];
 
@@ -94,7 +84,6 @@ export function DonationsList({
     try {
       await reviewDonation(id, status);
       await queryClient.invalidateQueries({ queryKey: ['donations'] });
-      router.refresh();
     } catch (error) {
       console.error(error);
       alert('Failed to update status');
@@ -116,38 +105,29 @@ export function DonationsList({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-3">
-      {/* Filter bar — fixed */}
-      <div className="flex-none flex gap-1 p-1 bg-card/50 backdrop-blur-md rounded-xl border max-w-full overflow-x-auto no-scrollbar">
-        {(['all', 'pending', 'approved', 'rejected'] as FilterStatus[]).map(
-          f => (
-            <Button
-              key={f}
-              variant="ghost"
-              size="sm"
-              onClick={() => setFilter(f)}
-              className={cn(
-                'rounded-lg px-4 h-9 font-bold text-xs uppercase tracking-widest transition-all whitespace-nowrap',
-                filter === f
-                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 shadow-sm'
-                  : 'text-muted-foreground hover:bg-white/5'
-              )}
-            >
-              {f}
-            </Button>
-          )
-        )}
-      </div>
+      <StatusFilter
+        options={['all', 'pending', 'approved', 'rejected'] as const}
+        value={filter}
+        onChange={setFilter}
+      />
 
       {/* Scrollable card list */}
       <div
         ref={scrollRef}
-        className="flex-1 min-h-0 overflow-y-auto overscroll-contain rounded-xl"
+        className="flex-1 min-h-0 overflow-y-auto overscroll-contain rounded-xl no-scrollbar"
       >
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        {isLoading && <ListSkeleton />}
+        {isError && (
+          <div className="text-center py-20">
+            <p className="text-destructive font-bold mb-4">
+              Error loading donations
+            </p>
+            <Button onClick={() => refetch()} variant="outline">
+              Try Again
+            </Button>
           </div>
-        ) : allDonations.length === 0 ? (
+        )}
+        {!isLoading && !isError && allDonations.length === 0 && (
           <div className="text-center py-20 px-6 rounded-[2rem] border border-dashed border-white/10 bg-white/5">
             <Clock className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-muted-foreground">
@@ -157,7 +137,8 @@ export function DonationsList({
               Try changing the status filter above.
             </p>
           </div>
-        ) : (
+        )}
+        {!isLoading && !isError && allDonations.length > 0 && (
           <div className="flex flex-col gap-3">
             {allDonations.map(donation => (
               <Card
@@ -216,11 +197,19 @@ export function DonationsList({
                             Donation Proof
                           </DialogTitle>
                           <div className="aspect-auto max-h-[80vh] w-full flex items-center justify-center p-4">
-                            <Image
-                              src={donation.signed_proof_url || ''}
-                              alt="Donation Proof"
-                              className="max-w-full max-h-full rounded-2xl object-contain shadow-2xl"
-                            />
+                            {donation.signed_proof_url ? (
+                              <Image
+                                src={donation.signed_proof_url}
+                                alt="Donation Proof"
+                                width={800}
+                                height={800}
+                                className="max-w-full max-h-full rounded-2xl object-contain shadow-2xl"
+                              />
+                            ) : (
+                              <div className="text-muted-foreground italic">
+                                No image available
+                              </div>
+                            )}
                           </div>
                         </DialogContent>
                       </Dialog>
@@ -234,7 +223,7 @@ export function DonationsList({
                             onClick={() =>
                               handleReview(donation.id, 'rejected')
                             }
-                            className="rounded-xl h-10 w-10 p-0"
+                            className="rounded-xl h-10 w-10 p-0 active:scale-95 transition-transform"
                           >
                             <X className="w-4 h-4" />
                           </Button>
@@ -244,10 +233,16 @@ export function DonationsList({
                             onClick={() =>
                               handleReview(donation.id, 'approved')
                             }
-                            className="flex-1 rounded-xl h-10 font-bold gap-2 bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20"
+                            className="flex-1 rounded-xl h-10 font-bold gap-2 bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all"
                           >
-                            <Check className="w-4 h-4" />
-                            Approve
+                            {isSubmitting === donation.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <>
+                                <Check className="w-4 h-4" />
+                                Approve
+                              </>
+                            )}
                           </Button>
                         </>
                       )}

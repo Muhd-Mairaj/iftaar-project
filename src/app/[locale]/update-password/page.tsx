@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { syncUserRole } from '@/lib/actions/admin';
 import { createClient } from '@/lib/supabase/client';
 import {
   type UpdatePasswordInput,
@@ -68,6 +69,11 @@ export default function UpdatePasswordPage() {
         .single();
 
       const role = profile?.role;
+
+      // Ensure metadata is synced for middleware RBAC
+      if (role && user.app_metadata?.role !== role) {
+        await syncUserRole(user.id, role);
+      }
 
       if (role === 'muazzin') {
         router.replace('/muazzin');

@@ -41,6 +41,9 @@
   "packets_label": "وجبات",
   "error_select_receipt": "يرجى اختيار صورة الإيصال",
   "error_unexpected": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+  "error_loading_requests": "خطأ في تحميل الطلبات",
+  "try_again": "حاول مرة أخرى",
+  "status_update_failed": "فشل تحديث الحالة",
   "receipt_selected": "تم اختيار الإيصال",
   "receipt_placeholder": "اضغط لرفع الإيصال",
   "receipt_hint": "PNG أو JPG أو PDF حتى ٥ ميجابايت",
@@ -99,6 +102,7 @@
   "all": "الكل",
   "pending": "قيد المراجعة",
   "approved": "مقبول",
+  "rejected": "مرفوض",
   "overdue": "متأخر",
   "submitted_on": "تم الإرسال في",
   "packets_needed": "الوجبات المطلوبة",
@@ -119,5 +123,13 @@
   "restaurant_action_mark_collected": "تأكيد الاستلام",
   "status_all": "الكل",
   "status_uncollected": "لم يتم الاستلام",
-  "collections_by": "بواسطة"
+  "collections_by": "بواسطة",
+  "approve_button": "اعتماد",
+  "user_status_active": "نشط",
+  "user_status_pending": "انتظار القبول",
+  "resend_invite": "إعادة دعوة",
+  "delete_user": "حذف المستخدم",
+  "confirm_delete_user": "هل أنت متأكد من حذف هذا المستخدم؟",
+  "last_login": "آخر دخول",
+  "invited_on": "تاريخ الدعوة"
 }

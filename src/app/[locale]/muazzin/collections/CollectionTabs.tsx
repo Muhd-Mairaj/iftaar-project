@@ -5,23 +5,14 @@ import { History, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Tables } from '@/types/database.types';
 import { CollectionForm } from './CollectionForm';
 import { CollectionsList } from './CollectionsList';
 
-type Collection = Tables<'collection_requests'>;
-
 interface CollectionTabsProps {
-  initialCollections: Collection[];
-  locale: string;
-  userId: string;
+  userId: string | null;
 }
 
-export function CollectionTabs({
-  initialCollections,
-  locale,
-  userId,
-}: CollectionTabsProps) {
+export function CollectionTabs({ userId }: CollectionTabsProps) {
   const { t } = useTranslate();
   const [activeTab, setActiveTab] = useState<'request' | 'history'>('request');
 
@@ -61,8 +52,8 @@ export function CollectionTabs({
 
       {/* Tab Content */}
       <div className="flex-1 min-h-0 flex flex-col">
-        {activeTab === 'request' ? (
-          <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+        {activeTab === 'request' && (
+          <div className="">
             <div className="mb-4">
               <h2 className="text-xl font-black tracking-tight text-foreground">
                 {t('submit_request')}
@@ -73,8 +64,10 @@ export function CollectionTabs({
             </div>
             <CollectionForm />
           </div>
-        ) : (
-          <div className="flex-1 min-h-0 flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-300">
+        )}
+
+        {activeTab === 'history' && (
+          <div className="flex-1 min-h-0 flex flex-col ">
             <div className="mb-4 flex-none">
               <h2 className="text-xl font-black tracking-tight text-foreground">
                 {t('collection_requests')}
@@ -83,11 +76,7 @@ export function CollectionTabs({
                 {t('history_desc')}
               </p>
             </div>
-            <CollectionsList
-              initialCollections={initialCollections}
-              locale={locale}
-              userId={userId}
-            />
+            <CollectionsList userId={userId} />
           </div>
         )}
       </div>

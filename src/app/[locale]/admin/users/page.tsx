@@ -1,11 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslate } from '@tolgee/react';
 import { Loader2, Mail, PlusCircle, ShieldCheck } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { ListSkeleton } from '@/components/Skeletons';
+import { StatusFilter } from '@/components/StatusFilter';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -32,19 +35,28 @@ import {
 } from '@/components/ui/select';
 import { getUsers, inviteUser } from '@/lib/actions/admin';
 import { InviteUserInput, InviteUserSchema } from '@/lib/validations';
-import { Database } from '@/types/database.types';
 import { UsersList } from './UsersList';
-
-type Profile = Database['public']['Tables']['profiles']['Row'];
 
 export default function AdminUsersPage() {
   const { t } = useTranslate();
   const params = useParams();
   const locale = params.locale as string;
-  const [users, setUsers] = useState<Profile[]>([]);
+  const queryClient = useQueryClient();
+
+  const [statusFilter, setStatusFilter] = useState<
+    'all' | 'active' | 'pending'
+  >('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const {
+    data: users = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['admin_users'],
+    queryFn: getUsers,
+  });
 
   const form = useForm<InviteUserInput>({
     resolver: zodResolver(InviteUserSchema),
@@ -53,19 +65,6 @@ export default function AdminUsersPage() {
       role: 'muazzin',
     },
   });
-
-  const fetchUsers = useCallback(async () => {
-    setIsLoading(true);
-    const data = await getUsers();
-    setUsers(data as unknown as Profile[]);
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    // Check if user is super_admin, otherwise redirect
-    // For now, we rely on the component mounting to fetch data
-    fetchUsers();
-  }, [fetchUsers]);
 
   async function onSubmit(data: InviteUserInput) {
     setIsSubmitting(true);
@@ -78,7 +77,7 @@ export default function AdminUsersPage() {
         alert(t('invited_success'));
         setIsDialogOpen(false);
         form.reset();
-        fetchUsers(); // Refresh list
+        queryClient.invalidateQueries({ queryKey: ['admin_users'] });
       }
     } catch (error) {
       console.error(error);
@@ -90,7 +89,7 @@ export default function AdminUsersPage() {
 
   return (
     <>
-      {/* Header Section — Fixed */}
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 flex-none">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
@@ -109,7 +108,7 @@ export default function AdminUsersPage() {
               {t('invite_user_title')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl border-white/10 rounded-[2rem] p-0 overflow-hidden shadow-2xl">
+          <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl rounded-[2rem] p-0 overflow-hidden shadow-2xl">
             <div className="p-6 pb-0">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-black text-center">
@@ -164,7 +163,7 @@ export default function AdminUsersPage() {
                               <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="rounded-xl border-white/10 bg-card/95 backdrop-blur-xl">
+                          <SelectContent className="rounded-xl bg-card/95 backdrop-blur-xl">
                             <SelectItem
                               value="muazzin"
                               className="focus:bg-primary/10 rounded-lg cursor-pointer py-3 font-medium"
@@ -202,9 +201,46 @@ export default function AdminUsersPage() {
         </Dialog>
       </div>
 
-      <div className="flex-1 min-h-0 bg-card/40 backdrop-blur-md border border-white/10 rounded-[2.5rem] shadow-xl shadow-black/5 overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-y-auto no-scrollbar pt-2 pb-6">
-          <UsersList users={users} isLoading={isLoading} />
+      <StatusFilter
+        options={['all', 'active', 'pending'] as const}
+        value={statusFilter}
+        onChange={setStatusFilter}
+        fullWidth
+        getLabel={option => {
+          if (option === 'all') return t('all');
+          if (option === 'active') return t('user_status_active');
+          if (option === 'pending') return t('user_status_pending');
+          return option; // Fallback
+        }}
+      />
+
+      {/* Content Section */}
+      <div className="flex-1 min-h-0 border rounded-xl shadow-xl shadow-black/5 overflow-hidden flex flex-col">
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pt-2 pb-6">
+          {isLoading ? (
+            <div className="p-6">
+              <ListSkeleton />
+            </div>
+          ) : isError ? (
+            <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-destructive gap-4">
+              <p className="font-black text-xl">{t('error_unexpected')}</p>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  queryClient.invalidateQueries({ queryKey: ['admin_users'] })
+                }
+                className="rounded-xl border-destructive/20 hover:bg-destructive/5"
+              >
+                {t('try_again')}
+              </Button>
+            </div>
+          ) : (
+            <UsersList
+              users={users}
+              isLoading={isLoading}
+              filter={statusFilter}
+            />
+          )}
         </div>
       </div>
     </>

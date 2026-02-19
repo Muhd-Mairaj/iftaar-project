@@ -1,17 +1,10 @@
-import { getTolgee } from '@/i18n';
-import { getCollectionRequests } from '@/lib/actions/restaurant';
+'use client';
+
+import { useTranslate } from '@tolgee/react';
 import { RestaurantCollectionsList } from './RestaurantCollectionsList';
 
-const PAGE_SIZE = 10;
-
-export default async function RestaurantCollectionsPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  const { t } = await getTolgee(locale);
-  const requests = await getCollectionRequests(0, PAGE_SIZE - 1, 'pending');
+export default function RestaurantCollectionsPage() {
+  const { t } = useTranslate();
 
   return (
     <>
@@ -24,11 +17,7 @@ export default async function RestaurantCollectionsPage({
         </p>
       </header>
 
-      <RestaurantCollectionsList
-        initialRequests={requests}
-        locale={locale}
-        pageSize={PAGE_SIZE}
-      />
+      <RestaurantCollectionsList pageSize={10} />
     </>
   );
 }
