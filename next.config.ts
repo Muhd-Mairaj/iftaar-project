@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: './',
   },
+  serverExternalPackages: [],
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
   images: {
     remotePatterns: [
       {

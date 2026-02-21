@@ -16,12 +16,14 @@ import {
 } from '@/components/ui/form';
 import { NumberInput } from '@/components/ui/number-input';
 import { submitDonation } from '@/lib/actions';
+import { compressImage } from '@/lib/image-compression';
 import { DonationInput, DonationSchema } from '@/lib/validations';
 
 export function DonationForm() {
   const { t } = useTranslate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const form = useForm<DonationInput>({
     resolver: zodResolver(DonationSchema),
@@ -37,11 +39,9 @@ export function DonationForm() {
       const formData = new FormData();
       formData.append('quantity', data.quantity.toString());
 
-      const fileInput = document.getElementById(
-        'receipt-upload'
-      ) as HTMLInputElement;
-      if (fileInput?.files?.[0]) {
-        formData.append('receipt', fileInput.files[0]);
+      if (selectedFile) {
+        const compressedFile = await compressImage(selectedFile);
+        formData.append('receipt', compressedFile);
       } else {
         alert(t('error_select_receipt'));
         setIsSubmitting(false);
@@ -54,6 +54,7 @@ export function DonationForm() {
       } else {
         setIsSuccess(true);
         form.reset();
+        setSelectedFile(null);
       }
     } catch (error) {
       console.error(error);
@@ -170,6 +171,7 @@ export function DonationForm() {
                     onChange={e => {
                       const file = e.target.files?.[0];
                       if (file) {
+                        setSelectedFile(file);
                         field.onChange(file.name);
                       }
                     }}
