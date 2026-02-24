@@ -185,7 +185,12 @@ export async function getMuazzinStats() {
       .from('donations')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'pending'),
-    supabase.from('donations').select('quantity').eq('status', 'approved'),
+    supabase
+      .from('donations')
+      .select('quantity')
+      .eq('status', 'approved')
+      .eq('is_recurring', false)
+      .lte('available_date', new Date().toISOString().split('T')[0]),
     supabase.from('collection_requests').select('quantity'),
   ]);
 
