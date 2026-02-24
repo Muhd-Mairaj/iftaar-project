@@ -95,7 +95,8 @@ export async function getUsers(): Promise<ProfileWithStatus[]> {
   const { data: profiles, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false });
 
   if (profileError) {
     console.error('Fetch profiles error:', profileError);

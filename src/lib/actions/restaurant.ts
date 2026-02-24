@@ -26,6 +26,7 @@ export async function getCollectionRequests(
       )
     `)
     .order('updated_at', { ascending: false })
+    .order('id', { ascending: false })
     .range(from, to);
 
   if (status) {

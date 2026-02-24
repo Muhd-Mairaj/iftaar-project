@@ -29,6 +29,7 @@ export async function getDonations({
     .select('*')
     .is('parent_donation_id', null)
     .order('updated_at', { ascending: false })
+    .order('id', { ascending: false })
     .range(from, to);
 
   if (status !== 'all') {
@@ -158,6 +159,7 @@ export async function getMuazzinCollectionRequests({
     .select('*')
     .eq('created_by', userId)
     .order('updated_at', { ascending: false })
+    .order('id', { ascending: false })
     .range(from, to);
 
   if (filter !== 'all') {
