@@ -15,11 +15,15 @@ Consistent styling and design aesthetics are our highest priority. The implement
 *   **Color Palette:** Do not introduce arbitrary or generic color codes. Exclusively use strictly thematic CSS variables (e.g., `bg-primary/10 text-primary`, `bg-destructive/10 text-destructive`, `bg-amber-500/10`) to maintain a unified color schema.
 *   **Icons:** Every icon used in the project must come exclusively from `lucide-react`. 
 
-## Data Fetching & State Caching
+## Data Fetching, Mutations, & State Caching
 *   **Preferred Architecture:** Treat almost all interactive pages generally as Next.js Client Components (`'use client'`).
-*   **Performance Priority:** For maximum speed and lower Time to Interactive (TTI), prefer using dedicated API handlers located within `src/lib/api/` rather than Next.js Server Actions whenever plausible.
-*   **Caching & Synchronization:** We use **TanStack Query (React Query)** globally for API request layer caching, cache invalidation, and background state synchronization.
-*   **Large Data Lists:** Any list component potentially fetching many rows *must* implement infinite scroll loading, utilizing `useInfiniteQuery` combined with an Intersection Observer sentinel. Flat pagination is discouraged unless required.
+*   **API Routes (React Query):** For all standard dashboard data fetching (`GET`), table paginations, and standard database table updates (like approving a row), we strictly use dedicated API Promise fetchers located in `src/lib/api/` paired with **TanStack Query (React Query)** on the client.
+    *   *Why?* React Query excels at API caching, background state synchronization, and snappy client-side cache invalidation (`queryClient.invalidateQueries()`).
+    *   *Rule:* If you are fetching a list of items to display on a screen or updating a basic row status, put the Supabase logic in `src/lib/api/` and wrap it in `useQuery`/`useMutation`.
+*   **Server Actions (Forms & Auth):** We explicitly reserve Next.js Server Actions (`src/lib/actions/`) solely for operations that *require* secure, server-only execution environments that cannot be safely exposed to the client.
+    *   *Use Cases for Actions:* Complex form submissions (containing heavy file binary uploads like receipts), Authentication operations (like `supabase.auth.admin` or manipulating cookies), or manipulating user role `app_metadata`.
+    *   *Rule:* Do NOT use Server Actions for simple database fetching or updating. Server actions lock the UI thread during execution and cause full expensive page re-renders via `revalidatePath`.
+*   **Large Data Lists:** Any list component potentially fetching many rows *must* implement infinite scroll loading, utilizing `useInfiniteQuery` combined with an Intersection Observer sentinel. Flat pagination is discouraged unless required. Always add `.order('id')` to paginated Supabase queries as a deterministic secondary tie-breaker constraint.
 
 ## Database & Schemas
 Our primary database and Auth provider is Supabase.
