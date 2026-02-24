@@ -208,3 +208,26 @@ export async function getMuazzinStats() {
     packetsAvailable,
   };
 }
+
+/**
+ * Creates a new collection request for a Muazzin
+ */
+export async function createCollectionRequest(data: any) {
+  const supabase = createClient();
+
+  // Get current user for created_by
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase.from('collection_requests').insert({
+    quantity: data.quantity,
+    target_date: data.target_date,
+    status: 'pending',
+    created_by: user?.id,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return { success: true };
+}

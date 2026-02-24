@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { NumberInput } from '@/components/ui/number-input';
-import { createCollectionRequest } from '@/lib/actions/muazzin';
+import { createCollectionRequest } from '@/lib/api/muazzin';
 import {
   CollectionRequestInput,
   CollectionRequestSchema,
