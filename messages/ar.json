@@ -46,7 +46,7 @@
   "status_update_failed": "فشل تحديث الحالة",
   "receipt_selected": "تم اختيار الإيصال",
   "receipt_placeholder": "اضغط لرفع الإيصال",
-  "receipt_hint": "PNG أو JPG أو PDF حتى ٥ ميجابايت",
+  "receipt_hint": "PNG أو JPG أو WebP أو HEIC حتى ٥ ميجابايت",
   "partners_title": "شركاؤنا",
   "partners_subtitle": "أسعار وتفاصيل معتمدة",
   "currency_sar": "ر.س",
@@ -131,5 +131,11 @@
   "delete_user": "حذف المستخدم",
   "confirm_delete_user": "هل أنت متأكد من حذف هذا المستخدم؟",
   "last_login": "آخر دخول",
-  "invited_on": "تاريخ الدعوة"
+  "invited_on": "تاريخ الدعوة",
+  "recurring_donation_label": "جعل التبرع متكررًا",
+  "recurring_donation_desc": "تقسيم الوجبات تلقائيًا على عدة أيام",
+  "duration_days_label": "المدة (أيام)",
+  "recurring_summary": "هذا سيوفر {dailyCount} وجبات يوميًا لمدة {days} أيام.",
+  "recurring_badge_text": "({dailyQuantity} وجبات / {durationDays} أيام)",
+  "proof_button": "الإثبات"
 }

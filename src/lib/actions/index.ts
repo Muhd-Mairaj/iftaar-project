@@ -3,37 +3,55 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 
-export async function submitDonation(formData: FormData) {
+import type { DonationInput } from '@/lib/validations';
+
+export async function submitDonation(
+  payload: Omit<DonationInput, 'proof_url'> & { receipt: File }
+) {
   try {
     const supabase = await createClient();
 
-    // 1. Extract and Validate
-    const quantityStr = formData.get('quantity');
-    const receiptFile = formData.get('receipt') as File;
+    const { quantity, receipt, isRecurring, durationDays } = payload;
+    let dailyQuantity = null;
+    let totalQuantity = quantity;
 
-    if (!quantityStr || !receiptFile) {
-      return { error: 'Missing required fields' };
+    if (isRecurring && durationDays) {
+      dailyQuantity = quantity;
+      totalQuantity = quantity * durationDays;
     }
 
-    const quantity = Number.parseInt(quantityStr as string, 10);
-
     // Basic file validation
-    if (receiptFile.size === 0) {
+    if (receipt.size === 0) {
       return { error: 'Please upload a valid receipt image' };
     }
 
+    const acceptedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+      'image/heic',
+      'image/heif',
+    ];
+    if (!acceptedTypes.includes(receipt.type)) {
+      return {
+        error:
+          'Invalid file type. Please upload an image (JPG, PNG, WebP, HEIC).',
+      };
+    }
+
     // 2. File Upload (Supabase Storage)
-    const fileExt = receiptFile.name.split('.').pop();
+    const fileExt = receipt.name.split('.').pop();
     const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
     // Convert File to ArrayBuffer for Supabase Upload
-    const arrayBuffer = await receiptFile.arrayBuffer();
+    const arrayBuffer = await receipt.arrayBuffer();
     const fileBuffer = Buffer.from(arrayBuffer);
 
     const { error: uploadError } = await supabase.storage
       .from('receipts')
       .upload(fileName, fileBuffer, {
-        contentType: receiptFile.type,
+        contentType: receipt.type,
         cacheControl: '3600',
         upsert: false,
       });
@@ -45,9 +63,13 @@ export async function submitDonation(formData: FormData) {
 
     // 3. Database Insertion
     const { error: dbError } = await supabase.from('donations').insert({
-      quantity,
+      quantity: totalQuantity,
       proof_url: fileName,
       status: 'pending',
+      is_recurring: isRecurring,
+      duration_days: durationDays,
+      daily_quantity: dailyQuantity,
+      available_date: new Date().toISOString().split('T')[0], // Defaults to today
     });
 
     if (dbError) {

@@ -3,6 +3,8 @@ import { z } from 'zod';
 export const DonationSchema = z.object({
   quantity: z.number().int().positive('Quantity must be at least 1'),
   proof_url: z.string().min(1, 'Proof of payment is required'),
+  isRecurring: z.boolean().optional(),
+  durationDays: z.number().int().positive('Must be at least 1 day').optional(),
 });
 
 export type DonationInput = z.infer<typeof DonationSchema>;

@@ -2,7 +2,14 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslate } from '@tolgee/react';
-import { CheckCircle2, Loader2, Minus, Plus, Receipt } from 'lucide-react';
+import {
+  CheckCircle2,
+  Loader2,
+  Minus,
+  Plus,
+  Receipt,
+  Repeat,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -15,6 +22,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { NumberInput } from '@/components/ui/number-input';
+import { Switch } from '@/components/ui/switch';
 import { submitDonation } from '@/lib/actions';
 import { compressImage } from '@/lib/image-compression';
 import { DonationInput, DonationSchema } from '@/lib/validations';
@@ -30,25 +38,32 @@ export function DonationForm() {
     defaultValues: {
       quantity: 1,
       proof_url: '',
+      isRecurring: false,
+      durationDays: 10,
     },
   });
+
+  const isRecurring = form.watch('isRecurring');
+  const durationDays = form.watch('durationDays') || 10;
+  const quantity = form.watch('quantity');
 
   async function onSubmit(data: DonationInput) {
     setIsSubmitting(true);
     try {
-      const formData = new FormData();
-      formData.append('quantity', data.quantity.toString());
-
-      if (selectedFile) {
-        const compressedFile = await compressImage(selectedFile);
-        formData.append('receipt', compressedFile);
-      } else {
+      if (!selectedFile) {
         alert(t('error_select_receipt'));
         setIsSubmitting(false);
         return;
       }
 
-      const result = await submitDonation(formData);
+      const compressedFile = await compressImage(selectedFile);
+
+      const result = await submitDonation({
+        quantity: data.quantity,
+        receipt: compressedFile,
+        isRecurring: !!data.isRecurring,
+        durationDays: data.durationDays,
+      });
       if (result?.error) {
         alert(result.error);
       } else {
@@ -102,6 +117,7 @@ export function DonationForm() {
                 </FormLabel>
                 <span className="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
                   {field.value} {t('packets_label')}
+                  {isRecurring && ' / day'}
                 </span>
               </div>
               <FormControl>
@@ -136,6 +152,96 @@ export function DonationForm() {
           )}
         />
 
+        {/* Recurring Toggle */}
+        <FormField
+          control={form.control}
+          name="isRecurring"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-2xl border-2 border-border/60 bg-white dark:bg-slate-900 p-4 shadow-sm backdrop-blur-sm transition-all hover:border-primary/20">
+              <div className="space-y-1 relative pr-4">
+                <FormLabel className="text-[11px] font-black uppercase tracking-[0.1em] text-foreground flex items-center gap-2 cursor-pointer">
+                  <div className="p-1.5 rounded-full bg-primary/10">
+                    <Repeat className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  {t(
+                    'recurring_donation_label',
+                    'Make this a recurring donation'
+                  )}
+                </FormLabel>
+                <div className="text-[10px] text-muted-foreground/80 font-medium">
+                  {t(
+                    'recurring_donation_desc',
+                    'Automatically split packets across multiple days'
+                  )}
+                </div>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        {/* Duration Days Input */}
+        {isRecurring && (
+          <div className="animate-in slide-in-from-top-2 fade-in duration-300">
+            <FormField
+              control={form.control}
+              name="durationDays"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <div className="flex items-center justify-between px-1">
+                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
+                      {t('duration_days_label', 'Duration (Days)')}
+                    </FormLabel>
+                  </div>
+                  <FormControl>
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        className="h-10 w-8 rounded-full border border-border/60 bg-white dark:bg-slate-900 flex items-center justify-center text-foreground/70 active:scale-90 shadow-sm"
+                        onClick={() =>
+                          field.onChange(Math.max(1, (field.value || 10) - 1))
+                        }
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+
+                      <div className="flex-grow flex justify-center relative group">
+                        <NumberInput
+                          {...field}
+                          value={field.value || 10}
+                          className="w-20 text-center text-3xl font-black text-foreground bg-transparent border-none focus:ring-0 p-0 tabular-nums auto-cols-min"
+                        />
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[1.5px] bg-primary/10 rounded-full" />
+                      </div>
+
+                      <button
+                        type="button"
+                        className="h-10 w-8 rounded-full border border-border/60 bg-white dark:bg-slate-900 flex items-center justify-center text-foreground/70 active:scale-90 shadow-sm"
+                        onClick={() => field.onChange((field.value || 10) + 1)}
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </FormControl>
+                  <div className="text-[10px] text-primary/80 italic text-center font-medium mt-3 leading-relaxed">
+                    {t('recurring_summary', {
+                      dailyCount: quantity,
+                      days: durationDays,
+                      defaultValue: `This will provide ${quantity} packets per day for ${durationDays} days.`,
+                    })}
+                  </div>
+                  <FormMessage className="text-[10px] font-medium text-destructive/80" />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+
         {/* Compact Receipt Upload */}
         <FormField
           control={form.control}
@@ -166,7 +272,7 @@ export function DonationForm() {
                   <input
                     id="receipt-upload"
                     type="file"
-                    accept="image/*,.pdf"
+                    accept="image/*"
                     className="hidden"
                     onChange={e => {
                       const file = e.target.files?.[0];

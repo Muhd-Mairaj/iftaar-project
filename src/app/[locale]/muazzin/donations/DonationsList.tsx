@@ -1,6 +1,7 @@
 'use client';
 
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslate } from '@tolgee/react';
 import {
   Calendar,
   Check,
@@ -9,6 +10,7 @@ import {
   Eye,
   Hash,
   Loader2,
+  Repeat,
   X,
   XCircle,
 } from 'lucide-react';
@@ -32,6 +34,7 @@ import { Enums } from '@/types/database.types';
 type FilterStatus = Enums<'donation_status'> | 'all';
 
 export function DonationsList({ pageSize = 10 }: { pageSize?: number }) {
+  const { t } = useTranslate();
   const queryClient = useQueryClient();
   const params = useParams();
   const locale = params.locale as string;
@@ -149,14 +152,24 @@ export function DonationsList({ pageSize = 10 }: { pageSize?: number }) {
                   <div className="p-5 space-y-4">
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <Hash className="w-4 h-4 text-primary" />
                           <span className="text-2xl font-black">
                             {donation.quantity}
                           </span>
                           <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                            Packets
+                            {t('packets_label')}
                           </span>
+                          {donation.is_recurring && (
+                            <div className="ml-2 flex items-center gap-1.5 px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider">
+                              <Repeat className="w-3 h-3" />
+                              {t('recurring_badge_text', {
+                                dailyQuantity: donation.daily_quantity,
+                                durationDays: donation.duration_days,
+                                defaultValue: `(${donation.daily_quantity} pkts / ${donation.duration_days} days)`,
+                              })}
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
                           <Calendar className="w-3 h-3" />
@@ -176,7 +189,7 @@ export function DonationsList({ pageSize = 10 }: { pageSize?: number }) {
                         )}
                       >
                         {getStatusIcon(donation.status)}
-                        {donation.status || 'pending'}
+                        {t(donation.status || 'pending')}
                       </div>
                     </div>
 
@@ -189,7 +202,7 @@ export function DonationsList({ pageSize = 10 }: { pageSize?: number }) {
                             className="flex-1 rounded-xl h-10 font-bold gap-2"
                           >
                             <Eye className="w-4 h-4" />
-                            Proof
+                            {t('proof_button')}
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-2xl bg-card/95 backdrop-blur-xl border-white/10 p-0 overflow-hidden rounded-[2rem]">
@@ -240,7 +253,7 @@ export function DonationsList({ pageSize = 10 }: { pageSize?: number }) {
                             ) : (
                               <>
                                 <Check className="w-4 h-4" />
-                                Approve
+                                {t('approve')}
                               </>
                             )}
                           </Button>

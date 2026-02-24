@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client';
-import { Enums, Tables } from '@/types/database.types';
+import { Database, Enums, Tables } from '@/types/database.types';
 
 export type Donation = Tables<'donations'>;
 type DonationStatus = Enums<'donation_status'>;
@@ -27,6 +27,7 @@ export async function getDonations({
   let query = supabase
     .from('donations')
     .select('*')
+    .is('parent_donation_id', null)
     .order('updated_at', { ascending: false })
     .range(from, to);
 
@@ -71,6 +72,15 @@ export async function reviewDonation(
     data: { user },
   } = await supabase.auth.getUser();
 
+  // First fetch the donation to see if it's recurring
+  const { data: donation, error: fetchError } = await supabase
+    .from('donations')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (fetchError) throw fetchError;
+
   const { error } = await supabase
     .from('donations')
     .update({
@@ -80,6 +90,48 @@ export async function reviewDonation(
     .eq('id', id);
 
   if (error) throw error;
+
+  if (status === 'approved' && donation.is_recurring) {
+    const durationDays = donation.duration_days || 0;
+    const dailyQuantity = donation.daily_quantity || 0;
+
+    if (durationDays > 0 && dailyQuantity > 0) {
+      const childRows: Database['public']['Tables']['donations']['Insert'][] =
+        [];
+      const today = new Date();
+
+      for (let i = 0; i < durationDays; i++) {
+        const targetDate = new Date(today);
+        targetDate.setDate(today.getDate() + i);
+        const isoDate = targetDate.toISOString().split('T')[0];
+
+        childRows.push({
+          quantity: dailyQuantity,
+          proof_url: donation.proof_url,
+          status: 'approved',
+          is_recurring: false,
+          parent_donation_id: donation.id,
+          available_date: isoDate,
+          reviewed_by: user?.id,
+        });
+      }
+
+      if (childRows.length > 0) {
+        const { error: bulkError } = await supabase
+          .from('donations')
+          .insert(childRows);
+
+        if (bulkError) {
+          console.error('Failed to insert recurring donations', bulkError);
+        }
+      }
+    } else {
+      console.warn(
+        'Invalid durationDays or dailyQuantity, skipping child row generation'
+      );
+    }
+  }
+
   return { success: true };
 }
 

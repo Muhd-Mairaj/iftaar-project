@@ -8,8 +8,8 @@ export default function PublicDonationPage() {
   const { t } = useTranslate();
 
   return (
-    <div className="flex-grow flex flex-col items-center justify-center relative z-10 overflow-y-auto min-h-[60vh]">
-      <div className="w-full max-w-sm mx-auto flex flex-col gap-3">
+    <div className="flex-grow flex flex-col items-center relative z-10 overflow-y-auto min-h-[60vh]">
+      <div className="w-full max-w-sm mx-auto flex flex-col flex-1 gap-3 justify-center">
         <header className="text-center flex flex-col gap-1.5 animate-in fade-in duration-500">
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-primary/5 text-primary text-[9px] font-bold uppercase tracking-[0.2em] border border-primary/10 mx-auto">
             <Sparkle className="w-2.5 h-2.5 text-lantern" />

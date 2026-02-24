@@ -46,7 +46,7 @@
   "status_update_failed": "Failed to update status",
   "receipt_selected": "Receipt Selected",
   "receipt_placeholder": "Tap to upload receipt",
-  "receipt_hint": "PNG, JPG or PDF up to 5MB",
+  "receipt_hint": "PNG, JPG, WebP, or HEIC up to 5MB",
   "partners_title": "Our Partners",
   "partners_subtitle": "Verified Pricing & Details",
   "currency_sar": "SAR",
@@ -131,5 +131,11 @@
   "delete_user": "Delete User",
   "confirm_delete_user": "Are you sure you want to delete this user?",
   "last_login": "Last Login",
-  "invited_on": "Invited"
+  "invited_on": "Invited",
+  "recurring_donation_label": "Make this a recurring donation",
+  "recurring_donation_desc": "Automatically split packets across multiple days",
+  "duration_days_label": "Duration (Days)",
+  "recurring_summary": "This will provide {dailyCount} packets per day for {days} days.",
+  "recurring_badge_text": "({dailyQuantity} pkts / {durationDays} days)",
+  "proof_button": "Proof"
 }

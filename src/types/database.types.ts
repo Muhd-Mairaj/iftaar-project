@@ -54,8 +54,13 @@ export type Database = {
       };
       donations: {
         Row: {
+          available_date: string | null;
           created_at: string | null;
+          daily_quantity: number | null;
+          duration_days: number | null;
           id: string;
+          is_recurring: boolean | null;
+          parent_donation_id: string | null;
           proof_url: string;
           quantity: number;
           reviewed_by: string | null;
@@ -63,8 +68,13 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
+          available_date?: string | null;
           created_at?: string | null;
+          daily_quantity?: number | null;
+          duration_days?: number | null;
           id?: string;
+          is_recurring?: boolean | null;
+          parent_donation_id?: string | null;
           proof_url: string;
           quantity: number;
           reviewed_by?: string | null;
@@ -72,8 +82,13 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
+          available_date?: string | null;
           created_at?: string | null;
+          daily_quantity?: number | null;
+          duration_days?: number | null;
           id?: string;
+          is_recurring?: boolean | null;
+          parent_donation_id?: string | null;
           proof_url?: string;
           quantity?: number;
           reviewed_by?: string | null;
@@ -81,6 +96,13 @@ export type Database = {
           updated_at?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: 'donations_parent_donation_id_fkey';
+            columns: ['parent_donation_id'];
+            isOneToOne: false;
+            referencedRelation: 'donations';
+            referencedColumns: ['id'];
+          },
           {
             foreignKeyName: 'donations_reviewed_by_fkey';
             columns: ['reviewed_by'];
