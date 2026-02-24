@@ -15,11 +15,8 @@ import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  deleteUser,
-  type ProfileWithStatus,
-  resendInvite,
-} from '@/lib/actions/admin';
+import { deleteUser, resendInvite } from '@/lib/actions/admin';
+import { type ProfileWithStatus } from '@/lib/api/admin';
 import { cn } from '@/lib/utils';
 
 interface UsersListProps {

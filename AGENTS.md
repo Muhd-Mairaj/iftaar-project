@@ -19,7 +19,8 @@ Consistent styling and design aesthetics are our highest priority. The implement
 *   **Preferred Architecture:** Treat almost all interactive pages generally as Next.js Client Components (`'use client'`).
 *   **API Routes (React Query):** For all standard dashboard data fetching (`GET`), table paginations, and standard database table updates (like approving a row), we strictly use dedicated API Promise fetchers located in `src/lib/api/` paired with **TanStack Query (React Query)** on the client.
     *   *Why?* React Query excels at API caching, background state synchronization, and snappy client-side cache invalidation (`queryClient.invalidateQueries()`).
-    *   *Rule:* If you are fetching a list of items to display on a screen or updating a basic row status, put the Supabase logic in `src/lib/api/` and wrap it in `useQuery`/`useMutation`.
+    *   *Rule:* If you are fetching a list of items to display on a screen or updating a basic row status, put the Supabase logic in `src/lib/api/` and wrap it in `useQuery`/`useMutation`. 
+    *   *Rule:* Do NOT create `route.ts` API endpoint files in the `app/api/` folder unless explicitly required for external integrations (like webhooks).[]
 *   **Server Actions (Forms & Auth):** We explicitly reserve Next.js Server Actions (`src/lib/actions/`) solely for operations that *require* secure, server-only execution environments that cannot be safely exposed to the client.
     *   *Use Cases for Actions:* Complex form submissions (containing heavy file binary uploads like receipts), Authentication operations (like `supabase.auth.admin` or manipulating cookies), or manipulating user role `app_metadata`.
     *   *Rule:* Do NOT use Server Actions for simple database fetching or updating. Server actions lock the UI thread during execution and cause full expensive page re-renders via `revalidatePath`.

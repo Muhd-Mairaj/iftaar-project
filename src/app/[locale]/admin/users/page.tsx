@@ -33,7 +33,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getUsers, inviteUser } from '@/lib/actions/admin';
+import { inviteUser } from '@/lib/actions/admin';
+import { getUsers } from '@/lib/api/admin';
 import { InviteUserInput, InviteUserSchema } from '@/lib/validations';
 import { UsersList } from './UsersList';
 
